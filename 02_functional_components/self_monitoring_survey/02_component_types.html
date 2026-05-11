@@ -1,0 +1,50 @@
+<h4 style="color: #474747; font-weight: 600;">Які дві основні категорії компонентів в React?</h4><br/>
+(x) Прості компоненти (Dumb components) та Розумні компоненти (Smart components)
+( ) HTML-компоненти та CSS-компоненти
+( ) Статичні компоненти та Анімовані компоненти
+<h4 style="color: #474747; font-weight: 600;">Які характеристики мають прості компоненти в React?</h4><br/>
+( ) Стежать за станом та дбають про роботу програми
+(x) Єдиний обов'язок - представляти щось у DOM, не турбуючись про стан
+( ) Використовують класи для опису логіки
+<h4 style="color: #474747; font-weight: 600;">Чи можна використовувати хуки у класових компонентах?</h4><br/>
+( ) Так
+(x) Ні
+( ) Іноді
+<h4 style="color: #474747; font-weight: 600;">Який з наступних компонентів є розумним?</h4><br/>
+( ) Компонент, який просто повертає розмітку HTML
+(x) Компонент, який керує станом додатку
+( ) Компонент, який взаємодіє з іншими компонентами
+
+<h4 style="color: #474747; font-weight: 600;">Який з наступних компонентів є простим, а який розумним?</h4><br/>
+<p>Компонент A:</p>
+<pre>import React, { useState } from 'react';
+
+const ComponentA = () => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount(count + 1);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;Count: {count}&lt;/div&gt;
+      &lt;button onClick={handleClick}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ComponentA;
+</pre>
+<p>Компонент B:</p>
+<pre>import React from 'react';
+
+const ComponentB = () => {
+  return &lt;div&gt;Hello, React!&lt;/div&gt;;
+};
+
+export default ComponentB;</pre>
+( ) Обидва компоненти прості
+( ) Обидва компоненти розумні
+(x) Компонент А - розумний, Компонент B - простий
+( ) Компонент B - розумний, Компонент A - простий

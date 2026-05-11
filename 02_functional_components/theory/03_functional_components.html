@@ -1,0 +1,96 @@
+<h3 style="color: #76cdd8;"><strong>Чому функціональні компоненти?</strong></h3>
+<p>У сучасній розробці майже усі проекти припинили застосування класових компонентів, тому в поточному курсі ми їх розглядати не будемо.</p>
+<p>Функціональні компоненти стали дедалі популярнішими у React-спільноті з оновленнями в React 16.8, коли була введена можливість використання хуків (hooks) у функціональних компонентах.</p>
+<p>Це дозволило розробникам використовувати функціональні компоненти замість класових компонентів, особливо в простих випадках, де класові компоненти були зайвими.</p>
+<p>Реалізація того ж SmartComponent але у класовому компоненті:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { Component } from 'react';
+
+class SmartComponent extends Components {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+
+  handleClick = () =&gt; {
+    this.setState(prevState =&gt; ({
+      count: prevState.count + 1
+    }));
+  }
+
+  render(){
+    const { count } = this.state;
+
+    return(
+      &lt;div&gt;
+        &lt;div&gt;Count: {count}&lt;/div&gt;
+        &lt;button onClick={this.handleClick}&gt;Increment&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+
+export default SmartComponent;
+</code></pre>
+<p>Основні переваги використання функціональних компонентів у порівнянні з класовими компонентами:</p>
+<ul>
+<li><strong>Спрощений синтаксис</strong>: Функціональні компоненти мають простий синтаксис, що робить їх легшими для розуміння, тестування та розробки.</li>
+<li><strong>Немає внутрішнього стану</strong>: Функціональні компоненти не мають внутрішнього стану, що полегшує керування станом в додатках та сприяє принципам безпечного використання незмінних даних.</li>
+<li><strong>Використання хуків</strong>: Хуки (hooks) дозволяють використовувати функціональні можливості, такі як стан, контекст, побічні ефекти, без необхідності використовувати класові компоненти. Це робить код більш зрозумілим та компактним.</li>
+<li><strong>Покращена продуктивність</strong>: Функціональні компоненти мають нижчий вплив на продуктивність, оскільки вони мають менше додаткових операцій порівняно з класовими компонентами.</li>
+<li><strong>Легше тестування</strong>: Функціональні компоненти можуть бути протестовані легше, оскільки вони мають менше внутрішнього стану та мають простий вхідний API.</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

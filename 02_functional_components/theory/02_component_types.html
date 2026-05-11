@@ -1,0 +1,88 @@
+<h3 style="color: #76cdd8;"><strong>Види компонентів</strong></h3>
+<p>Компоненти можна умовно розділити на 2 частини: <strong>Прості компоненти</strong> (Dumb components) та <strong>Розумні компоненти</strong> (Smart components).</p>
+<h3 style="color: #76cdd8;"><strong>Прості компоненти</strong></h3>
+<p>Прості компоненти також називаються «презентаційними» компонентами, тому що їх єдиний обов'язок представляти щось у DOM. Як тільки це буде зроблено, з компонентом буде покінчено. Не траба стежити за ним, не перевіряти час від часу, щоб подивитися, як ідуть справи. Розмістіть інформацію на сторінці та рухайтеся далі:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const SimpleComponent = () =&gt; {
+  return &lt;div&gt;Hello, React!&lt;/div&gt;;
+};
+
+export default SimpleComponent;</code></pre>
+<h3 style="color: #76cdd8;"><strong>Розумні компоненти</strong></h3>
+<p>Розумні компоненти (або компоненти-контейнери), з іншого боку, несуть іншу відповідальність. Оскільки на них лягає тягар бути розумними, вони стежать за станом і <strong>дбають про те, як працює програма</strong>.</p>
+<p>Зважаючи на оновлення React 16.8, було введено поняття <strong>хуків</strong> (hooks), які дозволяють використовувати <strong>стан</strong> та функціональні можливості в функціональних компонентах, що робить їх більш потужними та зручними. Ось приклад використання функціональних компонентів з використанням хуків в React:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const SmartComponent = () =&gt; {
+  const [count, setCount] = useState(0); // Використання хука useState для стану
+
+  const handleClick = () =&gt; {
+    setCount(count + 1); // Оновлення стану за допомогою setCount
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;Count: {count}&lt;/div&gt;
+      &lt;button onClick={handleClick}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default SmartComponent;</code></pre>
+<p>У цьому прикладі ми використали хук <strong>useState</strong>, який дозволяє використовувати <strong>стан</strong> в функціональному компоненті. Ми використовуємо деструктуризацію масиву для отримання поточного значення стану count та функції setCount для оновлення стану.</p>
+<p>Також, ми використали функціональний підхід до визначення компонента, де ми повертаємо <strong>JSX</strong> (розмітка HTML + CSS, в якій можна використовувати вирази javascript у фігурних { } дужках) відразу з функції, що робить цей компонент <strong>функціональним</strong>.</p>
+<p>Цей підхід з використанням функціональних компонентів та хуків дозволяє створювати більш прості та зрозумілі компоненти, які можуть керувати станом та взаємодіяти з іншими компонентами, без використання класів та методів життєвого циклу.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

@@ -1,0 +1,113 @@
+<h3 style="color: #76cdd8;"><strong>В React усе є компонентами</strong></h3>
+<p><strong>Компоненти</strong> в React - це відокремлені, <strong>повторно використовувані блоки коду</strong>, які містять логіку та відображення інтерфейсу. Вони можуть бути використані для створення різних елементів інтерфейсу, таких як кнопки, форми, списки, заголовки, картки тощо.</p>
+<p>Кожен компонент може мати свій <strong>власний стан</strong> (state), <strong>властивості</strong> (props) і методи, що дозволяють йому взаємодіяти з іншими компонентами та змінювати відображення на екрані.</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const SomeComponent = () =&gt; {
+  const [count, setCount] = React.useState(0);
+  
+  const handleClick = () =&gt; {
+    setCount(count + 1);
+  }
+  
+  return(
+    &lt;div&gt;
+      &lt;div&gt;Count: {count}&lt;/div&gt;
+      &lt;button onClick={handleClick}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  )
+};
+  
+export default SomeComponent;</code></pre>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import SomeComponent from './components/SomeComponent';
+
+const App = () =&gt; {
+
+  return(
+    &lt;div&gt;
+      &lt;span&gt;Мій перший компонент:&lt;/span&gt;
+      &lt;SomeComponent/&gt;
+    &lt;/div&gt;
+  )
+};
+
+export default App;</code></pre>
+<p>Компоненти в React можуть бути вкладені один в одного, утворюючи деревоподібну структуру, відому як "дерево компонентів". Головний батьківський компонент, що містить всі інші компоненти, відомий як "кореневий компонент" або "головний компонент" (root component).</p>
+<p>На цьому прикладі SomeComponent є <strong>дочірнім</strong> компонентом для App. Тим часом компонент App для SomeComponent є <strong>батьківским</strong> компонентом.</p>
+<p>Результат:</p>
+<p><img src="blob:https://studio.elearn.epam.com/fcddfd2f-fd61-4c6c-ba5a-2c37f7f61e23" alt="" style="display: block; margin-left: auto; margin-right: auto;" /></p>
+<p>Створення і використання компонентів є основним підходом до розробки інтерфейсу в React, що дозволяє створювати масштабовані, підтримувані та ефективні веб-додатки.</p>
+<p>Одна з переваг використання компонентів в React полягає в їх <strong>повторному</strong> використанні. Компоненти можуть бути використані на різних сторінках, в різних проектах або навіть в різних додатках, спрощуючи розробку та підтримку коду.</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import SomeComponent from './components/SomeComponent';
+
+const App = () =&gt; {
+
+  return(
+    &lt;div&gt;
+      &lt;span&gt;Мій перший компонент:&lt;/span&gt;
+      &lt;SomeComponent/&gt;
+      &lt;span&gt;Знову мій перший компонент:&lt;/span&gt;
+      &lt;SomeComponent/&gt;
+      &lt;span&gt;Ще раз мій перший компонент:&lt;/span&gt;
+      &lt;SomeComponent/&gt;
+    &lt;/div&gt;
+  )
+};
+
+export default App;</code></pre>
+<p>Результат:</p>
+<p style="text-align: center;"><img src="blob:https://studio.elearn.epam.com/4db8d18f-2267-43e2-a19f-6794991e1e19" alt="" width="405" height="312" /></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>
