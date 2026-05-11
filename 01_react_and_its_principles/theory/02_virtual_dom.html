@@ -1,0 +1,71 @@
+<h3 style="color: #76cdd8;"><strong>Що таке DOM?</strong></h3>
+<p><strong>DOM (Document Object Model)</strong> - це структура, яка представляє веб-сторінку в браузері у вигляді дерева елементів (наприклад, тегів HTML), які можуть бути змінені або відображені на екрані.</p>
+<h1><img src="blob:https://studio.elearn.epam.com/b6908b5a-35a3-4164-934c-79cf411c697b" alt="" style="display: block; margin-left: auto; margin-right: auto;" width="432" height="448" /></h1>
+<p>Одна з особливостей роботи з DOM полягає в тому, що зміни в DOM можуть бути дорогими з точки зору продуктивності, особливо при масштабному оновленні великої кількості елементів. Кожна зміна в DOM може призвести до перерахунку розміщення та вигляду елементів, що може бути витратним з точки зору ресурсів браузера та призвести до зниження продуктивності додатка.</p>
+<p>DOM сторінки можна побачити відкривши DevTools у вкладці Elements.</p>
+<h3 style="color: #76cdd8;"><strong>Що таке Virtual DOM?</strong></h3>
+<p><strong>Віртуальний DOM (Virtual DOM)</strong> - це техніка оптимізації веб-додатків, яка використовується в React та інших JavaScript-бібліотеках і фреймворках для покращення продуктивності роботи з деревом DOM.</p>
+<p>Віртуальний DOM є абстрактним представленням реального DOM в пам'яті браузера. Замість безпосередньої взаємодії з реальним DOM, React створює віртуальний DOM, який є легким та ефективним. Він зберігається в пам'яті як звичайний <strong>JavaScript-об'єкт</strong>. Virtual DOM складається з вузлів (або елементів) з їх властивостями та дочірніми вузлами. React використовує віртуальний DOM для виконання операцій зміни стану компонентів, порівняння старого та нового стану, та <strong>оновлення реального DOM лише в тих місцях, де відбулися зміни</strong>.</p>
+<h1><img src="https://habrastorage.org/getpro/habr/post_images/12a/500/0c2/12a5000c239d0c3eb96cd4848e7221a1.jpg" alt="Немного о том, как работает виртуальный DOM в React / Хабр" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
+<p>Перевага полягає у тому що React оновлює не весь реальний DOM, а тільки ті частини DOM, які потрібно (<span style="color: #f3b043;">помаранчеві кружки</span>). Інші (<span style="color: #76d87c;">зелені кружки</span>) частини DOM, які не потребують оновлення, не зачіпаються. Ця концепція сильно <strong>підвищує продуктивність</strong> додатку.</p>
+<p>Процес роботи з віртуальним DOM в React може бути наступним:</p>
+<p><strong>1)</strong> Компонент React оновлює свій внутрішній стан (дані), або отримує нові властивості (дані).</p>
+<p><strong>2)</strong> React створює нове дерево віртуального DOM, представляючи оновлений стан компонента.</p>
+<p><strong>3)</strong> React порівнює нове дерево віртуального DOM з попереднім деревом віртуального DOM та визначає, які елементи потребують оновлення.</p>
+<p><strong>4)</strong> React оновлює реальний DOM лише в тих місцях, де відбулися зміни, замість повного оновлення всього дерева DOM.</p>
+<p><strong>5)</strong> Оновлені елементи в реальному DOM відображаються на веб-сторінці браузера, забезпечуючи відповідне оновлення інтерфейсу користувача (з актуальними даними).</p>
+<p>Цей підхід дозволяє оптимізувати оновлення DOM та зменшити кількість операцій, необхідних для оновлення інтерфейсу користувача, що призводить до <strong>покращення продуктивності додатка</strong>.</p>
+<p>Користування віртуальним DOM в React дозволяє розробникам писати ефективний та продуктивний код, оновлювати інтерфейс користувача ефективно та забезпечує кращий досвід використання веб-додатків.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>
