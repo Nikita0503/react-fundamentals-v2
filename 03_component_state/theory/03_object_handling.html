@@ -1,0 +1,87 @@
+<h3 style="color: #76cdd8;"><strong>Важливі моменти роботи з об`єктами у javascript</strong></h3>
+<p>Порівняння об'єктів у JavaScript базується на <strong>порівнянні посилань</strong> (references) на об'єкти, а не на їхньому вмісті.</p>
+<p>Коли ми порівнюємо два об'єкти за допомогою оператора порівняння == або оператора строгого порівняння ===, JavaScript перевіряє, чи посилаються обидва операнди на одну і ту ж область пам'яті, тобто чи мають вони <strong>однакове посилання</strong>. Якщо об'єкти мають різні посилання, то порівняння поверне false, навіть якщо вміст об'єктів однаковий.</p>
+<p>Ось приклад порівняння об'єктів у JavaScript:</p>
+<pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
+const obj2 = { name: 'John', age: 25 };
+const obj3 = obj1;
+
+console.log(obj1 == obj2); // false, оскільки obj1 та obj2 мають різні посилання
+console.log(obj1 === obj2); // false, оскільки obj1 та obj2 мають різні посилання
+
+console.log(obj1 == obj3); // true, оскільки obj1 та obj3 мають однакові посилання
+console.log(obj1 === obj3); // true, оскільки obj1 та obj3 мають однакові посилання</code></pre>
+<p>Щоб порівняти вміст двох об'єктів, потрібно <strong>порівняти кожне поле окремо</strong>. Однак, можна використовувати бібліотеки порівняння об'єктів, як наприклад <strong>Lodash</strong>, для зручного <strong>порівняння вмісту об'єктів</strong>.</p>
+<p>Змінюючи значення в об'єктах та виводячи їх у консоль, ми можемо спостерігати, як змінюється вміст об'єктів та як це впливає на порівняння об'єктів:</p>
+<pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
+const obj2 = { name: 'John', age: 25 };
+const obj3 = obj1;
+
+console.log('obj1:', obj1);
+console.log('obj2:', obj2);
+console.log('obj3:', obj3);
+
+obj1.age = 30;
+console.log('obj1:', obj1); // { name: 'John', age: 30 }
+console.log('obj2:', obj2); // { name: 'John', age: 25 }
+console.log('obj3:', obj3); // { name: 'John', age: 30 }
+
+console.log(obj1 == obj2); // false, оскільки obj1 та obj2 мають різні посилання
+console.log(obj1 === obj2); // false, оскільки obj1 та obj2 мають різні посилання
+
+console.log(obj1 == obj3); // true, оскільки obj1 та obj3 мають однакові посилання
+console.log(obj1 === obj3); // true, оскільки obj1 та obj3 мають однакові посилання</code></pre>
+<p></p>
+<p>Як бачимо, зміна значення поля age у obj1 також змінює вміст obj3, оскільки вони мають <strong>однакове посилання</strong>. Однак, це не впливає на obj2, оскільки він має <strong>власне посилання</strong> на інший об'єкт. Порівняння об'єктів за допомогою == та === також повертає очікувані результати відповідно до їхніх посилань.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

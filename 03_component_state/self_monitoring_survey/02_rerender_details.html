@@ -1,0 +1,56 @@
+<h4 style="color: #474747; font-weight: 600;">Що буде, якщо викликати setCount із тим самим значенням count (setCount(count)) у функціональному компоненті React, що використовує хук useState?</h4><br/>
+( ) Запуститься перерендер компонента, але із затримкою.
+(x) Не відбудеться перерендер компонента, React оптимізує ігнорування подібних оновлень.
+( ) З'явиться помилка виконання (runtime error) через неявну рекурсію.
+<h4 style="color: #474747; font-weight: 600;">Які основні принципи визначення необхідності перерендеру компонента в React?</h4><br/>
+( ) Перерендер відбувається завжди при виклику setCount незалежно від значення count.
+(x) Перерендер відбувається тільки при зміні значення в стані компонента.
+( ) Перерендер відбудеться, якщо setCount викликається з тим самим значенням, що і поточний стан.
+<h4 style="color: #474747; font-weight: 600;">Основні принципи перерендеру компонента React при використанні хука useState та об'єктів у стані компонента</h4><br/>
+( ) Перерендер завжди відбудеться при кожному виклику setCount, незалежно від змін у стані об'єкта.
+( ) Перерендер завжди відбудеться, якщо будь-який ключ у об'єкті стану змінюється, навіть якщо посилання залишається незмінним.
+(x) Перерендер відбудеться тільки у випадку, якщо setCount викликається з новим об'єктом, а не тим самим посиланням на об'єкт.
+<h4 style="color: #474747; font-weight: 600;">У компоненті Counter стан є об'єктом, в якому варіанті коду відбудеться перерендер?</h4><br/>
+<span>Варіант 1:</span><br/>
+<pre>import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState({ value: 0 });
+
+  const increment = () => {
+    count.value = count.value + 1;
+    setCount(count);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count.value}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</pre>
+<br/>
+<span>Варіант 2:</span>
+<pre>import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState({ value: 0 });
+
+  const increment = () => {
+    setCount({ value: count.value + 1 });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count.value}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</pre>
+<br/>
+( ) Варіант 1
+(x) Варіант 2

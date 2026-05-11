@@ -1,0 +1,129 @@
+<h3 style="color: #76cdd8;"><strong>Важливі деталі перерендеру</strong></h3>
+<p>React доволі розумна бібліотека і він має свої алгоритми вирішення, чи потрібно перемальовувати компонент.</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану зі значенням по замовчуванню 0
+  const [count, setCount] = useState(0);
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    setCount(count + 1);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>Розглянемо цю логіку на зазначеному вище прикладі використання useState.</p>
+<p>Кожного разу коли користувач натискає на кнопку Increment, до функції setCount передається значення count збільшене на 1. Тому React дозволяє перемалювати компонент. Але якщо ми будемо викликати setCount і передавати туди <strong>теж саме значення count</strong> (setCount(count)), то Raect порівняє поточне та ніби оновлене значення і побачить що вони є <strong>рівними</strong>. В такому разі React <strong>не буде перемальовувати</strong> компонент для запобігання зайвої кількості рендерів (перемальовок) для <strong>збереження продуктивності</strong> додатку.</p>
+<p>Але така логіка працює з</p>
+<p>елементарними типами</p>
+<p>даних. З об`єктами це працює дещо інакше.</p>
+<p>Звичайне правило перерендеру (перемальовки) компоненту в React базується на порівнянні посилань (references) на старий та новий стан компоненту. Тобто якщо замість звичайного числа «0» змінна count буде містити <strong>об’єкт «{value: 0}»</strong>.</p>
+<p>Якщо посилання на об'єкт в стані компоненту не змінюється, то React не виявляє різниці в стані та не виконує перерендер. Однак, якщо посилання на об'єкт змінюється, React вважає, що стан компоненту змінився і виконує перерендер компоненту, навіть якщо значення в самому об'єкті залишилося незмінним.</p>
+<p>Тобто, якщо передати в setCount такий же «{value: 0}», React побачить що це новий об’єкт (<strong>нове посилання</strong> на об`єкт у пам`яті), та перемалює компонент, незважаючи на те що в середині об’єкту значення не змінилися.</p>
+<p>Ось приклад функціонального компонента Counter з використанням об'єкта в стані та поясненням, як працює правило перерендеру:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану з об'єктом {value: 0}
+  const [count, setCount] = useState({ value: 0 });
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    // Використання функції setCount з передачею нового об'єкта стану зі збільшеним значенням value
+    setCount({ value: count.value + 1 });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count.value}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>У цьому прикладі ми використовуємо <strong>об'єкт</strong> { value: 0 } як початкове значення стану. При кожному кліку на кнопку, ми використовуємо функцію setCount для оновлення стану компоненту, передаючи <strong>новий об'єкт</strong> стану зі збільшеним значенням value. Це призведе до <strong>перерендеру</strong> компоненту, навіть якщо саме значення value в об'єкті залишиться незмінним, оскільки <strong>посилання на об'єкт змінилося</strong>, і React вважає, що <strong>стан компоненту змінився</strong>.</p>
+<p>Однак, якщо змінити дані в середині об’єкту count та <strong>передати його</strong> ж в setCount, Raect <strong>не зрозуміє</strong>, що потрібно зробити перерендер. Так як посилання на <strong>об’єкт в пам’яті не змінилося</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану з об'єктом {value: 0}
+  const [count, setCount] = useState({ value: 0 });
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    count.value = count.value + 1;
+    setCount(count); //  не викликає перерендер
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count.value}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>Взагалі, це є логіка порівняння об’єктів у самому javascript. Тому, коли ви порівнюєте цілі об’єкти між собою у коді, в js просто <strong>порівнюються їх посилання</strong>.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

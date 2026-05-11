@@ -1,0 +1,76 @@
+<h4 style="color: #474747; font-weight: 600;">Які основні відмінності між імперативним та реактивним підходами до програмування в контексті React?</h4><br/>
+(x) Імперативний підхід використовує звичайні змінні для збереження та оновлення даних, тоді як реактивний використовує «реактивні» змінні, створювані за допомогою хуків, для керування станом в компонентах React.
+( ) Імперативний підхід використовує тільки класові компоненти, а реактивний - тільки функціональні.
+( ) Імперативне програмування використовує стилізований підхід до створення компонентів, тоді як реактивне - декларативний.
+<h4 style="color: #474747; font-weight: 600;">Як використовується хук useState для роботи зі станом в функціональних компонентах React?</h4><br/>
+(x) Хук useState створює пару значення та функцію для її оновлення, ініціалізується за допомогою значення по замовчуванню, і це дозволяє створити та оновлювати стан у функціональних компонентах.
+( ) Хук useState використовується тільки для зміни значення стану в класових компонентах.
+( ) Хук useState автоматично визначає та оновлює стан без задання початкового значення.
+<h4 style="color: #474747; font-weight: 600;">Як виглядає приклад використання хука useState для створення лічильника (Counter) у функціональному компоненті React?</h4><br/>
+<span>Варіант 1:</span>
+<pre>import React, { useState } from 'react';
+
+const Counter = () => {
+
+  const count = 0;
+
+  const setCount = (newCount) => {
+    count = newCount;
+  };
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  return (
+  &lt;div&gt;
+    &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+  &lt;/div&gt;);
+};
+
+export default Counter;</pre>
+<br/>
+<span>Варіант 2:</span><br/>
+<pre>import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  return (
+  &lt;div&gt;
+    &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+  &lt;/div&gt;);
+  );
+};
+
+export default Counter;</pre>
+<br/>
+<span>Варіант 3:</span>
+<pre>import React, { useState } from 'react';
+
+const Counter = () => {
+  let count = 0;
+
+  const increment = () => {
+    count = count + 1;
+  };
+
+  return (
+  &lt;div&gt;
+    &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+  &lt;/div&gt;);
+  );
+};
+
+export default Counter;</pre>
+<br/>
+( ) Варіант 1
+(x) Варіант 2
+( ) Варіант 3

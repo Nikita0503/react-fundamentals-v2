@@ -1,0 +1,88 @@
+<h3 style="color: #76cdd8;"><strong>useState</strong></h3>
+<p>Програмування на React не передбачає використання звичайних змінних:</p>
+<pre class="prettyprint"><code class="lang-js">let count = 0;
+count = count + 1;</code></pre>
+<p>Такий підхід використовується у імперативному програмуванні (у звичайному, наприклад з використанням Java). В компонентах React використовуються <strong>«реактивні» змінні</strong>. Вони створюються за допомогую хуків. Створити якусь змінну у функціональному комопоненті можна за допомогою хука <strong>useState</strong>.</p>
+<p>Хук <strong>useState</strong> є одним з вбудованих хуків у React, який використовується для додавання стану (змінних) до функціональних компонентів. Він дозволяє зберігати та оновлювати значення стану в функціональних компонентах, що раніше було можливо тільки з використанням класових компонентів.</p>
+<p>Ось приклад використання хука useState у функціональному компоненті:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану зі значенням по замовчуванню 0
+  const [count, setCount] = useState(0);
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    setCount(count + 1);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>У цьому прикладі ми використовуємо хук useState для створення стану зі значенням по замовчуванню 0. Хук useState повертає <strong>масив</strong>, де перший елемент - <strong>поточне значення стану</strong> (count), а другий елемент - <strong>функція для оновлення стану</strong> (setCount). Ми використовуємо цю функцію setCount для зміни значення стану count при кожному кліку на кнопку.</p>
+<p>Таким чином, хук useState дозволяє нам зберігати та оновлювати стан в функціональних компонентах, роблячи їх більш простими та зрозумілими.</p>
+<p>Зміна стану компонента змушує його перемальовуватись (<strong>rerender</strong>), для того щоб відобразити актуальні дані. </p>
+<p>Алгоритм того як думає компонент:</p>
+<p>1) Компонент відображує розмітку з <strong>початковими даними</strong>. «Count: 0». Так, як початкове значення count = 0.</p>
+<p>2) Клік по кнопці викликає функцію increment, де в ній викликається setCount(count + 1). Це значить що у setCount (функцію для зміни значення count), ми передаємо поточне значення <strong>count збільшене на 1</strong>.</p>
+<p>3) Компонент розуміє що <strong>значення count змінено</strong> (count = 1), тому мусить перемалюватися з актуальними даними.</p>
+<p>4) Компонент <strong>перемальовується</strong> і відображує розмітку з актуальними (оновленими) даними. «Count: 1». Так, як значення count = 1.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>
