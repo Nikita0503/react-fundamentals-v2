@@ -1,0 +1,68 @@
+<h4 style="color: #474747; font-weight: 600;">Як працює useEffect в React, і які параметри він приймає?</h4><br/>
+( ) useEffect викликається лише під час монтування компонента та при кожному оновленні, не приймає параметрів.<br/>
+(x) useEffect дозволяє виконувати ефекти після рендерингу компонента. Приймає два параметри: функцію, яка містить логіку ефекту, і масив залежностей, від якого залежить виклик ефекту.<br/>
+( ) useEffect призначений тільки для виконання HTTP-запитів.<br/>
+<h4 style="color: #474747; font-weight: 600;">Як використовувати useEffect для взаємодії з REST API в React?</h4><br/>
+( ) useEffect взаємодіє тільки з локальним станом компонента, не призначений для роботи з зовнішніми ресурсами.<br/>
+( ) При використанні useEffect з REST API не потрібно передавати масив залежностей, оскільки це може призвести до помилок.<br/>
+(x) useEffect може використовуватися для взаємодії з REST API, вказуючи URL ресурсу та встановлюючи отримані дані в стан компонента.<br/>
+<h4 style="color: #474747; font-weight: 600;">Як відбувається використання useEffect для емуляції методу componentDidUpdate у функціональних компонентах React?</h4><br/>
+( ) useEffect не може емулювати метод componentDidUpdate у функціональних компонентах.<br/>
+( ) Для емуляції componentDidUpdate використовується окремий хук useDidUpdate, оскільки useEffect призначений тільки для componentDidMount.<br/>
+(x) useEffect може емулювати componentDidUpdate, якщо вказати залежності, від яких залежить виклик ефекту, наприклад, [count] для оновлення при зміні count.<br/>
+<h4 style="color: #474747; font-weight: 600;">Як використовувати useEffect для емуляції методу componentWillUnmount у функціональних компонентах React?</h4><br/>
+( ) useEffect не може емулювати метод componentWillUnmount у функціональних компонентах.<br/>
+( ) Для емуляції componentWillUnmount використовується окремий хук useWillUnmount, оскільки useEffect призначений тільки для componentDidMount та componentDidUpdate.<br/>
+(x) useEffect може емулювати componentWillUnmount, якщо функція, яку він повертає, містить логіку очищення, наприклад, відписку від подій або очищення ресурсів.<br/>
+<h4 style="color: #474747; font-weight: 600;">У якому варіанті коду використання useEffect вірно емулює метод componentDidUpdate для оновлення userData при зміні userId?</h4><br/>
+<span>Варіант 1:</span>
+<pre>useEffect(() => {
+  // Логіка отримання даних за userId
+  const fetchData = async () => {
+    const result = await fetch(`https://api.example.com/users/${userId}`);
+    const data = await result.json();
+    setUserData(data);
+  };
+
+  fetchData();
+}, []);</pre><br/>
+<span>Варіант 2:</span>
+<pre>useEffect(() => {
+  // Логіка отримання даних за userId
+  const fetchData = async () => {
+    const result = await fetch(`https://api.example.com/users/${userId}`);
+    const data = await result.json();
+    setUserData(data);
+  };
+
+  fetchData();
+}, [userId]);</pre><br/>
+<span>Варіант 3:</span>
+<pre>useEffect(() => {
+  // Логіка отримання даних за userId
+  const fetchData = async () => {
+    const result = await fetch(`https://api.example.com/users/${userId}`);
+    const data = await result.json();
+    setUserData(data);
+  };
+
+  fetchData();
+});</pre><br/>
+( ) Варіант 1
+(x) Варіант 2
+( ) Варіант 3
+<h4 style="color: #474747; font-weight: 600;">Що відбувається у коді??</h4><br/>
+<pre>useEffect(() => {
+  const handleClick = () => {
+    console.log("Клік");
+  };
+
+  document.addEventListener('click', handleClick);
+
+  return () => {
+    document.removeEventListener('click', handleClick);
+  };
+}, []);</pre><br/>
+( ) Підписка на подію (клік на кнопку) відбувається при кожному рендері компонента, і відписка відбувається при його знищенні. Кожен новий рендер створює новий слухач події.
+(x) Підписка на подію (клік на кнопку) відбувається при монтуванні компонента, і відписка відбувається при його знищенні. Логіка підписки викликається тільки один раз, після чого слухач залишається активним протягом усього життєвого циклу компонента.
+( ) Підписка на подію (клік на кнопку) відбувається при кожному оновленні значення count, і відписка відбувається при його знищенні. Логіка підписки буде викликана при кожному оновленні компонента через зміну count.

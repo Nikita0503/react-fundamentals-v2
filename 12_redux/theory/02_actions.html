@@ -1,0 +1,96 @@
+<h3 style="color: #76cdd8;"><strong>Actions</strong></h3>
+<p>Сам по собі <strong>action</strong> є <strong>об'єктом</strong> з 2 полями: <strong>Action Type</strong> та <strong>Payload</strong>.</p>
+<ul>
+<li>Payload - нове значення, котре <strong>надходитиме у Store</strong></li>
+<li>Action Type - <strong>унікальна стрічка</strong>, котра вказує Reducer <strong>що саме робити з Payload</strong></li>
+</ul>
+<p>Приклад:</p>
+<pre class="prettyprint"><code class="lang-js">{
+  type: "SET_NAME",
+  payload: "MyName"
+}</code></pre>
+<p>Зазвичай Action Type будується по принципу - <strong>ACTION_FIELDNAME</strong> (ДІЯ_НАЗВАПОЛЯ). Це не є офіційним правилом, але так зручніше та зрозуміліше.</p>
+<p>Але працювати з Action у такому вигляді є поганою практикою, для цього створюють <strong>Action Creator</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">const setName = (name) =&gt; ({
+  type: "SET_NAME",
+  payload: name
+})</code></pre>
+<p>Action Creator - <strong>функція</strong> що формує та <strong>повертає Action</strong>.</p>
+<p>Стрічка з поля Action Type нам знадобляться у інших місцях коду, хорошою практикою буде <strong>винести її у константу</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">const SET_NAME = "SET_NAME";
+
+const setName = (name) =&gt; ({
+  type: SET_NAME,
+  payload: name
+})
+</code></pre>
+<p>Тепер сформуємо таку саму пару для surname та зробимо можливість експорту:</p>
+<pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */
+export const SET_NAME = "SET_NAME";
+export const SET_SURNAME = "SET_SURNAME";
+
+export const setName = (name) =&gt; ({
+  type: SET_NAME,
+  payload: name
+});
+
+export const setSurname = (surname) =&gt; ({
+  type: SET_SURNAME,
+  payload: surname
+});</code></pre>
+<p>Ми сформували <strong>Actions</strong>. Action Types (SET_NAME, SET_SURNAME) знадобляться у Reducer. Action Creators (setName, setSurname) знадобляться у View/UI.</p>
+<p><strong>Увага</strong>:</p>
+<p>Payload є <strong>необов`язковим полем</strong>. Він потрібен тоді, коли ми хочемо <strong>передати до Reducer якесь значення</strong>. Може бути таке що <strong>одного Action Type буде достатньо</strong>. Наприклад, Action Type "RESET_NAME" дасть зрозуміти, що name треба зробити пустим.</p>
+<p>Action Types мусять бути унікальними для запобігання колізій з інишми Reducers.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

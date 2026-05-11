@@ -1,0 +1,72 @@
+<h3 style="color: #76cdd8;"><strong>Що таке Redux Thunk</strong></h3>
+<p>Тримати логіку взаємодії з REST API у коді компонента не є хорошою практикою. Для цього використовується <strong>Redux Thunk</strong>.</p>
+<p>Для початку роботи з Redux Thunk необхідно зробити 2 кроки:</p>
+<p>Перший - встановити Redux thunk у проект: </p>
+<pre class="prettyprint"><code class="lang-js">npm install redux-thunk</code></pre>
+<p>Другий - підключити Redux Thunk:</p>
+<pre class="prettyprint"><code class="lang-js">/** /redux/store */
+
+import { combineReducers, createStore, applyMiddleware } from 'redux';<br />import thunkMiddleware from 'redux-thunk';
+import userReducer from './reducer';
+
+const rootReducer = combineReducers({
+    user: userReducer,
+});
+
+export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));</code></pre>
+<p>Тому для впровадження middlewares у Redux, другим параметром до createStore передається результат функції <strong>applyMiddleware</strong>.</p>
+<p>ApplyMiddleware приймає middlewares. У нашому випадку тільки 1 middleware - <strong>Redux Thunk</strong>. Він знаходиться у пакеті 'redux-thunk'.</p>
+<p><strong>Middleware</strong> можна розуміти так: операція, котра відпрацьовує між двома іншими операціями.</p>
+<p>Redux Thunk - middleware для Redux. Він працює <strong>між викликом Dispatch та обробкою Action</strong> у Reducer:</p>
+<p><img src="blob:https://studio.elearn.epam.com/4239e86d-2854-44d7-bc80-0d1fcb0f62ee" alt="" /></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

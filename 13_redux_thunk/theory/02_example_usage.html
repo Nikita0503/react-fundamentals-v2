@@ -1,0 +1,164 @@
+<h3 style="color: #76cdd8;"><strong>Приклад викорстання</strong></h3>
+<p>Функції в котрі виносять код взємодії з REST API у Redux Thunk називають «Санки». «Санка» - асинхронний Action.</p>
+<p>Різниця між ними в тім, що звичайний Action Creator повертає об`єкт з Action Type та Payload (сам Action), а Санка повертає асинхронну функцію:</p>
+<pre class="prettyprint"><code class="lang-js">const sendUserData = () =&gt; async (dispatch, getState) =&gt; { 	<br />  // логіка взаємодії з REST API
+};</code></pre>
+<p>В середині Санки є доступ до Dispatch, та getState функції, котра повертає увесь Store.</p>
+<p>На прикладі стане зрозуміліше. Додамо до попереднього компоненту кнопку «Send»:</p>
+<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
+import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname } from '../redux/actions';
+
+const UserData = () =&gt; {
+  const dispatch = useDispatch();
+
+  const name = useSelector(state =&gt; state.user.name);
+  const surname = useSelector(state =&gt; state.login.surname);
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; dispatch(setName(event.target.value))} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
+      &lt;button onClick={() =&gt; {}}&gt;Send&lt;/button&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<p>Поки що кнопка «Send» нічого не вміє. Наша задача - зробити так, щоб по натисканню на «Send» name та surname відправлялися на ендпоінт REST API.</p>
+<p></p>
+<p>Так як <strong>Санка - асинхронний Action</strong>, ми додаємо його у <strong>файл з Actions</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */<br />
+export const SET_NAME = "SET_NAME";
+export const SET_SURNAME = "SET_SURNAME";
+
+export const setName = (name) =&gt; ({
+  type: SET_NAME,
+  payload: name
+});
+
+export const setSurname = (surname) =&gt; ({
+  type: SET_SURNAME,
+  payload: surname
+});
+
+// Санка
+export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+        const userName = getState().user.name;
+        const userSurname = getState().user.surname;
+
+	const response = await fetch('https://yourapi/user', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: userName,
+                surname: userSurname,
+            })
+        });
+
+        const result = await response.json();
+        console.log("Результат:", result);
+    }catch(e){
+        console.log('sendUserData error', e)
+    }
+};</code></pre>
+<p><strong>sendUserData - Санка</strong>. Якщо правильно сказати, то це функція, котра повертає <strong>callback</strong>, приймаючий першим параметром <strong>Dispatch</strong>, другим <strong>getState</strong>.</p>
+<p>В тілі callback пишеться <strong>асинхронний код</strong>, наприклад <strong>взаємодія з REST API</strong>.</p>
+<p>Весь код всередині слід огорнути у конструкцію <strong>try-catch для обробки непердбачуваних помилок</strong>, адже з серверу може повернутися помилка.</p>
+<p>'const userName = getState().user.name' -  userName містить значення поля name, котре всередині userReducer.</p>
+<p>Далі - імітація відправлення цих даних до вигаданого REST API та обробка відповіді сервера з виводом результата на екран.</p>
+<p>Припустимо, що після обробки відповіді з серверу необхідно очистити поля name та surname у Store:</p>
+<pre class="prettyprint"><code class="lang-js">export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+        const userName = getState().user.name;
+        const userSurname = getState().user.surname;
+
+	const response = await fetch('https://yourapi/user', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: userName,
+                surname; userSurname,
+            })
+        });
+
+        const result = await response.json();
+        console.log("Результат:", result);
+	dispatch(setName(''));
+        dispatch(setSurname(''));
+    }catch(e){
+        console.log('sendUserData error', e)
+    }
+};</code></pre>
+<p>Для очистки полів, використовуємо <strong>Dispatch, котрий надає Санка</strong>.</p>
+<p>Залишилося використати Санку з компоненту. Для виклику Санки викликається Dispatch, так як і для звичайного Action:</p>
+<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
+import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname, sendUserData } from '../redux/actions';
+
+const UserData = () =&gt; {
+  const dispatch = useDispatch();
+
+  const name = useSelector(state =&gt; state.user.name);
+  const surname = useSelector(state =&gt; state.login.surname);
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; dispatch(setName(event.target.value))} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
+      &lt;button onClick={() =&gt; {dispatch(sendUserData())}}&gt;Send&lt;/button&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

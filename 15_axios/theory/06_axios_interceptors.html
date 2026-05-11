@@ -1,0 +1,168 @@
+<h3 style="color: #76cdd8;"><strong>Axios інтерсептори</strong></h3>
+<p><strong>Інтерсептори</strong> - функції, котрі спрацьовують <strong>перед запитом</strong> та <strong>пілся отримання</strong> відповіді. Вони так і звуться:</p>
+<p><span><strong>Interceptor request</strong> - спрацьовує <strong>перед</strong> тим як запит піде до серверу;</span></p>
+<p><span><strong>Interceptor response</strong> - спрацьовує одразу <strong>після</strong> отримання відповіді (ще до того як ви оброблюєте відповідь).</span></p>
+<h4 style="color: #76cdd8;"><strong>Інтерсептор request</strong></h4>
+<p><strong>Interceptor request</strong> зазвичай використовують для додавання токену у header Authorization:</p>
+<pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com',
+    timeout: 10000
+});
+
+axiosInstance.interceptors.request.use(async (config) =&gt; {
+    const token = localStorage.getItem('accessToken');
+
+    if(token){
+        config.headers['Authorization'] = 'Bearer ' + token
+    }
+
+    return config;
+},
+(error) =&gt; {
+    Promise.reject(error);
+})
+
+export default axiosInstance; 
+</code></pre>
+<p><strong>axiosInstance.interceptors.<span style="text-decoration: underline;">request</span>.use</strong> - приймає функцію-коллбек першим параметром, яка відпрацює перед відправкою запиту на сервер. Вона має параметр <strong>config</strong>, котрий можна <strong>модифікувати на повернути</strong>.</p>
+<p>В прикладі модифікований config має додатковий <strong>header Authorization</strong>, який містить токен доступу до захищених ендпоінтів серверу. Якщо такий токен є у <strong>localStorage</strong>, ми додаємо header, якщо ні - залишаємо все без змін. В кінці обов’язково повертаємо модифікований config.</p>
+<p>Зараз <strong>при кожному виклику</strong> якогось методу axiosInstance, буде відпрацьовувати interceptor request та додаватиме header Authorization до запиту.</p>
+<h4 style="color: #76cdd8;"><strong>Інтерсептор response</strong></h4>
+<p>Процес оновлення access token відбувається у <strong>interceptor response</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">axiosInstance.interceptors.response.use(
+  (response) =&gt; {
+    return response; // цей колбек відпрацює, коли відповідь успішна. Відповідь йде далі у then (там де response.data - дані з серверу)
+  },
+  async (error) =&gt; { // цей колбек відпрацює, коли відповідь містить помилку
+    const originalRequest = error.config;
+
+    // Перевіряємо чи помилка сталася через прострочений access token, спробуємо його оновити
+    if (error.response.status === 401 &amp;&amp; !originalRequest._retry) { // код 401 свідчить про невалідність токену, також вважається як «unauthorized», тобто користувач неавторизований
+      originalRequest._retry = true; // Встановіть прапорець _retry, щоб запобігти нескінченного циклу
+
+      const refreshToken = localStorage.getItem('refreshToken');
+      try {
+        if (!refreshToken) { // Якщо немає refresh token, відхиліть спробу та переспрямуйте на сторінку входу (разлогініть користувача) або покажіть повідомлення про помилку
+          return Promise.reject(error); 
+        }
+        const response = await axios.post('https://yourserver/auth/refresh', { refreshToken }); // Надсилаємо запит на сервер для оновлення accessToken
+       
+        // оновлюємо accessToken у сховищі
+        const accessToken = response.data.accessToken;
+        localStorage.setItem('accessToken', accessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`; // Оновлюємо поточний запит з новим access token
+        return axiosInstance(originalRequest); // Повторюємо запит з новим токеном доступу
+      } catch (refreshError) {
+        // Сталася помилка оновлення токену, далі разлогінюємо користувача
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+</code></pre>
+<p><strong>axiosInstance.interceptors.<span style="text-decoration: underline;">response</span>.use</strong> - приймає другим параметром функцію-колбек, яка відпрацює у разі поверненням серверу помилки. Вона має параметр error, котрий містать інформацію про помилку.</p>
+<p><strong>Для початківців цей процес здається заскладним.</strong></p>
+<p>На початку шляху деякі деталі можуть бути незрозумілими, <strong>але з часом все стає прозорим</strong>. Налаштуванням axios частіше займаються більш досвідчені інженери, але мати приблизне розуміння як це працює варто. Приклад вище відображає загальний випадок опрацювання токенів.</p>
+<p>Кожен проект - окремий Всесвіт, де щось може працювати трішки інакше. Але переважна більшість цієї частини коду всеодно співпаде з прикладом.</p>
+<h4 style="color: #76cdd8;"><strong>Приклад створення та налаштування</strong></h4>
+<p>Весь код прикладу створення та налаштування <strong>axiosInstance</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
+import axios from "axios";
+
+const axiosInstance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com',
+    timeout: 10000
+});
+
+axiosInstance.interceptors.request.use(async (config) =&gt; {
+    const token = 'qwerty';
+    if(token){
+        config.headers['Authorization'] = 'Bearer ' + token
+    }
+    return config;
+},
+(error) =&gt; {
+    Promise.reject(error);
+});
+
+axiosInstance.interceptors.response.use((response) =&gt; {return response}, async (error) =&gt; {
+    const originalRequest = error.config;
+    if (error.response.status === 401 &amp;&amp; !originalRequest._retry) {
+        originalRequest._retry = true;
+        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+            if (!refreshToken) {
+                return Promise.reject(error); 
+            }
+            const response = await axios.post('https://yourserver/auth/refresh', { refreshToken });
+            const accessToken = response.data.accessToken;
+            localStorage.setItem('accessToken', accessToken);
+            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            return axiosInstance(originalRequest); 
+        } catch (refreshError) {
+            return Promise.reject(refreshError);
+        }
+    }
+    return Promise.reject(error);
+});
+
+export default axiosInstance;
+</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

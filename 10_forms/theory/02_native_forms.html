@@ -1,0 +1,109 @@
+<h3 style="color: #76cdd8;"><strong>Форми без додаткових бібліотек</strong></h3>
+<p>Але, якщо немає бажання використати сторонні бібліотеки, у React можна працювати з формами таким чином:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+
+const MyForm = () =&gt; {
+  // Встановлення стану для полів форми
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Обробник зміни значення поля "Ім'я користувача"
+  const handleUsernameChange = (e) =&gt; {
+    setUsername(e.target.value);
+  };
+
+  // Обробник зміни значення поля "Email"
+  const handleEmailChange = (e) =&gt; {
+    setEmail(e.target.value);
+  };
+
+  // Обробник зміни значення поля "Пароль"
+  const handlePasswordChange = (e) =&gt; {
+    setPassword(e.target.value);
+  };
+
+  // Обробник відправки форми
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    // Виконання логіки відправки форми, наприклад, на сервер
+    console.log('Дані форми:', { username, email, password });
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label&gt;
+        Ім'я користувача:
+        &lt;input type="text" value={username} onChange={handleUsernameChange} /&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Email:
+        &lt;input type="email" value={email} onChange={handleEmailChange} /&gt;
+      &lt;/label&gt;
+      &lt;label&gt;
+        Пароль:
+        &lt;input type="password" value={password} onChange={handlePasswordChange} /&gt;
+      &lt;/label&gt;
+      &lt;button type="submit"&gt;Відправити&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export default MyForm;</code></pre>
+<p>У цьому прикладі ми використовуємо функцію useState з React для встановлення та збереження стану форми.</p>
+<p>Кожне поле вводу має свій власний обробник події onChange, який відслідковує зміни значень полів форми та оновлює стан відповідного поля. Форма також має обробник події onSubmit, який виконується при відправці форми та виконує необхідну логіку, наприклад, відправку даних на сервер.</p>
+<p>Це лише простий приклад, і реалізація більш складних функцій, таких як валідація, керування станом завантаження, тощо, може вимагати <strong>додаткової ручної роботи</strong>. Однак, використання бібліотеки <strong>Formik може спростити цей процес</strong> та надати більше функціональності, такої як автоматична валідація, керування станом, відправка даних на сервер та багато іншого.</p>
+<p>Однак, цей приклад демонструє базовий підхід до роботи з формами у React без використання Formik.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

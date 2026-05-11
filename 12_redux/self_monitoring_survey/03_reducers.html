@@ -1,0 +1,67 @@
+<h4 style="color: #474747; font-weight: 600;">Які параметри приймає Reducer в Redux?</h4><br/>
+( ) State та Action Type
+(x) Поточний Store та Action
+( ) Action та Payload
+<h4 style="color: #474747; font-weight: 600;">Чому Reducer не повинен змінювати поточний Store в Redux?</h4><br/>
+( ) Так як зміна Store може викликати помилку у React
+( ) Для спрощення коду
+(x) Так як Store в Redux є імутабельним
+( ) Зазвичай Redux має декілька екземплярів Store
+<h4 style="color: #474747; font-weight: 600;">Чому case default в switch у Reducer є обов'язковим?</h4><br/>
+( ) Для додавання додаткових полів у Store
+(x) Так як Reducer має завжди повертати екземпляр Store, інакше буде помилка
+( ) Щоб зменшити шанси на колізії з іншими Reducers
+<h4 style="color: #474747; font-weight: 600;">Як правильно виглядає приклад Reducer для оновлення Store в Redux?</h4><br/>
+<span>Варіант 1:</span>
+<pre>const userReducer = (state = initialState, action) => {
+  switch(action.type){   
+    case SET_NAME:
+      state.name = action.payload
+      break;
+    case SET_SURNAME:
+      state.surname = action.payload
+      break;
+  }
+}</pre>
+<br/>
+<span>Варіант 2:</span>
+<pre>const userReducer = (state = initialState, action) => {
+  switch(action.type){   
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.payload
+      }
+    case SET_SURNAME:
+      return {
+        ...state,
+        surname: action.payload
+      }
+    default: 
+        return state
+  }
+}</pre>
+<br/>
+<span>Варіант 3:</span>
+<pre>const userReducer = (state, action) => {
+  switch(action.type){   
+    case SET_NAME:
+      return {
+        ...state,
+        name: action.payload
+      }
+    case SET_SURNAME:
+      return {
+        ...state,
+        surname: action.payload
+      }
+  }
+}</pre>
+<br/>
+( ) Варіант 1
+(x) Варіант 2
+( ) Варіант 3
+<h4 style="color: #474747; font-weight: 600;">Які є основні принципи роботи зі Store та Reducer в Redux?</h4><br/>
+( ) Store повинен бути змінюваним та містити всю бізнес-логіку додатку.
+( ) Reducer повинен змінювати Store напряму, без використання Action.
+(x) Reducer - це чиста функція, яка приймає поточний стан Store та Action, і повертає новий стан.

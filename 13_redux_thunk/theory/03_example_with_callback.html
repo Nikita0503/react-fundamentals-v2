@@ -1,0 +1,109 @@
+<h3 style="color: #76cdd8;"><strong>Приклад з callback-параметром</strong></h3>
+<p>Існують випадки, коли в Санку необхідно <strong>передати параметри</strong> з компоненту. Для нашого випадку: передамо функцію, котра повідомляє користувача про успішне виконання відправки даних:</p>
+<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
+import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname, sendUserData } from '../redux/actions';
+
+const UserData = () =&gt; {
+  const dispatch = useDispatch();
+
+  const name = useSelector(state =&gt; state.user.name);
+  const surname = useSelector(state =&gt; state.login.surname);
+
+  const successMessage = () =&gt; {
+    alert('Дані відправлені успішно.');
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; dispatch(setName(event.target.value))} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
+      &lt;button onClick={() =&gt; {dispatch(sendUserData(successMessage))}}&gt;Send&lt;/button&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<p>Для цього створимо функцію <strong>successMessage</strong>, котра виводить повідомлення та передамо її як <strong>параметр</strong> до Санки sendUserData.</p>
+<p>Залишилося <strong>викликати</strong> цю функцію в середині Санки:</p>
+<pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {    
+    try{
+        const userName = getState().user.name;
+        const userSurname = getState().user.surname;
+
+	const response = await fetch('https://yourapi/user', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: userName,
+                surname: userSurname,
+            })
+        });
+
+        const result = await response.json();
+        console.log("Результат:", result);
+	dispatch(setName(''));
+        dispatch(setSurname(''));
+	if(!!callback){
+	    callback();
+	}
+    }catch(e){
+        console.log('sendUserData error', e)
+    }
+};</code></pre>
+<p>Такий механізм називається <strong>callback</strong>, тож нехай параметр має таку назву.</p>
+<p>Пілся очищення полів name та surname, <strong>перевіряємо чи був переданий</strong> якийсь callback, та викликаємо його.</p>
+<p>Теперь <strong>після успішного виконання запиту</strong>, користувач буде повідомлений.</p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

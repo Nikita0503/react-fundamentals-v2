@@ -1,0 +1,91 @@
+<h3 style="color: #76cdd8;"><strong>Компоненти вищого порядку</strong></h3>
+<p><strong>Компоненти вищого порядку</strong> (Higher-Order Components або HOCs) в React - це <strong>функції</strong>, які <strong>приймають компонент</strong> React в якості вхідного параметра і <strong>повертають новий компонент</strong> React в якості виходу. HOC не є частиною синтаксису React, а є <strong>патерном використання функцій вищого порядку</strong> в JavaScript.</p>
+<p>Одна з основних використань HOC - це <strong>розширення функціональності</strong> компонентів React <strong>без зміни їхньої реалізації</strong>. HOC можуть бути використані для додавання спільної логіки до різних компонентів, такої як логування, авторизація, кешування, операції з мережею, переклад та багато іншого.</p>
+<p><img src="blob:https://studio.elearn.epam.com/23335eec-79f3-4885-86ee-5e8514689638" alt="" /></p>
+<p>Для прикладу розглянемо HOC, де у разі якщо користувач <strong>авторизований</strong>, повертаємо <strong>наданий компонент</strong>, якщо <strong>ні</strong> - повертаємо <strong>надпис «Немає доступу»</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+// Оголошуємо основний компонент, який буде обгортатися HOC
+const MyComponent = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Hello, React&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+};
+
+// Оголошуємо HOC з назвою withAuthorization
+const withAuthorization = (WrappedComponent) =&gt; {
+  return (props) =&gt; {
+    // Тут має бути власна логіка перевірки авторизації
+    const isAuthorized = true; // В даному прикладі завжди повертає true
+
+    if (isAuthorized) {
+      // Якщо користувач авторизований, повертаємо обгорнутий компонент
+      return &lt;WrappedComponent {...props} /&gt;;
+    } else {
+      // Якщо користувач не авторизований, повертаємо надпис "Немає доступу"
+      return &lt;div&gt;Немає доступу&lt;/div&gt;;
+    }
+  }
+};
+
+// Використовуємо HOC для обгортання основного компоненту
+const MyComponentWithAuthorization = withAuthorization(MyComponent);
+
+export default MyComponentWithAuthorization;</code></pre>
+<p>У цьому коді <strong>withAuthorization</strong> є <strong>HOC</strong>, який <strong>приймає WrappedComponent</strong> (основний компонент) і <strong>повертає новий функціональний компонент</strong>, який перевіряє, чи користувач авторизований. Якщо користувач <strong>авторизований</strong>, HOC повертає <strong>WrappedComponent</strong> з усіма переданими йому властивостями (props), в <strong>іншому випадку</strong> повертає <strong>надпис "Немає доступу"</strong>. Компонент MyComponent є основним компонентом, який може бути обгорнутий HOC withAuthorization, щоб додати логіку авторизації до його відображення.</p>
+<h2><img src="blob:https://studio.elearn.epam.com/017f8167-9fc9-44e3-84e5-de7c3ce7d640" alt="" style="display: block; margin-left: auto; margin-right: auto;" /></h2>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

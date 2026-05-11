@@ -1,0 +1,105 @@
+<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
+<p>В цьому модулі було розглянуто базові можливості React Router. Якщо розробляється додаток з простою навігацією, цих знань буде достатньо для реалізації проекту.</p>
+<p>Можливі питання:</p>
+<p><strong>"Для чого використовувати React Router, якщо можна користуватися звичайним &lt;a href=""&gt;?”</strong></p>
+<p>Відповідь - по-перше, можливості бібліотеки, котрі роблять додаток оптимізованішим.  Наприклад: Основна причина використання компонента &lt;Link&gt; з React Router замість звичайного тега прив'язки &lt;a href=""&gt; полягає в тому, що &lt;Link&gt; розроблений спеціально для навігації між маршрутами в односторінковому додатку (React – SPA, під капотом: весь додаток – одна сторінка).</p>
+<p>Коли ви використовуєте тег прив'язки з атрибутом href, натискання посилання посилить перезавантаження сторінки, що може бути повільним і переривати роботу додатку. Навпаки, коли ви використовуєте компонент &lt;Link&gt;, він оновлює URL-адресу і відображає новий компонент, не викликаючи повного перезавантаження сторінки, що робить роботу додатка більш швидким і плавним.  По-друге - використання бібліотеки, робить код більш структурованим, читабельним та чистим. Дуже зручна структура навігації дає можливість розробляти гнучку архітектуру та розширення додатку не викличе проблем.</p>
+<p><strong>"Чи можливо поєднати React Router з Redux у одному проекті?”</strong></p>
+<p>Відповідь - так. Для цього треба внести невеличкі зміни у App.js:</p>
+<pre class="prettyprint"><code class="lang-js">/** App.js */<br />
+import React from 'react';
+import { store } from './redux/store'; // імпортувати перед компонентами
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
+import HomePage from './pages/HomePage';
+import ProductPage from './pages/ProductPage';
+import { Provider } from 'react-redux';
+ 
+const App = () =&gt; {
+
+  return (
+    &lt;Provider store={store}&gt;
+      &lt;BrowserRouter&gt; 
+        &lt;Routes&gt; 
+          &lt;Route path='home' element={&lt;HomePage/&gt;}/&gt;
+          &lt;Route path='profile' element={&lt;ProfilePage/&gt;}/&gt; 
+          &lt;Route path='product/:id' element={&lt;ProductPage/&gt;}/&gt;
+        &lt;/Routes&gt;
+      &lt;/BrowserRouter&gt;
+    &lt;/Provider&gt;
+  )
+}
+
+export default App;</code></pre>
+<p>Коротше кажучи - просто огорнути навігацію у Provider. Але <strong>потрібно імпортувати store перед імпортуванням компонентів</strong> для запомігання помилок ініціалізації частин проекту.</p>
+<p><strong>"Компоненти були обгорнуті у пусті теги &lt;&gt;&lt;/&gt;. Що це таке?". </strong></p>
+<p>Відповідь - У React, коли компонент повертає <strong>більше одного елемента</strong>, вони повинні бути <strong>обгорнуті в один батьківський елемент </strong>(наприклад div).</p>
+<p>Використання <strong>фрагментів</strong> дозволяє уникнути створення додаткового DOM-елемента (того ж div) в якості батьківського елемента.</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const ComponentWithFragment = () =&gt; {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;Title&lt;/h1&gt;
+      &lt;p&gt;Text 1&lt;/p&gt;
+      &lt;p&gt;Text 2&lt;/p&gt;
+    &lt;/&gt;
+  );
+};
+
+export default ComponentWithFragment;</code></pre>
+<p>По суті, що <strong>при будуванні DOM-дерева цей фрагмент зникає</strong>. Він є просто частиною синтаксису, що дозволяє повертати декілька елементів без огортки.</p>
+<p>Припустимо що ComponentWithFragment знаходиться у div, в кому в стилях вказано flex-direction: column. То усі елементи з цього компонента розташуються згідно с цим правилом. Так як в них немає елемента контейнера</p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

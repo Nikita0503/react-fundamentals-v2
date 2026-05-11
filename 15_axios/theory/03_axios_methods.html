@@ -1,0 +1,123 @@
+<h3 style="color: #76cdd8;"><strong>Методи Axios</strong></h3>
+<p><strong>GET</strong> - один з методів взаємодії з REST API. Існують методи, які передають <strong>body</strong> (об’єкт даних) на сервер, наприклад <strong>PUT</strong> або <strong>POST</strong> методи:</p>
+<pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
+import React from 'react';
+
+const PostsPage = () =&gt; {
+
+  const [post, setPost] = React.useState();
+
+  React.useEffect(() =&gt; { 
+    fetch('https://jsonplaceholder.typicode.com/posts/1', {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify({
+        id: 1,
+        title: 'Axios',
+        body: 'Axios - promise based HTTP client for the browser and node.js.',
+        userId: 1,
+      }),
+    })
+    .then((response) =&gt; response.json())
+    .then((json) =&gt; setPost(json))
+    .catch((error) =&gt; console.log("error: ", error))
+  }, []);
+
+
+  return (&lt;div&gt;
+    {&lt;p&gt;{post?.title}&lt;/p&gt;} 
+    {&lt;p&gt;{post?.body}&lt;/p&gt;}<br />   &lt;/div&gt;);
+}
+
+export default PostsPage; 
+</code></pre>
+<p>У цьому прикладі PostPage змінений. Зараз він відображає не масив постів, а один пост, котрий повертає сервер. Також він робить запит з PUT методом, де в body передає об’єкт посту, котрий ми хочемо розмістити на сервері. Сервер віддає у відповіді той пост, який ми передали в body. Для того щоб указати тип body в <strong>headers</strong> вказано Content-type: application/json; charset=UTF-8.</p>
+<p>Тепер оновлений PostsPage з використанням Axios:</p>
+<pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
+import React from 'react';
+import axios from 'axios';
+
+const PostsPage = () =&gt; {
+
+  const [post, setPost] = React.useState();
+
+  React.useEffect(() =&gt; { 
+    axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+    {
+      id: 1,
+      title: 'Axios',
+      body: 'Axios - promise based HTTP client for the browser and node.js.',
+      userId: 1,
+    },
+    {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then((response) =&gt; setPost(response.data))
+    .catch((error) =&gt; console.log("error: ", error))
+  }, []);
+
+
+  return (&lt;div&gt;<br />    {&lt;p&gt;{post?.title}&lt;/p&gt;}<br />    {&lt;p&gt;{post?.body}&lt;/p&gt;}<br />  &lt;/div&gt;);
+}
+
+export default PostsPage; 
+</code></pre>
+<p>axios.put приймає body другим параметром, а headers вказується як поле об`єкта, який приймається третім параметром.</p>
+<p>Так виглядає базове використання Axios, без його головних переваг - інтерсепторів та інстансів.</p>
+<p>Перед цим треба згадати як влаштована безпека при роботі з REST API.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

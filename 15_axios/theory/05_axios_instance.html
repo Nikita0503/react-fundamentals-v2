@@ -1,0 +1,71 @@
+<h3 style="color: #76cdd8;"><strong>Axios instance</strong></h3>
+<p><strong>Axios instance</strong> - екземпляр Axios, котрий можна налаштувати під свої потреби:</p>
+<pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com',
+    timeout: 10000
+});
+
+export default axiosInstance; </code></pre>
+<p><strong>axios.create</strong> - <strong>функція створення інстансу</strong>, яка приймає об`єкт з налаштуваннями;</p>
+<p><strong>baseURL</strong> - зберігає однаковий початок стрічки запиту. Наприклад: Без вказання baseURL виклик ендпоінту використовуючи щойно створений інстанс виглядає так:</p>
+<pre class="prettyprint"><code class="lang-js">axiosInstanse.get('https://jsonplaceholder.typicode.com/posts/1');
+</code></pre>
+<p>Якщо вказати baseURL:</p>
+<pre class="prettyprint"><code class="lang-js">axiosInstanse.get('/posts/1');
+</code></pre>
+<p>baseURL може зберігати домен на якому працює сервер і при виклику ендпоінту з axiosInstance можна не вказувати увесь URL, а тільки <strong>залишок адреси</strong> ендпоінту.</p>
+<p><strong>Timeout</strong> - кількість мілісекунд, пілся яких axios поверне помилку, у разі якщо за цей час відповідь не повернулася. Тепер імпортуючи axiosInstance у файли роботи з REST API можна працювати з налаштованим axios.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

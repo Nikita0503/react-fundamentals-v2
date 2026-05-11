@@ -1,0 +1,102 @@
+<h3 style="color: #76cdd8;"><strong>Яку проблему вирішують стейт-менеджери?</strong></h3>
+<p>У попередніх темах ми розглядали можливості керування <strong>стейтом</strong> (даними додатку) за допомогою інструментів вбудованих в сам React. На реальних проектах для цього використовуються <strong>стейт-менеджери</strong>.</p>
+<p>Коли код стає більшим, керування даними стає все більш складнішим та збільшується <strong>ймовірність допустити помилки</strong>, при котрих <strong>поведінка даних</strong> та додатку стане <strong>непередбаченою</strong>. Також, існує поняття props drilling, котре робить код незручним, нечитабельним та може породжувати <strong>зайві рендери компонентів</strong>, що призводить до подіння продуктивності додатку.</p>
+<h3 style="color: #76cdd8;"><strong>Що таке Redux?</strong></h3>
+<p>Самим популярним стейт-менеджером для React є Redux.</p>
+<p>Його принципи:</p>
+<ul>
+<li><strong>Утримання даних окремо від компонентів</strong> у єдиному сховищі (Store);</li>
+<li>Давати змогу компонентам можливість <strong>отримати дані</strong> зі сховища, реагувати на їх зміну (відображати актуальні);</li>
+<li><strong>Змінювати дані</strong> за допомогою спеціальних функцій (Dispatch, Reducers) та об`єктів (Actions)</li>
+</ul>
+<p><img src="blob:https://studio.elearn.epam.com/eec33403-b0da-4386-8718-5ab74d5a6026" alt="" /></p>
+<p>Розглянемо як виглядає Redux з середини:</p>
+<p><img src="blob:https://studio.elearn.epam.com/573b9a36-06f1-41d0-8cfa-3469b49a322d" alt="" /></p>
+<p>Простою мовою:</p>
+<ul>
+<ul>
+<li><strong>View/UI</strong> – компонент</li>
+<li><strong>Store</strong> - сховище даних</li>
+<li><strong>Subscribe</strong> - View/UI <strong>підписується</strong> на зміну даних у Store. View/UI буде розуміти про те що у Store дані оновлюються і буде відображати актуальні</li>
+<li><strong>Reducer</strong> - функція, котра вміє <strong>оновлювати дані</strong> у Store</li>
+<li><strong>Action</strong> - об`єкт, який приймає в себе функція Reducer. Він містить у собі <strong>нові дані</strong>, котрі оновлять Store</li>
+<li><strong>Dispatch</strong> -  функція котра викликається з View/UI <strong>при потребі оновлення</strong> даних у Store. Вона приймає в себе Action, котрий передає його до Reducer.</li>
+</ul>
+</ul>
+<p>На перший погляд, архітектура здається заскладною. Але її переваги відчуваються при збільшенні проекту. Такий підхід забеспечує стабільний та комфортний контроль даних при їх великих об'ємах та складній структурі.</p>
+<p>Розглянемо компонент з 2 реактивними зміними:</p>
+<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
+import React from 'react';
+
+const UserData = () =&gt; {
+  const [name, setName] = React.useState('');
+  const [surname, setSurname] = React.useState('');
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; setName(event.target.value)} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; setSurname(event.target.value)} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<p>Наше завдання - зробити так, щоб name та surname перенеслися до Store.</p>
+<p>Перший крок - створити папку redux у корені проекту.</p>
+<p>Другий - встановити Redux:</p>
+<pre class="prettyprint"><code class="lang-js">npm install redux react-redux</code></pre>
+<p></p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

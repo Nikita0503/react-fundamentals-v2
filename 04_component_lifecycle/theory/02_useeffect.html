@@ -1,0 +1,206 @@
+<h3 style="color: #76cdd8;"><strong>useEffect</strong></h3>
+<p>React дозволяє взаємодіяти з етапами життя компоненту. Тобто виконувати якийсь <strong>код під час цих етапів</strong>. Для цього React надає хук <strong>useEffect</strong>.</p>
+<p>useEffect є одним з хуків в React, який дозволяє виконувати <strong>ефекти</strong>, тобто виконувати дії, які повинні відбутися після рендерингу компонента.</p>
+<p>Він може бути використаний для взаємодії з зовнішніми ресурсами, такими як REST API-запити, підписка на події, маніпуляції з DOM, таймери, та багато іншого.</p>
+<p>Синтаксис використання <strong>useEffect</strong> виглядає наступним чином:</p>
+<pre class="prettyprint"><code class="lang-js">useEffect(() =&gt; {
+  // Логіка ефекту
+}, []); //масив залежностей</code></pre>
+<p>useEffect приймає в себе 2 параметри:</p>
+<ul>
+<li><strong>Функція</strong>, яка виконується, коли ефект викликається</li>
+<li><strong>Масив залежностей</strong>, від якого залежуть виклики ефекту</li>
+</ul>
+<p>У прикладі вище масив залежностей <strong>пустий</strong>. Це значить що ефект (тобто функція, яка надана першим параметром) <strong>буде викликаний 1 раз - після першого рендеру</strong> (першої відмальовки компоненту).</p>
+<p>Такий підхід використовують як раз для запитів до REST API, встановлення таймерів, підписок на події і так далі. Приклад:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+
+const ExampleComponent = () =&gt; {
+  const [data, setData] = useState(null);
+
+  useEffect(() =&gt; {
+    // Виконання запиту до API
+    fetch("https://api.example.com/data")
+      .then(response =&gt; response.json())
+      .then(result =&gt; setData(result))
+      .catch(error =&gt; console.error("Помилка під час отримання даних:", error));
+  }, []); // Порожній масив залежностей - ефект виконується 1 раз, тільки після монтування компонента
+
+  return (
+    &lt;div&gt;
+      {data &amp;&amp; (
+        // Відображення даних з API, якщо вони отримані
+        &lt;p&gt;Дані з API: {data}&lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default ExampleComponent;</code></pre>
+<p>У цьому прикладі, <strong>дані з API</strong> отримуються в <strong>useEffect</strong> і зберігаються у стані компонента за допомогою функції setData. Якщо дані успішно отримані, вони відображаються в компоненті у вигляді текстового повідомлення. В іншому випадку, компонент не відображає нічого.</p>
+<p>Як компонент думає в цьому разі:</p>
+<ul>
+<li>Відмалювати компонент з <strong>початковими даними</strong>. Так як data = null, то компонент поверне пустий div.</li>
+<li>Викликати <strong>useEffect</strong>, де виконується <strong>запит до REST API</strong></li>
+<li>Результат виклику помістити у змінну data, за допомогою setData. Тобто, <strong>оновити стан компоненту</strong>.</li>
+<li>Відмалювати компонент з <strong>актуальними (оновленими) даними</strong>.</li>
+</ul>
+<p>Логіка у JSX (у розмітці) де перевіряється чи містить data дані (data &amp;&amp; … ), якщо так, то поверне</p>
+<p>"<strong>&lt;div&gt;&lt;p&gt;</strong>Дані з API: «дані»<strong>&lt;/p&gt;&lt;/div&amp;gt</strong>"</p>
+<p>або якщо ні, то поверне</p>
+<p>"<strong>&lt;div&gt;&lt;/div&gt;</strong>"</p>
+<p>Це називається <strong>«умовний рендеринг»</strong>.</p>
+<p>useEffect у такому виконанні, де масив залежностей пустий, буде викликано 1 раз за весь життєвий цикл компоненту.</p>
+<p>Це аналог реалізації методу життєвого циклу <strong>componentDidMount</strong> класового компоненту, тільки у функціональому компоненті.</p>
+<p>*Якщо у useEffect другим параметром <strong>не передавати</strong> масив залежностей, тобто передати тільки функцію першим параметром, то цей ефект буде викликатися <strong>після кожного рендеру</strong> компоненту.</p>
+<p>Реалізуємо метод <strong>componentDidUpdate</strong> класового компоненту у функціональному компоненті, за допомогою <strong>useEffect</strong>.</p>
+<p><strong>componentDidUpdate</strong> є одним з методів життєвого циклу компонента в класових компонентах React, який викликається після оновлення компонента.</p>
+<p>У функціональних компонентах, еквівалентним для componentDidUpdate є використання <strong>useEffect разом з відповідними залежностями</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану зі значенням 0
+  const [count, setCount] = useState(0);
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    // Використання функції setCount з передачею нового значення стану
+    setCount(count + 1);
+  };
+
+  // Використання useEffect для виконання певної логіки після оновлення компонента
+  useEffect(() =&gt; {
+    console.log("Значення count змінилося:", count);
+  }, [count]); // Залежність від значення count
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>У цьому прикладі useEffect <strong>виконується після кожної зміни count</strong>.</p>
+<p>В проектах, така реалізація useEffect використовується в якості <strong>реакції на зміни даних</strong> для виклику інших функцій або оновлення логіки відображення компоненту.</p>
+<p>Останній метод життєвого циклу, з яким вміє працювати <strong>useEffect</strong>, у класовому компоненті називається <strong>componentWillUnmount</strong>. Він викликається <strong>під час демонтування компонента</strong> з DOM (знищення):</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+
+const Counter = () =&gt; {
+  // Використання хука useState для створення стану
+  const [count, setCount] = useState(0);
+
+  // Ефект, що виконується при монтуванні компонента
+  useEffect(() =&gt; {
+    // Код, що виконується при монтуванні компонента
+    console.log("Component mounted");
+
+    // Функція очищення, що виконується перед видаленням компонента з DOM
+    return () =&gt; {
+      // Код, що виконується перед знищенням компонента
+      console.log("Component unmounted");
+      setCount(0);
+    };
+  }, []); // Порожній масив залежностей означає, що ефект виконується тільки при монтуванні та розмонтуванні компонента
+
+  // Функція для збільшення значення лічильника
+  const increment = () =&gt; {
+    setCount(count + 1);
+  };
+
+  // Рендер компонента
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>У цьому прикладі, функція очищення буде виконана <strong>при знищенні компонента</strong>, вона встановить значення count на 0. Функція очищення мусить повертатися (в return) з функції, котра була передана в useEffect першим параметром.</p>
+<p>У проектах таку реалізацію <strong>useEffect</strong> використовують дуже часто для роботи з <strong>підписками на події</strong>:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from 'react';
+
+const Counter = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  useEffect(() =&gt; {
+    // Функція-підписка на подію
+    const handleClick = () =&gt; {
+      setCount(count + 1);
+    };
+
+    // Додаємо прослуховувач події при монтуванні компонента
+    document.addEventListener('click', handleClick);
+
+    // Функція очищення, яка виконається перед знищенням компонента
+    return () =&gt; {
+      // Відписуємося від події при знищенні компонента
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</code></pre>
+<p>Кількість useEffect у компоненті <strong>необмежена</strong>. Можна використовувати стільки, скільки потрібно. Але це потрібно робити уважно, щоб компонент мав <strong>очевидну поведінку</strong> та не було зайвого навантаження на браузер.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

@@ -1,0 +1,47 @@
+<h4 style="color: #474747; font-weight: 600;">Яким чином вивести у консоль відповідь сервера при використанні Axios?</h4><br/> 
+( ) axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => console.log(response.getData()))
+(x) axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => console.log(response.data))
+( ) axios.get('https://jsonplaceholder.typicode.com/posts').then((response) => console.log(response.json))
+<h4 style="color: #474747; font-weight: 600;">Як передати тіло (body) запиту при використанні методу PUT / POST в Axios?</h4><br/> 
+( ) Передати дані безпосередньо в URL
+(x) Вказати body як другий параметр методу axios.put(url, data) / axios.post(url, data)
+( ) Використати параметр body при визначенні конфігурації запиту у третьому парметрі
+<h4 style="color: #474747; font-weight: 600;">Як вказати заголовки (headers) у запиті з Axios?</h4><br/> 
+<span>Варіант 1:</span>
+<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+    {
+      id: 1,
+    },
+    {
+      'Content-type': 'application/json; charset=UTF-8',
+    })
+    .then((response) => console.log(response.data))
+    .catch((error) => console.log("error: ", error))
+</pre><br/>
+<span>Варіант 2:</span><br/>
+<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+    {
+      id: 1,
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then((response) => console.log(response.data))
+    .catch((error) => console.log("error: ", error))
+</pre><br/>
+<span>Варіант 1:</span>
+<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+    {
+      id: 1,
+    },
+    {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then((response) => console.log(response.data))
+    .catch((error) => console.log("error: ", error))
+</pre><br/>
+( ) Варіант 1
+( ) Варіант 2
+(x) Варіант 3

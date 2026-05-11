@@ -1,0 +1,94 @@
+<h3 style="color: #76cdd8;"><strong>Props з використанням callback-функції</strong></h3>
+<p>Пропси є одноразовими, тобто вони не можуть бути змінені дитячим компонентом. Це допомагає забезпечити <strong>односторонній потік даних</strong> в React, де дані передаються зверху вниз по ієрархії компонентів. Компонент-дитина може користуватися переданими їй пропсами для відображення даних або виклику функцій, переданих в пропсах, але вона не може змінювати ці дані безпосередньо. Замість цього, компонент-дитина може сповіщати батьківський компонент про зміни, викликаючи <strong>функції з пропсів</strong>, переданих їй від батьківського компонента.</p>
+<h1><img src="blob:https://studio.elearn.epam.com/d6252c42-5006-4ebf-a063-71f7b998b8c9" alt="" width="404" height="170" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
+<p>Пропси дозволяють передавати <strong>функції-зворотні виклики</strong> (callback functions) в компоненти-діти, що дозволяє дочірнім компонентам <strong>взаємодіяти</strong> зі своїми батьками. Коли компонент-дитина викликає функцію, передану в пропсах від батьківського компонента, він може сповістити батьківський компонент про зміни або викликати певну функціональність, що знаходиться на батьківському рівні:</p>
+<pre class="prettyprint"><code class="lang-js">// Батьківський компонент
+
+import React, { useState } from "react";
+import ChildComponent from "./ChildComponent";
+
+const ParentComponent = () =&gt; {
+  const [counter, setCounter] = useState(0);
+
+  // Функція-зворотний виклик, яка змінює стан у батьківському компоненті
+  const incrementCounter = () =&gt; {
+    setCounter(counter + 1);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Батьківський компонент&lt;/h1&gt;
+      &lt;p&gt;Лічильник: {counter}&lt;/p&gt;
+      &lt;ChildComponent onButtonClick={incrementCounter} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ParentComponent;</code></pre>
+<pre class="prettyprint"><code class="lang-js">// Компонент-дитина
+
+import React from "react";
+
+const ChildComponent = (props) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Дитячий компонент&lt;/h2&gt;
+      &lt;button onClick={props.onButtonClick}&gt;Збільшити лічильник&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ChildComponent;</code></pre>
+<p>Компонент-батько ParentComponent містить стан counter та функцію incrementCounter, яка змінює стан counter при кожному виклику. Компонент-дитина ChildComponent приймає <strong>onButtonClick як пропс</strong> та використовує його як <strong>зворотний виклик</strong> при натисканні на кнопку. Функція incrementCounter змінює стан counter у ParentComponent, відправляючи нове значення з компонента-дитини до компонента-батька через зворотний виклик. При зміні значення counter батьківський компонент ParentComponent буде паремальовуватися, разом з ним перемалюється й ChildComponent.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

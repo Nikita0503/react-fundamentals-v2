@@ -1,0 +1,74 @@
+<h3 style="color: #76cdd8;"><strong>Безпека при роботі з REST API </strong></h3>
+<p>Існує поняття - <strong>захищений ендпоінт</strong>. Для доступу до якогось ресурсу на сервері, клієнт мусить надати додаткові дані, які будуть свідчити серверу про те що цей клієнт є <strong>авторизованим</strong>. В більшості випадках це <strong>header Authorization,</strong> який виглядає приблизно так:</p>
+<pre class="prettyprint"><code class="lang-js">headers: {
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+   },</code></pre>
+<p>Величезна стрічка з символів - це <strong>access token</strong>. Він містить у собі дані про клієнта, котрий звертається до ендпоінту. Сервер розшифровує токен і вирішує чи є доступ у цього клієнта до ресурсу.</p>
+<p>Існує схожий токен - <strong>resfresh token</strong>. У access token є <strong>термін придатності</strong>, після закінчення якого він вважається <strong>невалідним</strong> і сервер не буде допускати клієнта до ресурсу з ним. Тому існують додаткові ендпоінти на сервері, котрі допомогають створити <strong>новий access token, надаючи йому refresh token</strong>.</p>
+<p>Приблизно виглядає так:</p>
+<pre class="prettyprint"><code class="lang-js">axios.post('https://myserver.com/generate_access_token', {
+    'access_token': '…',
+    'refresh_token': '…',
+}).
+then((reponse) =&gt; {
+    //response: {new_access_token: ‘….’}
+})
+.catch((e) =&gt; {console.log("error: ", e)})</code></pre>
+<p>Пілся отримання нового access_token клієнт знову має доступ до захищених ендпоінтів. Якщо не вдаватися до деталей - <strong>пара токенів потрібна для підвищення безпеки</strong>.</p>
+<p>Зазвичай оновлення токена відбувається тоді, коли один з захищених ендпоінтів повертає помилку, де вказано що access token вже невалідний (застарів). На клієнті у catch ми перехоплюємо цю помилку та робимо запит на оновлення access token. Пілся отримання нового токену повторно робимо невдалий запит, вже з новим access token.</p>
+<p>Це відбувається таким чином, що <strong>користувач не помічає цього процесу</strong>. Але це добре бачить розробник проекту, тому що при великій кількості звертань до різних ендпоінтів він мусить застосувати цей механізм до кожного захищеного ендпоінту і це породжує велику кількіть boilerplate коду.</p>
+<p>Звісно, можна самостійно розробити клас, який вміє це робити і використовувати його при звертанні до серверу. Але в Axios реалізувати цей процес набато легже та швидше.</p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

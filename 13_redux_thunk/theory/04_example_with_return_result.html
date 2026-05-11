@@ -1,0 +1,134 @@
+<h3 style="color: #76cdd8;"><strong>Приклад з поверненням результату</strong></h3>
+<p>Можливий випадок, коли результат запиту потрібно <strong>отримати в компонент</strong>. Для цього потрібно просто <strong>повернути</strong> його з Санки:</p>
+<pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {     try{
+        const userName = getState().user.name;
+        const userSurname = getState().user.surname;
+
+	const response = await fetch('https://yourapi/user', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: userName,
+                surname; userSurname,
+            })
+        });
+
+        const result = await response.json();
+        console.log("Результат:", result);
+	dispatch(setName(''));
+        dispatch(setSurname(''));
+	if(!!callback){
+	    callback();
+	}
+        return result; 
+    }catch(e){
+        console.log('sendUserData error', e)
+    }
+};</code></pre>
+<p>Та обробити у компоненті:</p>
+<pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname, sendUserData } from '../redux/actions';
+
+const UserData = () =&gt; {
+  const dispatch = useDispatch();
+
+  const name = useSelector(state =&gt; state.user.name);
+  const surname = useSelector(state =&gt; state.login.surname);
+
+  const successMessage = () =&gt; {
+    alert('Дані відправлені успішно.');
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; dispatch(setName(event.target.value))} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
+      &lt;button onClick={async () =&gt; {
+        const result = await dispatch(sendUserData(successMessage));
+        console.log('Результат з View/UI:', result);
+      }}&gt;Send&lt;/button&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<p>onClick займає декілька стрічок, залишати її в такому вигляді є поганою практикою. Краще винести у окрему функцію:</p>
+<pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname, sendUserData } from '../redux/actions'
+
+const UserData = () =&gt; {
+  const dispatch = useDispatch();
+
+  const name = useSelector(state =&gt; state.user.name);
+  const surname = useSelector(state =&gt; state.login.surname);
+
+  const successMessage = () =&gt; {
+    alert('Дані відправлені успішно.');
+  }
+
+  const sendData = async () =&gt; {
+    const result = await dispatch(sendUserData(successMessage));
+    console.log('Результат з View/UI:', result);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;input value={name} onChange={(event) =&gt; dispatch(setName(event.target.value))} /&gt;
+      &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
+      &lt;button onClick={sendData}&gt;Send&lt;/button&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default UserData;</code></pre>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

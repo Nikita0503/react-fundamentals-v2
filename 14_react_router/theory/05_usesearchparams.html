@@ -1,0 +1,109 @@
+<h3 style="color: #76cdd8;"><strong>useSearchParams</strong></h3>
+<p>Альтернативою утримання даних у URL можуть бути <strong>search params</strong>, наприклад:</p>
+<pre class="prettyprint"><code class="lang-js">https://online-shop/product/?id=1&amp;name=phone</code></pre>
+<p>Додамо ще 1 компонент до навігації:</p>
+<pre class="prettyprint"><code class="lang-js">/** App.js */
+
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
+import HomePage from './pages/HomePage';
+import ProductPage from './pages/ProductPage';
+import TaskPage from './pages/TaskPage';
+
+const App = () =&gt; {
+
+  return (
+    &lt;BrowserRouter&gt; 
+      &lt;Routes&gt; 
+        &lt;Route path='home' element={&lt;HomePage/&gt;}/&gt;
+        &lt;Route path='profile' element={&lt;ProfilePage/&gt;}/&gt; 
+        &lt;Route path='product/:id' element={&lt;ProductPage/&gt;}/&gt;
+        &lt;Route path='task' element={&lt;TaskPage/&gt;}/&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  )
+}
+
+export default App;</code></pre>
+<p>Реалізація TaskPage:</p>
+<pre class="prettyprint"><code class="lang-js">/** /pages/TaskPage.js */
+
+import React from 'react';
+import { useSearchParams } from "react-router-dom";
+
+const TaskPage = () =&gt; {
+
+  let [searchParams] = useSearchParams(); 
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Task id: {searchParams.get('id')}&lt;/p&gt;
+      &lt;p&gt;Task title: {searchParams.get('title')}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default TaskPage;
+</code></pre>
+<p>При переході на</p>
+<pre class="prettyprint"><code class="lang-js">http://localhost:3000/task?id=1&amp;title=work</code></pre>
+<p>на сторінці відобразиться щось схоже на:</p>
+<p>Task id: 1</p>
+<p>Task title: work</p>
+<p>Хук <strong>useSearchParams</strong> повертає масив, де 1 елементом є об’єкт <strong>searchParams</strong>, який за допомогою <strong>фунцкії get</strong> повертає <strong>значення параметру</strong>, котрий ви вкажете:</p>
+<p><strong>searchParams.get('id') - 1</strong></p>
+<p><strong>searchParams.get('title’) - work</strong></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

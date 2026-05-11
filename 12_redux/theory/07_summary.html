@@ -1,0 +1,81 @@
+<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
+<p>В цьому модулі було розглянуто базове використання Redux, де є 1 Reducer та 2 Actions. При збільшенні коду додатку, кількість Reducers та Actions може збільшуватися.</p>
+<p>Виникають питання:</p>
+<p><strong>"Як зрозуміти коли потрібно створювати нові Reducers?".</strong></p>
+<p>Відповідь - чіткого правила не існує, але можна користуватися принципом «Одна сторінка - один Reducer». Якщо додати до нашого прикладу сторінку зі списком задач та з формою логіну, цілком доцільно буде створити tasksReducer та loginReducer, тоді RootReducer буде приблизно виглядати так:</p>
+<pre class="prettyprint"><code class="lang-js">/** /redux/store */
+
+import { combineReducers, createStore } from 'redux';
+import userReducer from './reducers/userReducer';
+import userReducer from './reducers/tasksReducer';
+import userReducer from './reducers/loginReducer';
+
+const rootReducer = combineReducers({
+    user: userReducer,
+    tasks: tasksReducer,
+    login: loginReducer,
+});
+
+export const store = createStore(rootReducer);</code></pre>
+<p><strong>"Чи потрібно переносити взагалі усі дані до Store?".</strong></p>
+<p>Відповідь - ні, не потрібно. Якщо існують якісь реактивні змінні, котрі впливають тільки на компонент, в котрому вони створюються та використовуються, та вони не потрібні у ішних містах коду, виносити їх у Store не має сенсу. Дані винесені у Store - це ті дані, котрі можуть бути використані у декільнох ділянах коду розташованих у різних частинах проекту.</p>
+<p><strong>"Чи не занадтно багато коду для роботи з Redux?".</strong></p>
+<p>Відповідь - насправді, boilerplate коду у Redux багато. І це є його найбільшим мінусом, але існує рішення - redux toolkit, який дозволяє писати менше коду.</p>
+<p><strong>"Чому ми одразу не розглядаємо redux toolkit для роботи з Redux?".</strong></p>
+<p>Відповідь - тому що для кращого розуміння технології краще розглядати Redux у чистому виді. Redux без toolkit може попадатися у проектах і краще розуміти як з ним працювати одразу, а потім toolkit можна розглянути самостійно. Так робити набагато легше ніж навпаки.</p>
+<p><strong>"Існують набагато простіші аналоги Redux, наприклад MobX, чому Redux?".</strong></p>
+<p>Відповідь - тому що його легше масштабувати, в нього більша популярність, а це свідчить про більшу довіру, через зручність, передбачуваність та стабілність. Більшість проектів використовують Redux.</p>
+<p><strong>"Це все? Чи в Redux є ще щось?".</strong></p>
+<p>Відповідь - є ще багато чого. Наприклад, redux-persist - вміє зберігати значення у Reducers, коли додаток зачиняється та відновити ці дані самостійно, після повторного відкриття. Redux-thunk / redux-saga - допоможе винести логіку взаємодії, наприклад з REST API, з компоненту в інші частини проекту для поліпшення архітектури та читабельності коду. Reselect - аналог useMemo з React, але для Redux. Цей список дуже великий. Через велику популярність, існує багато допоміжних бібліотек, котрі покривають майже 100% потреб.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

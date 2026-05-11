@@ -1,0 +1,62 @@
+<h3 style="color: #76cdd8;"><strong>Життєвий цикл компонента</strong></h3>
+<p>Функціональні компоненти в React мають свій <strong>"життєвий цикл"</strong> (component lifecycle) - це послідовність фаз, через які проходить компонент від моменту його <strong>створення</strong> до моменту його <strong>видалення</strong> з DOM-дерева. Важливо зазначити, що з введенням хуків у React 16.8, життєвий цикл функціональних компонентів став більш простим та зрозумілим.</p>
+<p><img src="blob:https://studio.elearn.epam.com/e69a5f29-bc43-4013-af49-42099def576c" alt="" width="431" height="116" style="display: block; margin-left: auto; margin-right: auto;" /></p>
+<p><img src="https://miro.medium.com/v2/resize:fit:1200/1*xhhQxW9ui-SrbgmaRs6sEQ.jpeg" alt="React Lifecycle methods with examples | by Manish Mandal | How To React |  Medium" width="513" height="269" style="display: block; margin-left: auto; margin-right: auto;" /></p>
+<p>Основні фази життєвого циклу функціонального компонента в React з використанням хуків такі:</p>
+<p><strong>Фаза монтування / створення (mounting)</strong> - це коли новий компонент створюється та вставляється в DOM або, іншими словами, коли починається життя компонента. Це може статися лише один раз і часто називається «початковим рендером».</p>
+<p><strong>Етап оновлення (updating)</strong> — це коли компонент оновлюється або повторно відображається (ререндери). Ця реакція запускається, коли оновлюються реквізити (props - далі розглянемо) або коли оновлюється стан. Ця фаза може повторюватися кілька разів, у чому полягає суть React.</p>
+<p><strong>Демонтування / знищення (unmounting)</strong> - Останнім етапом життєвого циклу компонента є видалення з DOM.</p>
+<h1><img src="https://cdn.hashnode.com/res/hashnode/image/upload/v1621163010557/uA_XWlC4d.png?w=1600&amp;h=840&amp;fit=crop&amp;crop=entropy&amp;auto=compress,format&amp;format=webp" alt="Lifecycle methods of react.component" width="454" height="238" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

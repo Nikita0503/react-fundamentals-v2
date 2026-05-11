@@ -1,0 +1,92 @@
+<h3 style="color: #76cdd8;"><strong>React.memo</strong></h3>
+<p>Зважаючи на правила перемальовки компонентів у React напрошується цілком нормальне питання - «чи можна запобігти зайвих перемальовок, якимось чином?». Відповідь - так, можна. Для цього використовують <strong>React.memo</strong>.</p>
+<p>React.memo - це вбудована функція в бібліотеці React, яка надає можливість <strong>оптимізувати процес ререндерингу</strong> компонентів. Вона дозволяє кешувати результати рендерингу компонентів і перерендерювати їх лише <strong>при зміні вхідних властивостей</strong> (props).</p>
+<p>Коли ви використовуєте React.memo для обгортання функціонального компонента, React автоматично перевіряє вхідні props компонента під час рендерингу. Якщо значення вхідних props не змінюються, React повторно використовує <strong>кешований результат рендерингу</strong> компонента замість виконання повторного рендерингу. Це може допомогти уникнути зайвих рендерів і <strong>покращити продуктивність</strong> додатку.</p>
+<p>Основний синтаксис використання React.memo виглядає наступним чином:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const MyComponent = (props) =&gt; {
+  // Код компонента
+};
+
+export default React.memo(MyComponent);</code></pre>
+<p>Застосування React.memo може бути корисним, коли ви маєте компонент, який необхідно перерендерювати <strong>тільки при зміні певних вхідних props</strong>, а інші властивості компонента залишаються незмінними. Це може бути корисно, наприклад, коли ви маєте великі списки компонентів або вкладені компоненти, і ви хочете уникнути зайвих рендерів, які можуть впливати на продуктивність додатку.</p>
+<p>Приклад використання React.memo з двома вхідними props, але компонент буде перерендерюватись <strong>тільки при зміні одного</strong> з цих пропсів:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const MyComponent = ({ prop1, prop2 }) =&gt; {
+  // Код компонента
+
+  return (
+    &lt;div&gt;
+      {/* Використовуємо значення prop1 */}
+      &lt;p&gt;Prop1: {prop1}&lt;/p&gt;
+      {/* Використовуємо значення prop2 */}
+      &lt;p&gt;Prop2: {prop2}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+// Використовуємо React.memo для оптимізації рендерингу
+export default React.memo(MyComponent, (prevProps, nextProps) =&gt; {
+  // Перевіряємо, чи змінився тільки prop1, а prop2 залишився незмінним
+  return prevProps.prop1 === nextProps.prop1;
+});</code></pre>
+<p>У цьому прикладі React.memo використовується для оптимізації рендерингу компонента MyComponent. Він приймає <strong>два аргументи</strong>: перший - це сам компонент, а другий - це функція порівняння (compare function). Функція порівняння приймає два аргументи - <strong>prevProps і nextProps</strong>, які представляють попередні та наступні значення props відповідно.</p>
+<p>У прикладі функція порівняння перевіряє, чи змінився тільки <strong>prop1, а prop2 залишився без перевірки</strong>. Якщо так, то React.memo повторно використовує <strong>кешований</strong> результат рендерингу компонента, і не виконує повторного рендерингу, що допомагає уникнути зайвих операцій рендерингу.</p>
+<p>Тобто, якщо prop2 буде змінено, то це не вплине на рендер компонента. Компонент MyComponent буде перерендерюватись лише при зміні prop1, оскільки функція порівняння в React.memo порівнює лише значення prop1 між попередніми та наступними вхідними пропсами. У цьому випадку prop2 не впливає на результат.</p>
+<p>Це може бути корисною оптимізацією в деяких випадках, коли ви хочете уникнути непотрібного перерендерингу компонента, якщо зміни в деяких props не впливають на візуальний вигляд або поведінку компонента.</p>
+<p>Однак, слід бути <strong>обережним</strong> з використанням React.memo, оскільки неправильне використання може призвести до <strong>некоректної роботи</strong> компонентів, особливо коли вони взаємодіють зі станом або змінюють його.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

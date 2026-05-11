@@ -1,0 +1,101 @@
+<h3 style="color: #76cdd8;"><strong>useCallback</strong></h3>
+<p><strong>useCallback</strong> є хуком в React, який дозволяє <strong>кешувати мемоізовану версію функції</strong> між рендерами компонента.</p>
+<p>Основна ідея useCallback полягає в тому, що він повертає мемоїзовану версію функції, яка буде однаковою при кожному рендері компонента, поки не зміниться жодна залежність з масиву залежностей.</p>
+<p>Це дозволяє <strong>уникнути непотрібного створення нових функцій</strong> при кожному рендері компонента, що може відбуватись в деяких випадках, коли ми передаємо функції як пропси до дочірніх компонентів.</p>
+<p>Отже, основні переваги використання useCallback включають:</p>
+<ul>
+<li><strong>Оптимізація продуктивності</strong>: Використання useCallback допомагає <strong>уникнути зайвих рендерів дочірніх компонентів</strong>, оскільки функції не будуть перестворюватись при кожному рендері батьківського компонента.</li>
+<li><strong>Забезпечення стабільності посилань</strong>: Мемоїзація функцій за допомогою useCallback дозволяє <strong>гарантувати стабільність посилань</strong> на ці функції. Це може бути корисним у випадках, коли ми передаємо ці функції як пропси в дочірні компоненти, що також мемоїзовані за допомогою React.memo.</li>
+</ul>
+<p>Отже, ось приклад використання useCallback:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useState, useCallback } from 'react';
+import ChildComponent from './ChildComponent';
+
+const ParentComponent = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  // Оголошуємо функцію-обробник кліку з використанням useCallback,
+  // передаємо залежність [count]
+  const handleClick = useCallback(() =&gt; {
+    console.log('Функція-обробник кліку викликається');
+    setCount(count + 1);
+  }, [count]);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Лічильник: {count}&lt;/h1&gt;
+      {/* Передаємо функцію-обробник як пропс до дочірнього компонента */}
+      &lt;ChildComponent handleClick={handleClick} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ParentComponent;</code></pre>
+<pre class="prettyprint"><code class="lang-js">
+// Використовуємо React.memo для мемоїзації дочірнього компонента
+// Що дозволяє уникнути зайвих рендерів при зміні пропсів, якщо вони не змінюються
+import React from 'react';
+
+const ChildComponent = ({ handleClick }) =&gt; {
+  console.log('Дочірній компонент рендериться');
+  return (
+    &lt;button onClick={handleClick}&gt;Збільшити&lt;/button&gt;
+  );
+};
+
+export default React.memo(ChildComponent);</code></pre>
+<p>У цьому прикладі ми використовуємо <strong>useCallback для кешування функції handleClick</strong>, яка є функцією-обробником кліку кнопки. Масив залежностей [count] вказує, що <strong>функція повинна бути оновлена, якщо змінюється значення count</strong> (змінна, що зберігається в стані батьківського компонента).</p>
+<p>Дочірній компонент ChildComponent також мемоїзований за допомогою React.memo, що допомагає <strong>уникнути зайвих рендерів</strong>, оскільки ми передаємо стабільну функцію <strong>handleClick як пропс, яка не змінюється</strong> (посилання на неї однакове) при кожному рендері ParentComponent.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

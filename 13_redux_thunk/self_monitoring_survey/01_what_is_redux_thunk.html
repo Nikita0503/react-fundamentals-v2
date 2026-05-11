@@ -1,0 +1,56 @@
+<h4 style="color: #474747; font-weight: 600;">Що таке middleware в Redux і яку функцію виконує Redux Thunk?</h4><br/>
+( ) Middleware - це засіб для збільшення продуктивності в Redux, і Redux Thunk відповідає за стан компонентів.
+( ) Middleware - це інструмент для забезпечення безпеки в Redux, і Redux Thunk слідкує за безпекою додатку.
+(x) Middleware - це операція, яка відпрацьовує між викликом Dispatch та обробкою Action у Reducer, а Redux Thunk дозволяє створювати асинхронні дії в Redux.
+<h4 style="color: #474747; font-weight: 600;">Які можливості Redux Thunk?</h4><br/>
+( ) Забезпечує анімацію компонентів в Redux.
+(x) Дозволяє створювати асинхронні дії (Actions) в Redux.
+( ) Застосовує стилі до компонентів.
+<h4 style="color: #474747; font-weight: 600;">Які кроки необхідно виконати для використання Redux Thunk у проекті?</h4><br/>
+(x) Встановити пакет redux-thunk та підключити його до Redux store за допомогою applyMiddleware.
+( ) Встановити пакет redux-async та використовувати його для асинхронних операцій в Redux.
+( ) Змінити всі Actions на асинхронні, безпосередньо вписуючи асинхронний код у кожен Action.
+<h4 style="color: #474747; font-weight: 600;">Які параметри отримує функція, що повертається з Redux Thunk?</h4><br/>
+( ) ActionCreator та State
+(x) Dispatch та getState
+( ) ClearStore та AsyncStorage
+<h4 style="color: #474747; font-weight: 600;">Який з прикладів відображає санку?</h4><br/>
+<span>Варіант 1:</span>
+<pre>const fetchData = () => {
+  return { type: 'UPDATE_DATA', payload: { name: 'John', age: 25 } };
+};</pre><br/>
+<span>Варіант 2:</span>
+<pre>const fetchData = () => async (dispatch, getState) => {
+  try {
+    const data = await fetch('https://api.example.com/data');
+    const result = await data.json();
+    dispatch({ type: 'SET_DATA', payload: result });
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error });
+  }
+};</pre><br/>
+<span>Варіант 3:</span>
+<pre>const fetchData = async (dispatch, getState) => {
+  try {
+    const data = await fetch('https://api.example.com/data');
+    const result = await data.json();
+    dispatch({ type: 'SET_DATA', payload: result });
+  } catch (error) {
+    dispatch({ type: 'SET_ERROR', payload: error });
+  }
+};</pre><br/>
+( ) Варіант 1
+(x) Варіант 2
+( ) Варіант 3
+<h4 style="color: #474747; font-weight: 600;">Як можна передати параметри з компоненту до санки?</h4><br/>
+( ) Передавши їх у параметрах функції dispatch() у компоненті.
+( ) Використовуючи connect для прокидання параметрів у функцію в компоненті.
+(x) Передавши їх як параметри санки при виклику з компонента.
+<h4 style="color: #474747; font-weight: 600;">Чому необхідно використовувати функцію Dispatch при оновленні даних в Redux Store?</h4><br/>
+( ) Dispatch є необов'язковим у Redux, і можна оновлювати дані без його використання.
+(x) Dispatch відповідає за відправку Action до Reducer для оновлення Store, і без його використання дані не будуть оновлюватися.
+( ) Dispatch використовується тільки для збереження даних у Store, але не для їх оновлення.
+<h4 style="color: #474747; font-weight: 600;">Як можна передати функцію-callback з компоненту до санки?</h4><br/>
+(x) Вказавши її як параметр при виклику санки з компонента.
+( ) Вказавши її у параметрах функції dispatch() в компоненті.
+( ) Записавши її в основний файл додатку.

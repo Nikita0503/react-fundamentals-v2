@@ -1,0 +1,119 @@
+<h3 style="color: #76cdd8;"><strong>Props drilling</strong></h3>
+<p><strong>Props drilling</strong> (або також відомий як "prop drilling") - це патерн у React, коли пропси передаються <strong>через кілька рівнів вкладених компонентів</strong>, навіть якщо деякі з цих компонентів не використовують ці пропси. Це може призвести до зайвого передачі даних вниз по ієрархії компонентів, що може вплинути на читабельність та підтримку коду.</p>
+<p>Основна проблема з props drilling полягає в тому, що пропси передаються через <strong>кожен</strong> вкладений компонент, навіть якщо вони потрібні лише останньому компоненту на цьому шляху. Це може зробити код більш складним для розуміння та підтримки, особливо в глибоко вкладених структурах компонентів.</p>
+<p>Пропси використовуються в React для передачі даних від батьківського компонента до дочірніх компонентів. Проте, якщо в компонентах на шляху від батьківського до дочірнього компонента пропси не використовуються, але все ж потрібно передавати їх через кожен вкладений компонент, то це може призвести до надмірного передачі даних, збільшення кількості коду та зміни пропсів в багатьох місцях при їх зміні.</p>
+<h1><img src="blob:https://studio.elearn.epam.com/f7dcd6ed-6bea-4eb2-bf5a-67b07f30fa3a" alt="" width="377" height="243" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
+<p>Деякі рішення для уникнення проблеми props drilling включають використання <strong>контексту (context)</strong> в React для передачі даних на кілька рівнів вкладених компонентів без потреби передавати пропси крізь всю ієрархію компонентів, а також використання станових керувальників <strong>(state management)</strong> бібліотек, таких як <strong>Redux</strong>, для централізованого зберігання та керування даними, що використовуються в декількох компонентах.</p>
+<p>Приклад того, як props drilling виглядає у коді:</p>
+<pre class="prettyprint"><code class="lang-js">// Компонент App (найбільший рівень)
+import React, { useState } from 'react';
+import ParentComponent from './ParentComponent';
+  
+const App = () =&gt; {
+  const [data, setData] = useState('Дані з App компонента');
+  
+  const handleDataChange = (newData) =&gt; {
+    setData(newData);
+  }
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;App компонент&lt;/h1&gt;
+      &lt;p&gt;Дані: {data}&lt;/p&gt;
+      &lt;ParentComponent data={data} onDataChange={handleDataChange} /&gt;
+    &lt;/div&gt;
+  );
+};
+  
+export default App;</code></pre>
+<pre class="prettyprint"><code class="lang-js">// Компонент ParentComponent (батьківський рівень)
+import React from 'react';
+import ChildComponent from './ChildComponent';
+
+const ParentComponent = ({ data, onDataChange }) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Батьківський компонент&lt;/h2&gt;
+      &lt;p&gt;Дані: {data}&lt;/p&gt;
+      &lt;ChildComponent data={data} onDataChange={onDataChange} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ParentComponent;</code></pre>
+<pre class="prettyprint"><code class="lang-js">// Компонент ChildComponent (дочірній рівень)
+import React from 'react';
+
+const ChildComponent = ({ data, onDataChange }) =&gt; {
+  const handleButtonClick = () =&gt; {
+    const newData = 'Дані змінені в дочірньому компоненті';
+    onDataChange(newData);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Дочірній компонент&lt;/h3&gt;
+      &lt;p&gt;Дані: {data}&lt;/p&gt;
+      &lt;button onClick={handleButtonClick}&gt;Змінити дані&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ChildComponent;</code></pre>
+<p>У цьому прикладі App є найбільшим рівнем компонентів, який містить стан data та функцію handleDataChange для зміни цього стану. Цей стан та функція передаються вниз <strong>через пропс</strong> data та onDataChange в батьківський компонент ParentComponent, а потім далі вниз в дочірній компонент ChildComponent.</p>
+<p>В ChildComponent ці пропси використовуються для відображення даних та <strong>зміни даних</strong> через функцію onDataChange при кліку на кнопку. Це приклад використання <strong>props drilling</strong>, коли дані та функції передаються вниз в компонентах через пропси безпосередньо, навіть якщо деякі компоненти не використовують ці пропси.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<div>
+<div>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+<p></p>
+<p></p>
+</div>
+</div>

@@ -1,0 +1,24 @@
+<h4 style="color: #474747; font-weight: 600;">Чому використовують хук useSelector в контексті Redux?</h4><br/>
+( ) Для визначення типу дії в компоненті
+(x) Для отримання значень зі Store у компоненті
+( ) Для встановлення стилів компонентів
+<h4 style="color: #474747; font-weight: 600;">Як можна отримати доступ до значень поля name ред`юсеру user у компоненті, використовуючи React та Redux?</h4><br/>
+( ) const name = window.store.user.name;
+( ) const name = useSelector(state => state.getRootReducer().getReducer('user').name);
+(x) const name = useSelector(state => state.user.name);
+<h4 style="color: #474747; font-weight: 600;">useSelector повертає значення, котрі знаходяться за адресою, котра будується по принципу...</h4><br/>
+(x) state.REDUCER_NAME.FIELD_NAME
+( ) state.getReducer(REDUCER_NAME).FIELD_NAME
+( ) state.FIELD_NAME
+<h4 style="color: #474747; font-weight: 600;">Чому використовують функцію Dispatch в контексті Redux?</h4><br/>
+( ) Для забезпечення доступу до Store у компонентах
+( ) Для оновлення значень у Store без використання Actions
+(x) Для відправлення Actions у Reducer та оновлення Store
+<h4 style="color: #474747; font-weight: 600;">Як можна оновити значення name в Store за допомогою функції Dispatch та Action Creator?</h4><br/>
+( ) dispatch({ type: "SET_NAME", payload: "NewName" })
+(x) dispatch(setName("NewName"))
+( ) dispatch({ name: "NewName" })
+<h4 style="color: #474747; font-weight: 600;">Яку функцію повертає хук useDispatch з пакету 'react-redux'?</h4><br/>
+( ) getDispatch
+(x) Dispatch
+( ) updateStore

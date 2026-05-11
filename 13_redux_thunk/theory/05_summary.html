@@ -1,0 +1,60 @@
+<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
+<p>В цьому модулі було розглянуто підключення та використання Redux Thunk на простому прикладі. Асинхронний код було винесено у окремий файл, як результат - код став читабельнішим та архітектура правильнішою.</p>
+<p>Можливі питання:</p>
+<p><strong>"Чи існують аналоги Redux Thunk?"</strong></p>
+<p>Відповідь - так, існують. Це <strong>Redux Saga</strong>. Цей middleware значно складніший за Redux Thunk, але більш гнучкий. Його слід використовувати у великих проектах з більш складними процесами взаємодії з REST API.</p>
+<p><strong>"На якому етапі потрібно підключати Redux Thunk до проекту?"</strong></p>
+<p>Відповідь - бажано з самого початку. Якщо ви або команда розробників вирішила використовувати перелік якихось middlewares або бібліотек, краще їх встановити та підключати одразу, для зручнішого будування архітектури проекту</p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

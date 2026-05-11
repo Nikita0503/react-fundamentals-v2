@@ -1,0 +1,106 @@
+<h3 style="color: #76cdd8;"><strong>Контекст</strong></h3>
+<p>Просування даних у дочірні компоненти на декілька рівнів вкладеності вниз, можуть викликати проблеми, особливо це стосується <strong>props drilling</strong>. Для запобігання цих проблем React має вбудований механізм, який дозволяє передавати дані без використання пропсів (props). Цей механізм називається <strong>Контекст</strong> (Context):</p>
+<h2><img src="blob:https://studio.elearn.epam.com/27da18ed-8a04-49f9-948f-691d748879e8" alt="" width="397" height="437" style="display: block; margin-left: auto; margin-right: auto;" /></h2>
+<pre class="prettyprint"><code class="lang-js">import React, { createContext } from 'react';
+
+// Створюємо контекст
+const MyContext = createContext();
+
+// Батьківський компонент, який надає контекст
+const ParentComponent = () =&gt; {
+  const data = 'Це дані з контексту';
+
+  return (
+    &lt;MyContext.Provider value={data}&gt;
+      &lt;ChildComponent /&gt;
+    &lt;/MyContext.Provider&gt;
+  );
+}
+
+export default ParentComponent;
+export { MyContext }; // експортуємо контекст, щоб його можна було використовувати в інших компонентах
+</code></pre>
+<p>Для того щоб дочірні компоненти мали доступ до даних контексту, їх потрібно <strong>огорнути в компонент Provider</strong>, що міститься у <strong>MyContext</strong>, який нам повернула функція <strong>createContext</strong>;</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import GrandchildComponent from './GrandchildComponent';
+
+const ChildComponent = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;GrandchildComponent /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ChildComponent;</code></pre>
+<p>ChildComponent - Дочірній компонент, який також має змогу отримати дані з контексту, але він просто містить у собі GrandchildComponent, котрий буде потребувати даніі з контексту далі.</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useContext } from 'react';
+import { MyContext } from './ParentComponent';
+
+// «Внуковий» компонент, який отримує дані з контексту
+const GrandchildComponent = () =&gt; {
+  const data = useContext(MyContext); // Отримання данних з контексту
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{data} &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default GrandchildComponent;</code></pre>
+<p>GrandchildComponent - компонент, котрий <strong>використовує дані з контексту</strong>. Для цього ми імпортували MyContext, котрий був у ParentComponent (найвищий комопнент у ієрархії), та використали хук <strong>useContext</strong>, якому надали <strong>MyContext</strong>, для того щоб він повернув дані цього контексту у data.</p>
+<p>Механізм Контексту можна застосовувати для передачі будь-яких даних. Наприклад, <strong>функції для зміни стану</strong> батьківського компоненту. Для зручності достатньо передавати у контекст об`єкт, який у якості полів містить ці функції або інші дані.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

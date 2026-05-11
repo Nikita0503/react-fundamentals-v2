@@ -1,0 +1,110 @@
+<h3 style="color: #76cdd8;"><strong>Кастомні хуки</strong></h3>
+<p>Сам React та різноманітні бібліотеки надають розробникам багато хуків, але <strong>зазвичай цього недостатньо</strong>. Тому розробники пишуть <strong>кастомні</strong> (створені самостійно) <strong>хуки</strong>, які допомогають ізолювати певну логіку та використовувати їх у різних компонентах.</p>
+<p>Для прикладу реалізуємо кастомний хук, котрий приймає посилання на ендпоінт REST API, та повертає відповідь (data), помилку (error, якщо виникає) та статус виконання (loading):</p>
+<pre class="prettyprint"><code class="lang-js">import { useState, useEffect } from 'react';
+
+const useAdvancedFetch = (url) =&gt; {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() =&gt; {
+      setLoading(true);
+      fetch(url)
+        .then((response) =&gt; response.json())
+        .then((jsonData) =&gt; {
+          setData(jsonData);
+        })
+        .catch((err) =&gt; {
+          setError(err);
+        })
+        .finally(() =&gt; {
+          setLoading(false);
+        });
+    }, [url]);
+    
+    return { data, error, loading };
+};
+    
+export default useAdvancedFetch;
+</code></pre>
+<p>Цей хук <strong>приймає URL</strong> в якості аргументу та використовує useState та useEffect хуки для виконання запиту до API, зберігання даних, помилки та статусу завантаження.</p>
+<p>Потім він повертає <strong>об'єкт з цими даними</strong>, який може бути використаний в компонентах для відображення вмісту, обробки помилок або відображення стану завантаження на основі значень <strong>data, error та loading</strong>.</p>
+<p>І тепер його можна використовувати у різних компонентах <strong>для ізоляції логіки запиту</strong>, надаючи лише url запиту. А вже спираючись на результати виконання, котрі повертає хук, налаштовувати поведінку компонента.</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import useAdvancedFetch from './hooks/useAdvancedFetch';
+
+const MyComponent = () =&gt; {
+
+  const { data, error, loading } = useAdvancedFetch('https://random.api/v1/posts');
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Component with custom hook&lt;/p&gt;
+      {loading ? (
+        &lt;p&gt;Loading...&lt;/p&gt;
+      ) : (
+        &lt;&gt;
+          {data &amp;&amp; &lt;p&gt;{JSON.stringify(data)}&lt;/p&gt;}
+          {error &amp;&amp; &lt;p&gt;{error}&lt;/p&gt;}
+        &lt;/&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default MyComponent;
+</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

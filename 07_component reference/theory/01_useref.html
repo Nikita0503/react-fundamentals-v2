@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>useRef</strong></h3>
+<p>В React є можливість звертатися до компонентів та звертатися до їх методів напряму за домогою хука <strong>useRef</strong>.  useRef - це хук в React, який дозволяє отримувати <strong>посилання на DOM-елемент</strong> або <strong>зберігати значення між рендерами</strong> без того, щоб спричиняти перерендер компонента. Він дозволяє працювати з DOM-елементами безпосередньо в функціональних компонентах.</p>
+<p>Ось приклад використання useRef:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+
+const MyComponent = () =&gt; {
+  const inputRef = useRef(null); // Створення посилання на DOM-елемент
+
+  const handleClick = () =&gt; {
+    inputRef.current.focus(); // Виклик методу focus() на DOM-елементі за допомогою useRef
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" /&gt;
+      &lt;button onClick={handleClick}&gt;Фокус&lt;/button&gt;
+    &lt;/div&gt;<br />  );
+};
+
+export default MyComponent;</code></pre>
+<p>У цьому прикладі ми використовуємо useRef для <strong>створення посилання на DOM-елемент</strong> input за допомогою атрибуту <strong>ref</strong>. Потім ми можемо викликати методи цього DOM-елемента, такі як focus(), без необхідності виклику setState або спричинення перерендеру компонента.</p>
+<p>useRef також може використовуватись для <strong>зберігання значень</strong>, які <strong>не мають впливу на рендер</strong> компонента між оновленнями:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+
+const MyComponent = () =&gt; {
+  const countRef = useRef(0); // Створення посилання на значення
+
+  const handleClick = () =&gt; {
+    countRef.current++; // Зміна значення через посилання
+    console.log('Поточне значення count:', countRef.current);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={handleClick}&gt;Збільшити&lt;/button&gt;
+    &lt;/div&gt;);
+};
+
+export default MyComponent;</code></pre>
+<p>У цьому прикладі ми використовуємо useRef для створення посилання зі значенням 0 під час ініціалізації компонента.</p>
+<p>Ми можемо змінювати значення цього посилання <strong>без необхідності виклику setState</strong> або спричинення перерендеру компонента.</p>
+<p>Використовуючи countRef.current, ми можемо отримати <strong>поточне значення</strong> збереженого значення count між оновленнями компонента.</p>
+<p>Ось приклад використання useRef зі введенням даних у поле вводу:</p>
+<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+
+const InputComponent = () =&gt; {
+  const inputRef = useRef(null); // Створення посилання на елемент input
+
+  const handleButtonClick = () =&gt; {
+    // Отримання значення з елементу input за допомогою current.value
+    const inputValue = inputRef.current.value;
+    alert(`Введене значення: ${inputValue}`);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" /&gt;
+      &lt;button onClick={handleButtonClick}&gt;Показати значення&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default InputComponent;</code></pre>
+<p>У цьому прикладі ми використовуємо useRef для створення посилання на елемент вводу input в компоненті.</p>
+<p>За допомогою inputRef.current.value ми можемо отримати поточне значення, введене в поле вводу, <strong>без необхідності використання onChange</strong> обробника подій.</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

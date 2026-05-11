@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>Що таке React Router</strong></h3>
+<p>Здебільшого React використовується для розробки проектів середнього розміру. Такі проекти містять більше ніж 1 сторінку. В React однією з найбільш популярних бібліотек для навігації є <strong>React Router</strong>.</p>
+<p>Для початку роботи з React Router необхідно зробити 2 кроки:</p>
+<p>Встановити у проект:</p>
+<pre class="prettyprint"><code class="lang-js">npm install react-router-dom</code></pre>
+<p>Зробити 2 компоненти-сторінки, на які користувач переходитиме:</p>
+<pre class="prettyprint"><code class="lang-js">/** /pages/HomePage.js */
+
+import React from 'react';
+
+const HomePage = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Hello, React Router&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default HomePage;</code></pre>
+<pre class="prettyprint"><code class="lang-js">/** /pages/ProfilePage.js */
+
+import React from 'react';
+
+const ProfilePage = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;div&gt;&lt;span&gt;Name: React Router&lt;/span&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;span&gt;Version: 6&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ProfilePage; 
+</code></pre>
+<p>Зазвичай налаштування навігації відбувається у файлі App.js:</p>
+<pre class="prettyprint"><code class="lang-js">/** App.js */
+
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
+import HomePage from './pages/HomePage';
+
+
+const App = () =&gt; {
+
+  return(
+    &lt;BrowserRouter&gt; 
+      &lt;Routes&gt; 
+        &lt;Route path='home' element={&lt;HomePage/&gt;}/&gt;
+        &lt;Route path='profile' element={&lt;ProfilePage/&gt;}/&gt; 
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;
+
+</code></pre>
+<p>Усі компоненти навігації імпортуються з пакету 'react-router-dom':</p>
+<p><strong>BrowserRouter</strong> - це компонент, який дозволяє використовувати URL-адресу браузера для відображення різних сторінок в додатку. Він <strong>слідкує за змінами URL-адреси і змінює відображуваний контент</strong> відповідно до нового URL-адреси.</p>
+<p><strong>Routes</strong> - це компонент, що містить <strong>список шляхів</strong> (Routes), на які може перейти користувач, і вказує, який компонент має відобразитися при потраплянні на кожен з цих шляхів. Кожен шлях представляє собою <strong>URL-адресу</strong>, яка пов'язана з певним компонентом. В середині Routes компонента можуть розміщатися <strong>тільки Route компоненти</strong>.</p>
+<p><strong>Route</strong> – це компонент, який зіставляє шлях із компонентом, який повинен відображатися, коли користувач потрапляє на цей шлях. Кожен Route містить інформацію про шлях (path) та компонент (element - сторінка), який має бути відображений при попаданні на цей шлях. Крім того, у Route можна передати додаткові параметри, які допомагають налаштувати відображення компонента на сторінці.</p>
+<p>Залишилося надати змогу переходити між сторінками (роутами).</p>
+<p></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>

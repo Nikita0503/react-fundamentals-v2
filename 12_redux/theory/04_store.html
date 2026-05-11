@@ -1,0 +1,62 @@
+<h3 style="color: #76cdd8;"><strong>Store</strong></h3>
+<p>Store - <strong>едине сховище даних</strong>. Для його ініціалізації нам необхідно створити <strong>rootReducer</strong> - збірник усіх Reducers додатку.</p>
+<pre class="prettyprint"><code class="lang-js">/** /redux/store */
+
+import { combineReducers, </code>createStore } from 'redux'; import userReducer from './reducer'; const rootReducer = combineReducers({ user: userReducer, }); export const store = createStore(rootReducer);</pre>
+<p>За допомогою функції <strong>combineReducers</strong> створюємо <strong>rootReducer</strong>.</p>
+<p>RootReduer приймає об`єкт, де <strong>ключи - це назви за котрими можна звертатися до Reducers</strong>, а значення - самі Reducers.</p>
+<p>Наприклад, name, котрий у userReducer, буде знаходитися за адресою: <strong>state.user.name</strong>.</p>
+<p>Та створюємо <strong>store</strong> за допомогою функції <strong>createStore</strong>, яка першим параметром приймає створений нами <strong>rootReducer</strong>.</p>
+<p>Частина написання Redux завершилася. Залишилося дати змогу компонентам отримувати дані зі Store, та оновлювати їх.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

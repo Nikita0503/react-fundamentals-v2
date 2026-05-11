@@ -1,0 +1,57 @@
+<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
+<p>В цьому модулі було розглянуто роботу з бібліотекою Axios, що використовується для взаємодії з REST API. Цих знань буде достатьно реалізації роботи з різними едпоінтами у проектах різного масштабу.</p>
+<p><img src="blob:https://studio.elearn.epam.com/9e958bd0-e9a5-47d3-87b9-41a0873c14d7" alt="" /></p>
+<p>Можливі питання:</p>
+<p><strong>"В Інтернеті зустрічаються фрагменти коду де interceptors налаштовуються прямо у самому axios, без створення axiosInstance. Для чого їх взагалі тоді створювати?".</strong></p>
+<p>Відповідь - у деяких проектах використовується не 1 сервер для взаємодії з REST API, а декілька. Кожен потребує різне налаштування запитів, для цього створюють різні інстанси. З використанням інстансів код стає передбачуваним. Можливо знадобиться робити запит до API, котре не потребує зайвих headers або інших налаштувань, для цього можна використовувати axios напряму, без інстансу (замість fetch).</p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

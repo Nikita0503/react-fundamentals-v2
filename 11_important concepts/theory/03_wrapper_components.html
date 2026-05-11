@@ -1,0 +1,122 @@
+<h3 style="color: #76cdd8;"><strong>Компоненти обгортки</strong></h3>
+<p>HOC також можна називати компонентом обгорткою, але це визначення більш стосується компонентів, котрі мають <strong>властивість дочірніх елементів</strong> (props.children).</p>
+<p><strong>props.children</strong> в React - це спеціальна властивість, яка дозволяє передавати дочірні елементи в компонент як <strong>вміст між відкриваючим і закриваючим тегами</strong> компонента. Це дозволяє компонентам використовувати вкладені елементи, такі як текст, інші компоненти або фрагменти в своєму внутрішньому вмісті (бути <strong>контейнерами</strong>).</p>
+<p>props.children дозволяє створювати компоненти з більш гнучким відображенням та функціональністю, оскільки вони можуть приймати та відображати дочірні елементи без необхідності жорстко прописувати їх у властивості компонента. Це особливо корисно, коли компонент має бути використаний в <strong>різних контекстах з різним вмістом</strong>.</p>
+<h2><img src="blob:https://studio.elearn.epam.com/05198bc5-cbe3-48c7-932c-3ed89056854b" alt="" /></h2>
+<p>Ось приклад використання props.children у компоненті, який надає додаткові стилі:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const Container = (props) =&gt; {
+  return (
+    &lt;div className="container"&gt;
+      {props.children}
+    &lt;/div&gt;
+  );
+};
+  
+export default Container;</code></pre>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import Container from './Container';
+  
+const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Мій додаток&lt;/h1&gt;
+      &lt;Container&gt;
+        &lt;p&gt;Вміст контейнера&lt;/p&gt;
+      &lt;/Container&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;</code></pre>
+<p>Стиль container може містити будь-які налаштування. Це можуть бути відступи (margin), колір фону (background-color) та багато іншого. Усі компоненти, що будуть знаходитися між відкритим та закритим тегами Container будуть обгорнуті в блок, який має стилі класу container.</p>
+<p>Ми розглянули приклад компонента обгортки з використанням стилів, але це може бути більш складна реалізація:</p>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+
+const Card = ({ title, children }) =&gt; {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      &lt;div className="card-content"&gt;
+        {children}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Card;</code></pre>
+<pre class="prettyprint"><code class="lang-js">import React from 'react';
+import Card from './Card';
+  
+const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Мій додаток&lt;/h1&gt;
+      &lt;Card title="Карта 1"&gt;
+        &lt;p&gt;Це контент першої карти.&lt;/p&gt;
+        &lt;button&gt;Дія&lt;/button&gt;
+      &lt;/Card&gt;
+      &lt;Card title="Карта 2"&gt;
+        &lt;p&gt;Це контент другої карти.&lt;/p&gt;
+        &lt;a href="#"&gt;Посилання&lt;/a&gt;
+      &lt;/Card&gt;
+    &lt;/div&gt;
+  );
+};
+  
+export default App;</code></pre>
+<p>У цьому прикладі, компонент Card має властивість title, яка передається в якості заголовка карти, і props.children, який містить вміст карти між відкриваючим і закриваючим тегами. Завдяки props.children можна передавати будь-який вміст (текст, елементи, компоненти) внутрішнім елементом Card безпосередньо в розмітці, що робить компонент Card більш варіативним та повторно використовуваним.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
+<p></p>
