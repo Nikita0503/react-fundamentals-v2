@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Методи Axios</strong></h3>
-<p><strong>GET</strong> - один з методів взаємодії з REST API. Існують методи, які передають <strong>body</strong> (об’єкт даних) на сервер, наприклад <strong>PUT</strong> або <strong>POST</strong> методи:</p>
+<h3 style="color: #76cdd8;"><strong>Axios Methods</strong></h3>
+<p><strong>GET</strong> - is one of the methods for interacting with REST API. There are methods that send a <strong>body</strong> (data object) to the server, for example <strong>PUT</strong> or <strong>POST</strong> methods:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
 import React from 'react';
 
@@ -33,8 +33,8 @@ const PostsPage = () =&gt; {
 
 export default PostsPage; 
 </code></pre>
-<p>У цьому прикладі PostPage змінений. Зараз він відображає не масив постів, а один пост, котрий повертає сервер. Також він робить запит з PUT методом, де в body передає об’єкт посту, котрий ми хочемо розмістити на сервері. Сервер віддає у відповіді той пост, який ми передали в body. Для того щоб указати тип body в <strong>headers</strong> вказано Content-type: application/json; charset=UTF-8.</p>
-<p>Тепер оновлений PostsPage з використанням Axios:</p>
+<p>In this example, PostPage has been modified. Now it displays not an array of posts, but a single post returned by the server. It also makes a request with the PUT method, where it passes a post object in the body that we want to place on the server. The server returns in the response the post that we passed in the body. To specify the body type, Content-type: application/json; charset=UTF-8 is specified in the <strong>headers</strong>.</p>
+<p>Now the updated PostsPage using Axios:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
 import React from 'react';
 import axios from 'axios';
@@ -66,9 +66,9 @@ const PostsPage = () =&gt; {
 
 export default PostsPage; 
 </code></pre>
-<p>axios.put приймає body другим параметром, а headers вказується як поле об`єкта, який приймається третім параметром.</p>
-<p>Так виглядає базове використання Axios, без його головних переваг - інтерсепторів та інстансів.</p>
-<p>Перед цим треба згадати як влаштована безпека при роботі з REST API.</p>
+<p>axios.put accepts the body as the second parameter, and headers are specified as a field of the object accepted as the third parameter.</p>
+<p>This is what basic Axios usage looks like, without its main advantages - interceptors and instances.</p>
+<p>Before that, we need to recall how security works when working with REST API.</p>
 <style><!--
 .row-container {
         display: flex;

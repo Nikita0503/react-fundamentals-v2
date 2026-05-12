@@ -1,13 +1,13 @@
-<h3 style="color: #76cdd8;"><strong>Відображення списків</strong></h3>
-<p>React дає можливість працювати зі списками, використовуючи <strong>внутрішні оптимізовані механізми</strong>.</p>
-<p>Ось приклад використання функціонального компонента ListComponent з використанням useState для зберігання початкового списку даних:</p>
+<h3 style="color: #76cdd8;"><strong>Rendering Lists</strong></h3>
+<p>React provides the ability to work with lists using <strong>internal optimized mechanisms</strong>.</p>
+<p>Here is an example of using a functional component ListComponent with useState to store an initial data list:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
 
 const ListComponent = () =&gt; {
   const [items, setItems] = useState([
-    { id: 1, text: 'Елемент 1' },
-    { id: 2, text: 'Елемент 2' },
-    { id: 3, text: 'Елемент 3' }
+    { id: 1, text: 'Item 1' },
+    { id: 2, text: 'Item 2' },
+    { id: 3, text: 'Item 3' }
   ]);
 
   return (
@@ -20,18 +20,18 @@ const ListComponent = () =&gt; {
 };
 
 export default ListComponent;</code></pre>
-<p>У цьому прикладі ми використовуємо хук useState для створення стану items, який містить початковий список даних з трьох елементів. Ми використовуємо <strong>метод масиву map()</strong> для ітерації по списку items і створення елементів &lt;li&gt; для кожного елементу списку, а також використовуємо <strong>атрибут key</strong> для <strong>унікальної ідентифікації кожного елементу</strong>.</p>
-<p>По-суті, в JSX (в розмітці) ми використовуємо вираз javascript, де масив даних items, перетворємо на масив елементів списку &lt;li&gt; за домогою .map методу списку.</p>
-<p>Важливо зауважити, що ми також використовуємо атрибут key в елементі &lt;li&gt;. Атрибут key потрібен React для унікальної ідентифікації кожного елементу списку. Це допомагає React <strong>оптимізувати процес перерендерування</strong> елементів списку та <strong>забезпечує правильну роботу React-компонентів</strong>, які мають внутрішній стан або використовують певні оптимізації продуктивності.</p>
-<p>Дуже популярною вправа - створення списку задач (todo list), де кожна задача має поля: <strong>id</strong>, <strong>title</strong> (ім`я задачі), <strong>completed</strong> (статус задачі, винонано / не виконано). Та додатково - дати можливість змінювати стасус задачі, тобто поле completed на true або false. Ця вправа вчить працювати зі списками, в яких данні змінюються при взаємодії з цим же списком.</p>
-<p>Ось приклад простого todo-списку з використанням функціональних компонентів, хуків useState та map для рендерингу списку та зміни стану completed:</p>
+<p>In this example, we use the useState hook to create the items state, which contains an initial data list of three elements. We use the <strong>array method map()</strong> to iterate over the items list and create &lt;li&gt; elements for each list item, and we also use the <strong>key attribute</strong> for <strong>unique identification of each element</strong>.</p>
+<p>Essentially, in JSX (in the markup) we use a JavaScript expression where the data array items is transformed into an array of &lt;li&gt; list elements using the .map array method.</p>
+<p>It is important to note that we also use the key attribute in the &lt;li&gt; element. The key attribute is needed by React for unique identification of each list element. This helps React <strong>optimize the re-rendering process</strong> of list elements and <strong>ensures correct behavior of React components</strong> that have internal state or use certain performance optimizations.</p>
+<p>A very popular exercise is creating a task list (todo list), where each task has fields: <strong>id</strong>, <strong>title</strong> (task name), <strong>completed</strong> (task status, done / not done). Additionally — providing the ability to change the task status, i.e., the completed field to true or false. This exercise teaches working with lists where data changes when interacting with the same list.</p>
+<p>Here is an example of a simple todo list using functional components, useState hooks, and map for rendering the list and changing the completed state:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
 
 const TodoList = () =&gt; {
   const [todos, setTodos] = useState([
-    { id: 1, title: 'Завдання 1', completed: false },
-    { id: 2, title: 'Завдання 2', completed: true },
-    { id: 3, title: 'Завдання 3', completed: false }
+    { id: 1, title: 'Task 1', completed: false },
+    { id: 2, title: 'Task 2', completed: true },
+    { id: 3, title: 'Task 3', completed: false }
   ]);
 
   const handleToggle = (id) =&gt; {
@@ -62,14 +62,14 @@ const TodoList = () =&gt; {
 };
 
 export default TodoList;</code></pre>
-<p>У цьому прикладі ми використовуємо хук useState для зберігання списку todo-елементів у стані todos.</p>
-<p>Кожен todo-елемент має властивості <strong>id</strong>, <strong>title</strong> та <strong>completed</strong>, які використовуються для відображення на сторінці та для зміни стану completed під час взаємодії користувача.</p>
-<p>Ми також використовуємо метод масиву map() для створення елементів списку та обробки події onChange для відстеження змін у стані completed за допомогою функції handleToggle, яка оновлює стан todos за допомогою функції setTodos та використовує оператор розширення (...) для створення нового об'єкта todo з оновленою властивістю completed.</p>
-<p>Метод списку map, другим параметром у колбеку надає індекс поточного елементу масиву, але ми всеодно використовуємо поле id кожної задачі. Ось декілька причин, чому варто уникати використання індексу як ключа:</p>
+<p>In this example, we use the useState hook to store the list of todo items in the todos state.</p>
+<p>Each todo item has properties <strong>id</strong>, <strong>title</strong>, and <strong>completed</strong>, which are used for display on the page and for changing the completed state during user interaction.</p>
+<p>We also use the array method map() to create list elements and handle the onChange event to track changes in the completed state using the handleToggle function, which updates the todos state using the setTodos function and uses the spread operator (...) to create a new todo object with the updated completed property.</p>
+<p>The map array method provides the index of the current array element as the second parameter in the callback, but we still use the id field of each task. Here are several reasons why you should avoid using the index as a key:</p>
 <ul>
-<li><strong>Потенційна втрата ефективності</strong>: Використання індексу як ключа може призвести до незапланованих перерендерів та втрати ефективності. Коли нові елементи додаються, видаляються або змінюються в списку, React може перерендерювати всі елементи списку, навіть якщо зміни відбуваються тільки в одному елементі. Це може призвести до <strong>непотрібного оновлення компонентів</strong>, збільшення навантаження на веб-сторінку та погіршення продуктивності.</li>
-<li><strong>Можливість виникнення помилок</strong>: Індекси масиву можуть бути <strong>нестабільними</strong>, особливо коли елементи списку додаються, видаляються або змінюються. Це може призвести до <strong>помилок у відображенні</strong> компонентів, взаємодії з ними або зберіганні стану.</li>
-<li><strong>Відсутність унікальності</strong>: Індекси масиву <strong>не гарантують унікальності</strong> в кожному елементі списку. Це може викликати проблеми при взаємодії зі списком, який містить декілька елементів з однаковими індексами. Замість використання індексу як ключа рекомендується використовувати <strong>унікальні ідентифікатори</strong> (наприклад, <strong>id</strong>) для кожного елемента списку як <strong>атрибут key</strong>. Це дозволяє React <strong>ефективно відслідковувати зміни</strong> в списку, забезпечує стабільність рендерингу.</li>
+<li><strong>Potential loss of efficiency</strong>: Using the index as a key can lead to unplanned re-renders and loss of efficiency. When new elements are added, removed, or changed in the list, React may re-render all list elements, even if changes occur in only one element. This can lead to <strong>unnecessary component updates</strong>, increased load on the web page, and degraded performance.</li>
+<li><strong>Possibility of errors</strong>: Array indices can be <strong>unstable</strong>, especially when list elements are added, removed, or changed. This can lead to <strong>errors in displaying</strong> components, interacting with them, or storing state.</li>
+<li><strong>Lack of uniqueness</strong>: Array indices <strong>do not guarantee uniqueness</strong> for each list element. This can cause problems when interacting with a list that contains multiple elements with the same indices. Instead of using the index as a key, it is recommended to use <strong>unique identifiers</strong> (for example, <strong>id</strong>) for each list element as the <strong>key attribute</strong>. This allows React to <strong>efficiently track changes</strong> in the list and ensures rendering stability.</li>
 </ul>
 <p></p>
 <style><!--

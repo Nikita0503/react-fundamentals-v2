@@ -1,21 +1,21 @@
-<h3 style="color: #76cdd8;"><strong>Що таке DOM?</strong></h3>
-<p><strong>DOM (Document Object Model)</strong> - це структура, яка представляє веб-сторінку в браузері у вигляді дерева елементів (наприклад, тегів HTML), які можуть бути змінені або відображені на екрані.</p>
+<h3 style="color: #76cdd8;"><strong>What is DOM?</strong></h3>
+<p><strong>DOM (Document Object Model)</strong> is a structure that represents a web page in the browser as a tree of elements (for example, HTML tags) that can be modified or displayed on the screen.</p>
 <h1><img src="blob:https://studio.elearn.epam.com/b6908b5a-35a3-4164-934c-79cf411c697b" alt="" style="display: block; margin-left: auto; margin-right: auto;" width="432" height="448" /></h1>
-<p>Одна з особливостей роботи з DOM полягає в тому, що зміни в DOM можуть бути дорогими з точки зору продуктивності, особливо при масштабному оновленні великої кількості елементів. Кожна зміна в DOM може призвести до перерахунку розміщення та вигляду елементів, що може бути витратним з точки зору ресурсів браузера та призвести до зниження продуктивності додатка.</p>
-<p>DOM сторінки можна побачити відкривши DevTools у вкладці Elements.</p>
-<h3 style="color: #76cdd8;"><strong>Що таке Virtual DOM?</strong></h3>
-<p><strong>Віртуальний DOM (Virtual DOM)</strong> - це техніка оптимізації веб-додатків, яка використовується в React та інших JavaScript-бібліотеках і фреймворках для покращення продуктивності роботи з деревом DOM.</p>
-<p>Віртуальний DOM є абстрактним представленням реального DOM в пам'яті браузера. Замість безпосередньої взаємодії з реальним DOM, React створює віртуальний DOM, який є легким та ефективним. Він зберігається в пам'яті як звичайний <strong>JavaScript-об'єкт</strong>. Virtual DOM складається з вузлів (або елементів) з їх властивостями та дочірніми вузлами. React використовує віртуальний DOM для виконання операцій зміни стану компонентів, порівняння старого та нового стану, та <strong>оновлення реального DOM лише в тих місцях, де відбулися зміни</strong>.</p>
+<p>One of the peculiarities of working with the DOM is that changes to the DOM can be expensive in terms of performance, especially when updating a large number of elements at scale. Each change to the DOM can lead to recalculation of the layout and appearance of elements, which can be resource-intensive for the browser and lead to decreased application performance.</p>
+<p>The page's DOM can be seen by opening DevTools in the Elements tab.</p>
+<h3 style="color: #76cdd8;"><strong>What is Virtual DOM?</strong></h3>
+<p><strong>Virtual DOM</strong> is a web application optimization technique used in React and other JavaScript libraries and frameworks to improve the performance of working with the DOM tree.</p>
+<p>The Virtual DOM is an abstract representation of the real DOM in the browser's memory. Instead of directly interacting with the real DOM, React creates a Virtual DOM, which is lightweight and efficient. It is stored in memory as a regular <strong>JavaScript object</strong>. The Virtual DOM consists of nodes (or elements) with their properties and child nodes. React uses the Virtual DOM to perform state change operations on components, compare old and new states, and <strong>update the real DOM only in those places where changes have occurred</strong>.</p>
 <h1><img src="https://habrastorage.org/getpro/habr/post_images/12a/500/0c2/12a5000c239d0c3eb96cd4848e7221a1.jpg" alt="Немного о том, как работает виртуальный DOM в React / Хабр" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
-<p>Перевага полягає у тому що React оновлює не весь реальний DOM, а тільки ті частини DOM, які потрібно (<span style="color: #f3b043;">помаранчеві кружки</span>). Інші (<span style="color: #76d87c;">зелені кружки</span>) частини DOM, які не потребують оновлення, не зачіпаються. Ця концепція сильно <strong>підвищує продуктивність</strong> додатку.</p>
-<p>Процес роботи з віртуальним DOM в React може бути наступним:</p>
-<p><strong>1)</strong> Компонент React оновлює свій внутрішній стан (дані), або отримує нові властивості (дані).</p>
-<p><strong>2)</strong> React створює нове дерево віртуального DOM, представляючи оновлений стан компонента.</p>
-<p><strong>3)</strong> React порівнює нове дерево віртуального DOM з попереднім деревом віртуального DOM та визначає, які елементи потребують оновлення.</p>
-<p><strong>4)</strong> React оновлює реальний DOM лише в тих місцях, де відбулися зміни, замість повного оновлення всього дерева DOM.</p>
-<p><strong>5)</strong> Оновлені елементи в реальному DOM відображаються на веб-сторінці браузера, забезпечуючи відповідне оновлення інтерфейсу користувача (з актуальними даними).</p>
-<p>Цей підхід дозволяє оптимізувати оновлення DOM та зменшити кількість операцій, необхідних для оновлення інтерфейсу користувача, що призводить до <strong>покращення продуктивності додатка</strong>.</p>
-<p>Користування віртуальним DOM в React дозволяє розробникам писати ефективний та продуктивний код, оновлювати інтерфейс користувача ефективно та забезпечує кращий досвід використання веб-додатків.</p>
+<p>The advantage is that React does not update the entire real DOM, but only those parts of the DOM that need to be updated (<span style="color: #f3b043;">orange circles</span>). Other (<span style="color: #76d87c;">green circles</span>) parts of the DOM that do not need updating are not affected. This concept significantly <strong>improves application performance</strong>.</p>
+<p>The process of working with the Virtual DOM in React can be as follows:</p>
+<p><strong>1)</strong> A React component updates its internal state (data), or receives new properties (data).</p>
+<p><strong>2)</strong> React creates a new Virtual DOM tree, representing the updated state of the component.</p>
+<p><strong>3)</strong> React compares the new Virtual DOM tree with the previous Virtual DOM tree and determines which elements need to be updated.</p>
+<p><strong>4)</strong> React updates the real DOM only in those places where changes have occurred, instead of fully updating the entire DOM tree.</p>
+<p><strong>5)</strong> The updated elements in the real DOM are displayed on the browser's web page, providing the corresponding update of the user interface (with up-to-date data).</p>
+<p>This approach allows optimizing DOM updates and reducing the number of operations required to update the user interface, which leads to <strong>improved application performance</strong>.</p>
+<p>Using the Virtual DOM in React allows developers to write efficient and performant code, update the user interface effectively, and provides a better experience when using web applications.</p>
 <p></p>
 <style><!--
 .row-container {

@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Приклад використання</strong></h3>
-<p>Для роботи з сервером використаємо JSONPlaceholder API. Це безкоштовний ресурс, котрий дозволяє робити запити та обробляти їх відповіді:</p>
+<h3 style="color: #76cdd8;"><strong>Usage Example</strong></h3>
+<p>To work with a server, we'll use the JSONPlaceholder API. This is a free resource that allows making requests and processing their responses:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
 import React from 'react';
 
@@ -22,10 +22,10 @@ const PostsPage = () =&gt; {
 
 export default PostsPage;</code></pre>
 <p></p>
-<p>Компонент робить запит до</p>
+<p>The component makes a request to</p>
 <pre class="prettyprint"><code class="lang-js">https://jsonplaceholder.typicode.com/posts?userId=1</code></pre>
-<p>Та зберігає відповідь у реактивну змінну posts і відображає її значення (масив постів).</p>
-<p>Тепер з використанням Axios:</p>
+<p>And saves the response in the reactive variable posts and displays its value (an array of posts).</p>
+<p>Now using Axios:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/PostsPage.js */<br />
 import React from 'react';
 import axios from 'axios';
@@ -47,9 +47,9 @@ const PostsPage = () =&gt; {
 }
 
 export default PostsPage; <br /><br /></code></pre>
-<p>Axios імпортується з одноіменного пакету. Цей об`єкт має необхідний набір методів для роботи з REST API. В приколаді, при звертанні до серверу, використовується GET метод:</p>
+<p>Axios is imported from the package of the same name. This object has the necessary set of methods for working with REST API. In the example, when making a request to the server, the GET method is used:</p>
 <pre class="prettyprint"><code class="lang-js">axios.get('https://jsonplaceholder.typicode.com/posts?userId=1')</code></pre>
-<p>Опрацювання відповіді серверу зручніше ніж при використанні звичайного fetch. Не потрібно робити зайву ланку then для отримання даних що повертає сервер. Axios після обробки першого промісу повертає це в полі <strong>data</strong> (response.data). Всі інші деталі відповіді знаходятся у тому ж <strong>response</strong>, наприклад <strong>reponse.status</strong> (200).</p>
+<p>Processing the server response is more convenient than when using regular fetch. There is no need for an extra then chain to get the data returned by the server. Axios, after processing the first promise, returns it in the <strong>data</strong> field (response.data). All other response details are in the same <strong>response</strong>, for example <strong>response.status</strong> (200).</p>
 <p></p>
 <p></p>
 <style><!--

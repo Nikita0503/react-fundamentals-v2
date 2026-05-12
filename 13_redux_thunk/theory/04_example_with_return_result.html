@@ -1,6 +1,6 @@
-<h3 style="color: #76cdd8;"><strong>Приклад з поверненням результату</strong></h3>
-<p>Можливий випадок, коли результат запиту потрібно <strong>отримати в компонент</strong>. Для цього потрібно просто <strong>повернути</strong> його з Санки:</p>
-<pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {     try{
+<h3 style="color: #76cdd8;"><strong>Example with returning a result</strong></h3>
+<p>There may be a case when the request result needs to be <strong>received in the component</strong>. For this, you simply need to <strong>return</strong> it from the Thunk:</p>
+<pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {     try{
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
@@ -13,7 +13,7 @@
         });
 
         const result = await response.json();
-        console.log("Результат:", result);
+        console.log("Result:", result);
 	dispatch(setName(''));
         dispatch(setSurname(''));
 	if(!!callback){
@@ -24,7 +24,7 @@
         console.log('sendUserData error', e)
     }
 };</code></pre>
-<p>Та обробити у компоненті:</p>
+<p>And handle it in the component:</p>
 <pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions';
 
@@ -35,7 +35,7 @@ const UserData = () =&gt; {
   const surname = useSelector(state =&gt; state.login.surname);
 
   const successMessage = () =&gt; {
-    alert('Дані відправлені успішно.');
+    alert('Data sent successfully.');
   }
 
   return (
@@ -44,14 +44,14 @@ const UserData = () =&gt; {
       &lt;input value={surname} onChange={(event) =&gt; dispatch(setSurname(event.target.value))} /&gt;
       &lt;button onClick={async () =&gt; {
         const result = await dispatch(sendUserData(successMessage));
-        console.log('Результат з View/UI:', result);
+        console.log('Result from View/UI:', result);
       }}&gt;Send&lt;/button&gt; 
     &lt;/div&gt;
   );
 }
 
 export default UserData;</code></pre>
-<p>onClick займає декілька стрічок, залишати її в такому вигляді є поганою практикою. Краще винести у окрему функцію:</p>
+<p>The onClick takes several lines, leaving it in this form is bad practice. It's better to extract it into a separate function:</p>
 <pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions'
 
@@ -62,12 +62,12 @@ const UserData = () =&gt; {
   const surname = useSelector(state =&gt; state.login.surname);
 
   const successMessage = () =&gt; {
-    alert('Дані відправлені успішно.');
+    alert('Data sent successfully.');
   }
 
   const sendData = async () =&gt; {
     const result = await dispatch(sendUserData(successMessage));
-    console.log('Результат з View/UI:', result);
+    console.log('Result from View/UI:', result);
   }
 
   return (

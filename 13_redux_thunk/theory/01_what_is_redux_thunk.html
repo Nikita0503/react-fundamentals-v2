@@ -1,9 +1,9 @@
-<h3 style="color: #76cdd8;"><strong>Що таке Redux Thunk</strong></h3>
-<p>Тримати логіку взаємодії з REST API у коді компонента не є хорошою практикою. Для цього використовується <strong>Redux Thunk</strong>.</p>
-<p>Для початку роботи з Redux Thunk необхідно зробити 2 кроки:</p>
-<p>Перший - встановити Redux thunk у проект: </p>
+<h3 style="color: #76cdd8;"><strong>What is Redux Thunk</strong></h3>
+<p>Keeping REST API interaction logic in component code is not a good practice. <strong>Redux Thunk</strong> is used for this purpose.</p>
+<p>To start working with Redux Thunk, you need to take 2 steps:</p>
+<p>First - install Redux Thunk in the project: </p>
 <pre class="prettyprint"><code class="lang-js">npm install redux-thunk</code></pre>
-<p>Другий - підключити Redux Thunk:</p>
+<p>Second - connect Redux Thunk:</p>
 <pre class="prettyprint"><code class="lang-js">/** /redux/store */
 
 import { combineReducers, createStore, applyMiddleware } from 'redux';<br />import thunkMiddleware from 'redux-thunk';
@@ -14,10 +14,10 @@ const rootReducer = combineReducers({
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));</code></pre>
-<p>Тому для впровадження middlewares у Redux, другим параметром до createStore передається результат функції <strong>applyMiddleware</strong>.</p>
-<p>ApplyMiddleware приймає middlewares. У нашому випадку тільки 1 middleware - <strong>Redux Thunk</strong>. Він знаходиться у пакеті 'redux-thunk'.</p>
-<p><strong>Middleware</strong> можна розуміти так: операція, котра відпрацьовує між двома іншими операціями.</p>
-<p>Redux Thunk - middleware для Redux. Він працює <strong>між викликом Dispatch та обробкою Action</strong> у Reducer:</p>
+<p>To integrate middlewares into Redux, the result of the <strong>applyMiddleware</strong> function is passed as the second parameter to createStore.</p>
+<p>ApplyMiddleware accepts middlewares. In our case, only 1 middleware - <strong>Redux Thunk</strong>. It is located in the 'redux-thunk' package.</p>
+<p><strong>Middleware</strong> can be understood as: an operation that executes between two other operations.</p>
+<p>Redux Thunk is a middleware for Redux. It works <strong>between the Dispatch call and the Action processing</strong> in the Reducer:</p>
 <p><img src="blob:https://studio.elearn.epam.com/4239e86d-2854-44d7-bc80-0d1fcb0f62ee" alt="" /></p>
 <style><!--
 .row-container {

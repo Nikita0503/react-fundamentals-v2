@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Навігація між сторінками</strong></h3>
-<p>Розлянемо приклад використання Link компоненту:</p>
+<h3 style="color: #76cdd8;"><strong>Navigation between pages</strong></h3>
+<p>Let's look at an example of using the Link component:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */
 
 import React from 'react';
@@ -24,8 +24,8 @@ const App = () =&gt; {
 
 export default App;
 </code></pre>
-<p><strong>&lt;Link&gt;</strong> — це компонент, натиснувши на який, користувач перейде на іншу сторінку. У react-router-dom &lt;Link&gt; рендерить елемент <strong>&lt;a&gt; зі справжнім href</strong>, який вказує на ресурс, на який він посилається. Це означає, що такі речі, як клацання правою кнопкою миші &lt;Link&gt;, працюють так, як ви очікували. Ви можете використати &lt;Link reloadDocument&gt;, щоб пропустити маршрутизацію на стороні клієнта та дозволити веб-переглядачу нормально виконувати перехід (як якщо б це був &lt;a href&gt;).</p>
-<p>Розташування &lt;Link&gt; компонентів поза &lt;Routes&gt; дозволяє <strong>не дублювати код</strong> для відображення кнопок навігації на кожній сторінці. Тобто все що знаходиться в середині фрагменту (&lt;&gt;&lt;/&gt;) буде <strong>відображено зверху кожної сторінки</strong>.</p>
+<p><strong>&lt;Link&gt;</strong> — is a component that, when clicked, navigates the user to another page. In react-router-dom, &lt;Link&gt; renders an <strong>&lt;a&gt; element with a real href</strong> that points to the resource it links to. This means that things like right-clicking a &lt;Link&gt; work as you would expect. You can use &lt;Link reloadDocument&gt; to skip client-side routing and let the browser handle the transition normally (as if it were an &lt;a href&gt;).</p>
+<p>Placing &lt;Link&gt; components outside &lt;Routes&gt; allows you to <strong>avoid duplicating code</strong> for displaying navigation buttons on each page. That is, everything inside the fragment (&lt;&gt;&lt;/&gt;) will be <strong>displayed at the top of every page</strong>.</p>
 <style><!--
 .row-container {
         display: flex;

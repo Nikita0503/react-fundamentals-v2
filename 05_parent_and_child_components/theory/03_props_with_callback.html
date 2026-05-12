@@ -1,8 +1,8 @@
-<h3 style="color: #76cdd8;"><strong>Props з використанням callback-функції</strong></h3>
-<p>Пропси є одноразовими, тобто вони не можуть бути змінені дитячим компонентом. Це допомагає забезпечити <strong>односторонній потік даних</strong> в React, де дані передаються зверху вниз по ієрархії компонентів. Компонент-дитина може користуватися переданими їй пропсами для відображення даних або виклику функцій, переданих в пропсах, але вона не може змінювати ці дані безпосередньо. Замість цього, компонент-дитина може сповіщати батьківський компонент про зміни, викликаючи <strong>функції з пропсів</strong>, переданих їй від батьківського компонента.</p>
+<h3 style="color: #76cdd8;"><strong>Props with Callback Functions</strong></h3>
+<p>Props are read-only, meaning they cannot be changed by the child component. This helps ensure <strong>unidirectional data flow</strong> in React, where data is passed from top to bottom through the component hierarchy. A child component can use the props passed to it to display data or call functions passed in props, but it cannot change this data directly. Instead, the child component can notify the parent component about changes by calling <strong>functions from props</strong> passed to it from the parent component.</p>
 <h1><img src="blob:https://studio.elearn.epam.com/d6252c42-5006-4ebf-a063-71f7b998b8c9" alt="" width="404" height="170" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
-<p>Пропси дозволяють передавати <strong>функції-зворотні виклики</strong> (callback functions) в компоненти-діти, що дозволяє дочірнім компонентам <strong>взаємодіяти</strong> зі своїми батьками. Коли компонент-дитина викликає функцію, передану в пропсах від батьківського компонента, він може сповістити батьківський компонент про зміни або викликати певну функціональність, що знаходиться на батьківському рівні:</p>
-<pre class="prettyprint"><code class="lang-js">// Батьківський компонент
+<p>Props allow passing <strong>callback functions</strong> to child components, which allows child components to <strong>interact</strong> with their parents. When a child component calls a function passed in props from the parent component, it can notify the parent component about changes or invoke certain functionality that exists at the parent level:</p>
+<pre class="prettyprint"><code class="lang-js">// Parent component
 
 import React, { useState } from "react";
 import ChildComponent from "./ChildComponent";
@@ -10,36 +10,36 @@ import ChildComponent from "./ChildComponent";
 const ParentComponent = () =&gt; {
   const [counter, setCounter] = useState(0);
 
-  // Функція-зворотний виклик, яка змінює стан у батьківському компоненті
+  // Callback function that changes state in the parent component
   const incrementCounter = () =&gt; {
     setCounter(counter + 1);
   };
 
   return (
     &lt;div&gt;
-      &lt;h1&gt;Батьківський компонент&lt;/h1&gt;
-      &lt;p&gt;Лічильник: {counter}&lt;/p&gt;
+      &lt;h1&gt;Parent Component&lt;/h1&gt;
+      &lt;p&gt;Counter: {counter}&lt;/p&gt;
       &lt;ChildComponent onButtonClick={incrementCounter} /&gt;
     &lt;/div&gt;
   );
 };
 
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// Компонент-дитина
+<pre class="prettyprint"><code class="lang-js">// Child component
 
 import React from "react";
 
 const ChildComponent = (props) =&gt; {
   return (
     &lt;div&gt;
-      &lt;h2&gt;Дитячий компонент&lt;/h2&gt;
-      &lt;button onClick={props.onButtonClick}&gt;Збільшити лічильник&lt;/button&gt;
+      &lt;h2&gt;Child Component&lt;/h2&gt;
+      &lt;button onClick={props.onButtonClick}&gt;Increment counter&lt;/button&gt;
     &lt;/div&gt;
   );
 };
 
 export default ChildComponent;</code></pre>
-<p>Компонент-батько ParentComponent містить стан counter та функцію incrementCounter, яка змінює стан counter при кожному виклику. Компонент-дитина ChildComponent приймає <strong>onButtonClick як пропс</strong> та використовує його як <strong>зворотний виклик</strong> при натисканні на кнопку. Функція incrementCounter змінює стан counter у ParentComponent, відправляючи нове значення з компонента-дитини до компонента-батька через зворотний виклик. При зміні значення counter батьківський компонент ParentComponent буде паремальовуватися, разом з ним перемалюється й ChildComponent.</p>
+<p>The parent component ParentComponent contains the counter state and the incrementCounter function, which changes the counter state on each call. The child component ChildComponent accepts <strong>onButtonClick as a prop</strong> and uses it as a <strong>callback</strong> when the button is clicked. The incrementCounter function changes the counter state in ParentComponent, sending the new value from the child component to the parent component through the callback. When the counter value changes, the parent component ParentComponent will re-render, and ChildComponent will re-render along with it.</p>
 <style><!--
 .row-container {
         display: flex;

@@ -1,18 +1,18 @@
-<h3 style="color: #76cdd8;"><strong>Важливі моменти роботи з об`єктами у javascript</strong></h3>
-<p>Порівняння об'єктів у JavaScript базується на <strong>порівнянні посилань</strong> (references) на об'єкти, а не на їхньому вмісті.</p>
-<p>Коли ми порівнюємо два об'єкти за допомогою оператора порівняння == або оператора строгого порівняння ===, JavaScript перевіряє, чи посилаються обидва операнди на одну і ту ж область пам'яті, тобто чи мають вони <strong>однакове посилання</strong>. Якщо об'єкти мають різні посилання, то порівняння поверне false, навіть якщо вміст об'єктів однаковий.</p>
-<p>Ось приклад порівняння об'єктів у JavaScript:</p>
+<h3 style="color: #76cdd8;"><strong>Important Aspects of Working with Objects in JavaScript</strong></h3>
+<p>Object comparison in JavaScript is based on <strong>comparing references</strong> to objects, not their content.</p>
+<p>When we compare two objects using the comparison operator == or the strict comparison operator ===, JavaScript checks whether both operands refer to the same memory area, that is, whether they have the <strong>same reference</strong>. If the objects have different references, the comparison will return false, even if the content of the objects is the same.</p>
+<p>Here is an example of object comparison in JavaScript:</p>
 <pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
 const obj2 = { name: 'John', age: 25 };
 const obj3 = obj1;
 
-console.log(obj1 == obj2); // false, оскільки obj1 та obj2 мають різні посилання
-console.log(obj1 === obj2); // false, оскільки obj1 та obj2 мають різні посилання
+console.log(obj1 == obj2); // false, because obj1 and obj2 have different references
+console.log(obj1 === obj2); // false, because obj1 and obj2 have different references
 
-console.log(obj1 == obj3); // true, оскільки obj1 та obj3 мають однакові посилання
-console.log(obj1 === obj3); // true, оскільки obj1 та obj3 мають однакові посилання</code></pre>
-<p>Щоб порівняти вміст двох об'єктів, потрібно <strong>порівняти кожне поле окремо</strong>. Однак, можна використовувати бібліотеки порівняння об'єктів, як наприклад <strong>Lodash</strong>, для зручного <strong>порівняння вмісту об'єктів</strong>.</p>
-<p>Змінюючи значення в об'єктах та виводячи їх у консоль, ми можемо спостерігати, як змінюється вміст об'єктів та як це впливає на порівняння об'єктів:</p>
+console.log(obj1 == obj3); // true, because obj1 and obj3 have the same reference
+console.log(obj1 === obj3); // true, because obj1 and obj3 have the same reference</code></pre>
+<p>To compare the content of two objects, you need to <strong>compare each field separately</strong>. However, you can use object comparison libraries, such as <strong>Lodash</strong>, for convenient <strong>comparison of object content</strong>.</p>
+<p>By changing values in objects and logging them to the console, we can observe how the content of objects changes and how this affects object comparison:</p>
 <pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
 const obj2 = { name: 'John', age: 25 };
 const obj3 = obj1;
@@ -26,13 +26,13 @@ console.log('obj1:', obj1); // { name: 'John', age: 30 }
 console.log('obj2:', obj2); // { name: 'John', age: 25 }
 console.log('obj3:', obj3); // { name: 'John', age: 30 }
 
-console.log(obj1 == obj2); // false, оскільки obj1 та obj2 мають різні посилання
-console.log(obj1 === obj2); // false, оскільки obj1 та obj2 мають різні посилання
+console.log(obj1 == obj2); // false, because obj1 and obj2 have different references
+console.log(obj1 === obj2); // false, because obj1 and obj2 have different references
 
-console.log(obj1 == obj3); // true, оскільки obj1 та obj3 мають однакові посилання
-console.log(obj1 === obj3); // true, оскільки obj1 та obj3 мають однакові посилання</code></pre>
+console.log(obj1 == obj3); // true, because obj1 and obj3 have the same reference
+console.log(obj1 === obj3); // true, because obj1 and obj3 have the same reference</code></pre>
 <p></p>
-<p>Як бачимо, зміна значення поля age у obj1 також змінює вміст obj3, оскільки вони мають <strong>однакове посилання</strong>. Однак, це не впливає на obj2, оскільки він має <strong>власне посилання</strong> на інший об'єкт. Порівняння об'єктів за допомогою == та === також повертає очікувані результати відповідно до їхніх посилань.</p>
+<p>As we can see, changing the value of the age field in obj1 also changes the content of obj3, because they have the <strong>same reference</strong>. However, this does not affect obj2, because it has its <strong>own reference</strong> to a different object. Object comparison using == and === also returns expected results according to their references.</p>
 <style><!--
 .row-container {
         display: flex;

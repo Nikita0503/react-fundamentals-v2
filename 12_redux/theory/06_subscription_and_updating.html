@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Subscribe (оновлення даних)</strong></h3>
-<p>Повертаємося до файлу UserData:</p>
+<h3 style="color: #76cdd8;"><strong>Subscribe (data updating)</strong></h3>
+<p>Let's return to the UserData file:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
 
 const UserData = () =&gt; {
@@ -15,9 +15,9 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p>name та surname зараз знаходяться в середині <strong>Store</strong>, тож реактивні змінні в середині компоненту більше не потрібні.</p>
+<p>name and surname are now inside the <strong>Store</strong>, so the reactive variables inside the component are no longer needed.</p>
 <h3 style="color: #76cdd8;"><strong>useSelector</strong></h3>
-<p>Для того щоб отримати доступ до name, surname у <strong>View/UI</strong> (компоненті) можна використовувати хук <strong>useSelector</strong> з пакету 'react-redux':</p>
+<p>To access name and surname in the <strong>View/UI</strong> (component), you can use the <strong>useSelector</strong> hook from the 'react-redux' package:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
 import { useSelector } from 'react-redux';
 
@@ -34,12 +34,12 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p><strong>useSelector</strong> повертає значення, котрі знаходяться за адресою, котра будується по принципу - <strong>state.REDUCER_NAME.FIELD_NAME</strong> (state.НАЗВА_REDUCER.НАЗВА_ПОЛЯ).</p>
-<p>Так як у RootReducer для userReducer ми надали ключ user, а name знаходиться в середині userReducer, маємо адресу - <strong>state.user.name.</strong></p>
+<p><strong>useSelector</strong> returns values located at an address built following the principle - <strong>state.REDUCER_NAME.FIELD_NAME</strong>.</p>
+<p>Since in the RootReducer we assigned the key user to userReducer, and name is inside userReducer, we have the address - <strong>state.user.name.</strong></p>
 <h3 style="color: #76cdd8;"><strong>useDispatch</strong></h3>
-<p>Зараз View/UI відображає дані зі Store. Але при редагуванні input, name та surname досі змінюватися не будуть.</p>
-<p>Тому Потрібно навчити компонент оновлювати name та surname. Для цього використовується <strong>функція Dispatch</strong>.</p>
-<p>Хук <strong>useDispatch</strong> з пакету 'react-redux' повертає функцію <strong>Dispatch</strong>:</p>
+<p>Now View/UI displays data from the Store. But when editing the input, name and surname still won't change.</p>
+<p>Therefore, we need to teach the component to update name and surname. For this, the <strong>Dispatch function</strong> is used.</p>
+<p>The <strong>useDispatch</strong> hook from the 'react-redux' package returns the <strong>Dispatch</strong> function:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -60,11 +60,11 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p><strong>Dispatch</strong> приймає Action (який формує та повертає Action Creator), та <strong>направляє його у Reducer</strong>, де відбувається <strong>оновлення Store</strong>.</p>
-<p><strong>Увага</strong>:</p>
+<p><strong>Dispatch</strong> accepts an Action (which is formed and returned by the Action Creator) and <strong>sends it to the Reducer</strong>, where the <strong>Store update</strong> occurs.</p>
+<p><strong>Note</strong>:</p>
 <ul>
-<li>Не намагайтесь оновити дані у Store без використання Dispatch.</li>
-<li>useSelector, useDispatch не є єдиними шляхами до взаємодії зі Store. Існує спосіб взаємодії через функцію <strong>connect</strong>.</li>
+<li>Do not try to update data in the Store without using Dispatch.</li>
+<li>useSelector and useDispatch are not the only ways to interact with the Store. There is a way to interact through the <strong>connect</strong> function.</li>
 </ul>
 <p></p>
 <p></p>

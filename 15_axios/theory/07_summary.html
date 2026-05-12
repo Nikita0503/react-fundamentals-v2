@@ -1,9 +1,9 @@
-<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
-<p>В цьому модулі було розглянуто роботу з бібліотекою Axios, що використовується для взаємодії з REST API. Цих знань буде достатьно реалізації роботи з різними едпоінтами у проектах різного масштабу.</p>
+<h3 style="color: #76cdd8;"><strong>Summary</strong></h3>
+<p>In this module, we covered working with the Axios library, which is used for interacting with REST API. This knowledge will be sufficient for implementing work with various endpoints in projects of different scales.</p>
 <p><img src="blob:https://studio.elearn.epam.com/9e958bd0-e9a5-47d3-87b9-41a0873c14d7" alt="" /></p>
-<p>Можливі питання:</p>
-<p><strong>"В Інтернеті зустрічаються фрагменти коду де interceptors налаштовуються прямо у самому axios, без створення axiosInstance. Для чого їх взагалі тоді створювати?".</strong></p>
-<p>Відповідь - у деяких проектах використовується не 1 сервер для взаємодії з REST API, а декілька. Кожен потребує різне налаштування запитів, для цього створюють різні інстанси. З використанням інстансів код стає передбачуваним. Можливо знадобиться робити запит до API, котре не потребує зайвих headers або інших налаштувань, для цього можна використовувати axios напряму, без інстансу (замість fetch).</p>
+<p>Possible questions:</p>
+<p><strong>"On the Internet, there are code fragments where interceptors are configured directly in axios itself, without creating an axiosInstance. Why create them at all then?"</strong></p>
+<p>Answer - in some projects, not 1 server is used for REST API interaction, but several. Each requires different request configuration, so different instances are created. Using instances makes the code predictable. You may need to make a request to an API that doesn't require extra headers or other settings, for which you can use axios directly, without an instance (instead of fetch).</p>
 <style><!--
 .row-container {
         display: flex;

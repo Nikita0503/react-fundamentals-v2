@@ -1,23 +1,23 @@
-<h3 style="color: #76cdd8;"><strong>Безпека при роботі з REST API </strong></h3>
-<p>Існує поняття - <strong>захищений ендпоінт</strong>. Для доступу до якогось ресурсу на сервері, клієнт мусить надати додаткові дані, які будуть свідчити серверу про те що цей клієнт є <strong>авторизованим</strong>. В більшості випадках це <strong>header Authorization,</strong> який виглядає приблизно так:</p>
+<h3 style="color: #76cdd8;"><strong>Security when working with REST API</strong></h3>
+<p>There is a concept of a <strong>protected endpoint</strong>. To access a resource on the server, the client must provide additional data that will indicate to the server that this client is <strong>authorized</strong>. In most cases, this is the <strong>Authorization header</strong>, which looks approximately like this:</p>
 <pre class="prettyprint"><code class="lang-js">headers: {
     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
    },</code></pre>
-<p>Величезна стрічка з символів - це <strong>access token</strong>. Він містить у собі дані про клієнта, котрий звертається до ендпоінту. Сервер розшифровує токен і вирішує чи є доступ у цього клієнта до ресурсу.</p>
-<p>Існує схожий токен - <strong>resfresh token</strong>. У access token є <strong>термін придатності</strong>, після закінчення якого він вважається <strong>невалідним</strong> і сервер не буде допускати клієнта до ресурсу з ним. Тому існують додаткові ендпоінти на сервері, котрі допомогають створити <strong>новий access token, надаючи йому refresh token</strong>.</p>
-<p>Приблизно виглядає так:</p>
+<p>The huge string of characters is an <strong>access token</strong>. It contains data about the client making the request to the endpoint. The server decrypts the token and decides whether this client has access to the resource.</p>
+<p>There is a similar token - the <strong>refresh token</strong>. The access token has an <strong>expiration period</strong>, after which it is considered <strong>invalid</strong> and the server will not allow the client to access the resource with it. Therefore, there are additional endpoints on the server that help create a <strong>new access token by providing the refresh token</strong>.</p>
+<p>It looks approximately like this:</p>
 <pre class="prettyprint"><code class="lang-js">axios.post('https://myserver.com/generate_access_token', {
     'access_token': '…',
     'refresh_token': '…',
 }).
 then((reponse) =&gt; {
-    //response: {new_access_token: ‘….’}
+    //response: {new_access_token: '….'}
 })
 .catch((e) =&gt; {console.log("error: ", e)})</code></pre>
-<p>Пілся отримання нового access_token клієнт знову має доступ до захищених ендпоінтів. Якщо не вдаватися до деталей - <strong>пара токенів потрібна для підвищення безпеки</strong>.</p>
-<p>Зазвичай оновлення токена відбувається тоді, коли один з захищених ендпоінтів повертає помилку, де вказано що access token вже невалідний (застарів). На клієнті у catch ми перехоплюємо цю помилку та робимо запит на оновлення access token. Пілся отримання нового токену повторно робимо невдалий запит, вже з новим access token.</p>
-<p>Це відбувається таким чином, що <strong>користувач не помічає цього процесу</strong>. Але це добре бачить розробник проекту, тому що при великій кількості звертань до різних ендпоінтів він мусить застосувати цей механізм до кожного захищеного ендпоінту і це породжує велику кількіть boilerplate коду.</p>
-<p>Звісно, можна самостійно розробити клас, який вміє це робити і використовувати його при звертанні до серверу. Але в Axios реалізувати цей процес набато легже та швидше.</p>
+<p>After receiving the new access_token, the client again has access to protected endpoints. Without going into details - <strong>the token pair is needed to increase security</strong>.</p>
+<p>Usually, token refresh occurs when one of the protected endpoints returns an error indicating that the access token is no longer valid (expired). On the client side, in catch, we intercept this error and make a request to refresh the access token. After receiving the new token, we retry the failed request with the new access token.</p>
+<p>This happens in such a way that the <strong>user does not notice this process</strong>. But the project developer can clearly see it, because with a large number of requests to different endpoints, they must apply this mechanism to each protected endpoint, which generates a large amount of boilerplate code.</p>
+<p>Of course, you can independently develop a class that can do this and use it when making requests to the server. But in Axios, implementing this process is much easier and faster.</p>
 <p></p>
 <p></p>
 <style><!--

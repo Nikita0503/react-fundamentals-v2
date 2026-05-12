@@ -1,22 +1,22 @@
 <h3 style="color: #76cdd8;"><strong>Actions</strong></h3>
-<p>Сам по собі <strong>action</strong> є <strong>об'єктом</strong> з 2 полями: <strong>Action Type</strong> та <strong>Payload</strong>.</p>
+<p>An <strong>action</strong> by itself is an <strong>object</strong> with 2 fields: <strong>Action Type</strong> and <strong>Payload</strong>.</p>
 <ul>
-<li>Payload - нове значення, котре <strong>надходитиме у Store</strong></li>
-<li>Action Type - <strong>унікальна стрічка</strong>, котра вказує Reducer <strong>що саме робити з Payload</strong></li>
+<li>Payload - the new value that will <strong>go into the Store</strong></li>
+<li>Action Type - a <strong>unique string</strong> that tells the Reducer <strong>what exactly to do with the Payload</strong></li>
 </ul>
-<p>Приклад:</p>
+<p>Example:</p>
 <pre class="prettyprint"><code class="lang-js">{
   type: "SET_NAME",
   payload: "MyName"
 }</code></pre>
-<p>Зазвичай Action Type будується по принципу - <strong>ACTION_FIELDNAME</strong> (ДІЯ_НАЗВАПОЛЯ). Це не є офіційним правилом, але так зручніше та зрозуміліше.</p>
-<p>Але працювати з Action у такому вигляді є поганою практикою, для цього створюють <strong>Action Creator</strong>:</p>
+<p>Usually, Action Type is built following the principle - <strong>ACTION_FIELDNAME</strong>. This is not an official rule, but it is more convenient and understandable.</p>
+<p>But working with an Action in this form is bad practice, so <strong>Action Creators</strong> are created for this:</p>
 <pre class="prettyprint"><code class="lang-js">const setName = (name) =&gt; ({
   type: "SET_NAME",
   payload: name
 })</code></pre>
-<p>Action Creator - <strong>функція</strong> що формує та <strong>повертає Action</strong>.</p>
-<p>Стрічка з поля Action Type нам знадобляться у інших місцях коду, хорошою практикою буде <strong>винести її у константу</strong>:</p>
+<p>Action Creator - a <strong>function</strong> that forms and <strong>returns an Action</strong>.</p>
+<p>The string from the Action Type field will be needed in other places in the code, so it is good practice to <strong>extract it into a constant</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">const SET_NAME = "SET_NAME";
 
 const setName = (name) =&gt; ({
@@ -24,7 +24,7 @@ const setName = (name) =&gt; ({
   payload: name
 })
 </code></pre>
-<p>Тепер сформуємо таку саму пару для surname та зробимо можливість експорту:</p>
+<p>Now let's create the same pair for surname and make it exportable:</p>
 <pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */
 export const SET_NAME = "SET_NAME";
 export const SET_SURNAME = "SET_SURNAME";
@@ -38,10 +38,10 @@ export const setSurname = (surname) =&gt; ({
   type: SET_SURNAME,
   payload: surname
 });</code></pre>
-<p>Ми сформували <strong>Actions</strong>. Action Types (SET_NAME, SET_SURNAME) знадобляться у Reducer. Action Creators (setName, setSurname) знадобляться у View/UI.</p>
-<p><strong>Увага</strong>:</p>
-<p>Payload є <strong>необов`язковим полем</strong>. Він потрібен тоді, коли ми хочемо <strong>передати до Reducer якесь значення</strong>. Може бути таке що <strong>одного Action Type буде достатньо</strong>. Наприклад, Action Type "RESET_NAME" дасть зрозуміти, що name треба зробити пустим.</p>
-<p>Action Types мусять бути унікальними для запобігання колізій з інишми Reducers.</p>
+<p>We have formed the <strong>Actions</strong>. Action Types (SET_NAME, SET_SURNAME) will be needed in the Reducer. Action Creators (setName, setSurname) will be needed in the View/UI.</p>
+<p><strong>Note</strong>:</p>
+<p>Payload is an <strong>optional field</strong>. It is needed when we want to <strong>pass some value to the Reducer</strong>. There may be cases where <strong>the Action Type alone is sufficient</strong>. For example, the Action Type "RESET_NAME" makes it clear that name should be made empty.</p>
+<p>Action Types must be unique to prevent collisions with other Reducers.</p>
 <p></p>
 <style><!--
 .row-container {

@@ -1,17 +1,17 @@
 <h3 style="color: #76cdd8;"><strong>useState</strong></h3>
-<p>Програмування на React не передбачає використання звичайних змінних:</p>
+<p>Programming in React does not involve using regular variables:</p>
 <pre class="prettyprint"><code class="lang-js">let count = 0;
 count = count + 1;</code></pre>
-<p>Такий підхід використовується у імперативному програмуванні (у звичайному, наприклад з використанням Java). В компонентах React використовуються <strong>«реактивні» змінні</strong>. Вони створюються за допомогую хуків. Створити якусь змінну у функціональному комопоненті можна за допомогою хука <strong>useState</strong>.</p>
-<p>Хук <strong>useState</strong> є одним з вбудованих хуків у React, який використовується для додавання стану (змінних) до функціональних компонентів. Він дозволяє зберігати та оновлювати значення стану в функціональних компонентах, що раніше було можливо тільки з використанням класових компонентів.</p>
-<p>Ось приклад використання хука useState у функціональному компоненті:</p>
+<p>This approach is used in imperative programming (in regular programming, for example using Java). In React components, <strong>"reactive" variables</strong> are used. They are created using hooks. You can create a variable in a functional component using the <strong>useState</strong> hook.</p>
+<p>The <strong>useState</strong> hook is one of the built-in hooks in React that is used to add state (variables) to functional components. It allows storing and updating state values in functional components, which was previously only possible using class components.</p>
+<p>Here is an example of using the useState hook in a functional component:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
 
 const Counter = () =&gt; {
-  // Використання хука useState для створення стану зі значенням по замовчуванню 0
+  // Using the useState hook to create state with a default value of 0
   const [count, setCount] = useState(0);
 
-  // Функція для збільшення значення лічильника
+  // Function to increment the counter value
   const increment = () =&gt; {
     setCount(count + 1);
   };
@@ -25,14 +25,14 @@ const Counter = () =&gt; {
 };
 
 export default Counter;</code></pre>
-<p>У цьому прикладі ми використовуємо хук useState для створення стану зі значенням по замовчуванню 0. Хук useState повертає <strong>масив</strong>, де перший елемент - <strong>поточне значення стану</strong> (count), а другий елемент - <strong>функція для оновлення стану</strong> (setCount). Ми використовуємо цю функцію setCount для зміни значення стану count при кожному кліку на кнопку.</p>
-<p>Таким чином, хук useState дозволяє нам зберігати та оновлювати стан в функціональних компонентах, роблячи їх більш простими та зрозумілими.</p>
-<p>Зміна стану компонента змушує його перемальовуватись (<strong>rerender</strong>), для того щоб відобразити актуальні дані. </p>
-<p>Алгоритм того як думає компонент:</p>
-<p>1) Компонент відображує розмітку з <strong>початковими даними</strong>. «Count: 0». Так, як початкове значення count = 0.</p>
-<p>2) Клік по кнопці викликає функцію increment, де в ній викликається setCount(count + 1). Це значить що у setCount (функцію для зміни значення count), ми передаємо поточне значення <strong>count збільшене на 1</strong>.</p>
-<p>3) Компонент розуміє що <strong>значення count змінено</strong> (count = 1), тому мусить перемалюватися з актуальними даними.</p>
-<p>4) Компонент <strong>перемальовується</strong> і відображує розмітку з актуальними (оновленими) даними. «Count: 1». Так, як значення count = 1.</p>
+<p>In this example, we use the useState hook to create state with a default value of 0. The useState hook returns an <strong>array</strong>, where the first element is the <strong>current state value</strong> (count), and the second element is the <strong>function to update the state</strong> (setCount). We use this setCount function to change the count state value on each button click.</p>
+<p>Thus, the useState hook allows us to store and update state in functional components, making them simpler and more understandable.</p>
+<p>Changing the component's state forces it to re-render (<strong>rerender</strong>), in order to display up-to-date data.</p>
+<p>The algorithm of how a component thinks:</p>
+<p>1) The component displays markup with <strong>initial data</strong>. "Count: 0". Since the initial value of count = 0.</p>
+<p>2) Clicking the button calls the increment function, where setCount(count + 1) is called. This means that in setCount (the function to change the count value), we pass the current <strong>count value incremented by 1</strong>.</p>
+<p>3) The component understands that the <strong>count value has changed</strong> (count = 1), so it must re-render with up-to-date data.</p>
+<p>4) The component <strong>re-renders</strong> and displays markup with up-to-date (updated) data. "Count: 1". Since the count value = 1.</p>
 <p></p>
 <style><!--
 .row-container {

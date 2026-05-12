@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Приклад з callback-параметром</strong></h3>
-<p>Існують випадки, коли в Санку необхідно <strong>передати параметри</strong> з компоненту. Для нашого випадку: передамо функцію, котра повідомляє користувача про успішне виконання відправки даних:</p>
+<h3 style="color: #76cdd8;"><strong>Example with a callback parameter</strong></h3>
+<p>There are cases when you need to <strong>pass parameters</strong> from the component into a Thunk. For our case: let's pass a function that notifies the user about successful data submission:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions';
@@ -11,7 +11,7 @@ const UserData = () =&gt; {
   const surname = useSelector(state =&gt; state.login.surname);
 
   const successMessage = () =&gt; {
-    alert('Дані відправлені успішно.');
+    alert('Data sent successfully.');
   }
 
   return (
@@ -24,8 +24,8 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p>Для цього створимо функцію <strong>successMessage</strong>, котра виводить повідомлення та передамо її як <strong>параметр</strong> до Санки sendUserData.</p>
-<p>Залишилося <strong>викликати</strong> цю функцію в середині Санки:</p>
+<p>For this, we create a <strong>successMessage</strong> function that displays a message and pass it as a <strong>parameter</strong> to the sendUserData Thunk.</p>
+<p>All that remains is to <strong>call</strong> this function inside the Thunk:</p>
 <pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {    
     try{
         const userName = getState().user.name;
@@ -40,7 +40,7 @@ export default UserData;</code></pre>
         });
 
         const result = await response.json();
-        console.log("Результат:", result);
+        console.log("Result:", result);
 	dispatch(setName(''));
         dispatch(setSurname(''));
 	if(!!callback){
@@ -50,9 +50,9 @@ export default UserData;</code></pre>
         console.log('sendUserData error', e)
     }
 };</code></pre>
-<p>Такий механізм називається <strong>callback</strong>, тож нехай параметр має таку назву.</p>
-<p>Пілся очищення полів name та surname, <strong>перевіряємо чи був переданий</strong> якийсь callback, та викликаємо його.</p>
-<p>Теперь <strong>після успішного виконання запиту</strong>, користувач буде повідомлений.</p>
+<p>This mechanism is called a <strong>callback</strong>, so let the parameter have that name.</p>
+<p>After clearing the name and surname fields, we <strong>check whether</strong> a callback was passed and call it.</p>
+<p>Now <strong>after successful request execution</strong>, the user will be notified.</p>
 <p></p>
 <p></p>
 <style><!--

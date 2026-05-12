@@ -1,5 +1,5 @@
 <h3 style="color: #76cdd8;"><strong>Axios instance</strong></h3>
-<p><strong>Axios instance</strong> - екземпляр Axios, котрий можна налаштувати під свої потреби:</p>
+<p><strong>Axios instance</strong> - an Axios instance that can be configured to your needs:</p>
 <pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
 import axios from 'axios';
 
@@ -9,15 +9,15 @@ const axiosInstance = axios.create({
 });
 
 export default axiosInstance; </code></pre>
-<p><strong>axios.create</strong> - <strong>функція створення інстансу</strong>, яка приймає об`єкт з налаштуваннями;</p>
-<p><strong>baseURL</strong> - зберігає однаковий початок стрічки запиту. Наприклад: Без вказання baseURL виклик ендпоінту використовуючи щойно створений інстанс виглядає так:</p>
+<p><strong>axios.create</strong> - an <strong>instance creation function</strong> that accepts an object with settings;</p>
+<p><strong>baseURL</strong> - stores the common beginning of the request URL. For example: Without specifying baseURL, calling an endpoint using the newly created instance looks like this:</p>
 <pre class="prettyprint"><code class="lang-js">axiosInstanse.get('https://jsonplaceholder.typicode.com/posts/1');
 </code></pre>
-<p>Якщо вказати baseURL:</p>
+<p>If you specify baseURL:</p>
 <pre class="prettyprint"><code class="lang-js">axiosInstanse.get('/posts/1');
 </code></pre>
-<p>baseURL може зберігати домен на якому працює сервер і при виклику ендпоінту з axiosInstance можна не вказувати увесь URL, а тільки <strong>залишок адреси</strong> ендпоінту.</p>
-<p><strong>Timeout</strong> - кількість мілісекунд, пілся яких axios поверне помилку, у разі якщо за цей час відповідь не повернулася. Тепер імпортуючи axiosInstance у файли роботи з REST API можна працювати з налаштованим axios.</p>
+<p>baseURL can store the domain where the server runs, and when calling an endpoint with axiosInstance, you don't need to specify the entire URL, only the <strong>remaining part of the endpoint address</strong>.</p>
+<p><strong>Timeout</strong> - the number of milliseconds after which axios will return an error if the response has not been received within this time. Now, by importing axiosInstance into REST API files, you can work with a configured axios.</p>
 <style><!--
 .row-container {
         display: flex;

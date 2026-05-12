@@ -1,13 +1,13 @@
-<h4 style="color: #474747; font-weight: 600;">Що таке компоненти вищого порядку (HOC) в React?</h4><br/>
-( ) HOC - це синтаксичний елемент React, який дозволяє створювати вищі порядки компонентів без використання функцій вищого порядку.
-(x) HOC - це функції, які приймають компонент React в якості вхідного параметра і повертають новий компонент React в якості виходу.
-( ) HOC - це вбудовані функції React, які автоматично надають вищий порядок компонентам за необхідності.
-<h4 style="color: #474747; font-weight: 600;">Яке основне використання компонентів вищого порядку (HOC) в React?</h4><br/>
-( ) HOC використовуються виключно для зміни структури DOM у React-додатках.
-(x) HOC можуть бути використані для розширення функціональності компонентів React без зміни їхньої реалізації.
-( ) HOC використовуються для створення точних копій компонентів у React-додатках.
-<h4 style="color: #474747; font-weight: 600;">Що буде у результаті виконання коду?</h4><br/>
-<pre>// Оголошуємо основний компонент, який буде обгортатися HOC
+<h4 style="color: #474747; font-weight: 600;">What are Higher-Order Components (HOC) in React?</h4><br/>
+( ) HOC is a syntactic element of React that allows creating higher-order components without using higher-order functions.
+(x) HOC are functions that accept a React component as an input parameter and return a new React component as output.
+( ) HOC are built-in React functions that automatically provide higher order to components when needed.
+<h4 style="color: #474747; font-weight: 600;">What is the main use of Higher-Order Components (HOC) in React?</h4><br/>
+( ) HOCs are used exclusively to change the DOM structure in React applications.
+(x) HOCs can be used to extend the functionality of React components without changing their implementation.
+( ) HOCs are used to create exact copies of components in React applications.
+<h4 style="color: #474747; font-weight: 600;">What will be the result of executing this code?</h4><br/>
+<pre>// Declare the main component that will be wrapped by the HOC
 const MyComponent = ({ username }) => {
   return (
     &lt;div&gt;
@@ -16,26 +16,26 @@ const MyComponent = ({ username }) => {
   );
 };
 
-// Оголошуємо HOC з назвою withLogging
+// Declare the HOC named withLogging
 const withLogging = (WrappedComponent) => {
   return (props) => {
-    // Додаємо логування перед відображенням компонента
-    console.log(`Компонент відображається з username:`, props.username);
+    // Add logging before rendering the component
+    console.log(`Component is rendering with username:`, props.username);
 
-    // Повертаємо обгорнутий компонент
+    // Return the wrapped component
     return &lt;WrappedComponent {...props} /&gt;;
   };
 };
 
-// Використовуємо HOC для обгортання основного компоненту
+// Use the HOC to wrap the main component
 const MyComponentWithLogging = withLogging(MyComponent);
 
-// Використання компонента з логуванням
+// Using the component with logging
 const App = () => {
   return &lt;MyComponentWithLogging username="User123" /&gt;;
 };
 </pre><br/>
-( ) Нічого не виведеться у консоль, а компонент App покаже "Hello, User123".
-(x) У консолі буде: "Компонент відображається з username: User123", а компонент App покаже "Hello, User123".
-(x) У консолі буде: "Компонент відображається з username: User123", а компонент App покаже "Hello, undefined".
-( ) Нічого не виведеться у консоль, а компонент App покаже "Hello, undefined".
+( ) Nothing will be logged to the console, and the App component will show "Hello, User123".
+(x) The console will show: "Component is rendering with username: User123", and the App component will show "Hello, User123".
+(x) The console will show: "Component is rendering with username: User123", and the App component will show "Hello, undefined".
+( ) Nothing will be logged to the console, and the App component will show "Hello, undefined".

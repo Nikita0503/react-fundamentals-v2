@@ -1,9 +1,9 @@
-<h3 style="color: #76cdd8;"><strong>Компоненти обгортки</strong></h3>
-<p>HOC також можна називати компонентом обгорткою, але це визначення більш стосується компонентів, котрі мають <strong>властивість дочірніх елементів</strong> (props.children).</p>
-<p><strong>props.children</strong> в React - це спеціальна властивість, яка дозволяє передавати дочірні елементи в компонент як <strong>вміст між відкриваючим і закриваючим тегами</strong> компонента. Це дозволяє компонентам використовувати вкладені елементи, такі як текст, інші компоненти або фрагменти в своєму внутрішньому вмісті (бути <strong>контейнерами</strong>).</p>
-<p>props.children дозволяє створювати компоненти з більш гнучким відображенням та функціональністю, оскільки вони можуть приймати та відображати дочірні елементи без необхідності жорстко прописувати їх у властивості компонента. Це особливо корисно, коли компонент має бути використаний в <strong>різних контекстах з різним вмістом</strong>.</p>
+<h3 style="color: #76cdd8;"><strong>Wrapper Components</strong></h3>
+<p>A HOC can also be called a wrapper component, but this definition is more applicable to components that have the <strong>children property</strong> (props.children).</p>
+<p><strong>props.children</strong> in React is a special property that allows passing child elements into a component as <strong>content between the opening and closing tags</strong> of the component. This allows components to use nested elements such as text, other components, or fragments in their internal content (to be <strong>containers</strong>).</p>
+<p>props.children allows creating components with more flexible rendering and functionality, since they can accept and display child elements without the need to hardcode them in the component's properties. This is especially useful when a component needs to be used in <strong>different contexts with different content</strong>.</p>
 <h2><img src="blob:https://studio.elearn.epam.com/05198bc5-cbe3-48c7-932c-3ed89056854b" alt="" /></h2>
-<p>Ось приклад використання props.children у компоненті, який надає додаткові стилі:</p>
+<p>Here is an example of using props.children in a component that provides additional styles:</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 
 const Container = (props) =&gt; {
@@ -21,17 +21,17 @@ import Container from './Container';
 const App = () =&gt; {
   return (
     &lt;div&gt;
-      &lt;h1&gt;Мій додаток&lt;/h1&gt;
+      &lt;h1&gt;My App&lt;/h1&gt;
       &lt;Container&gt;
-        &lt;p&gt;Вміст контейнера&lt;/p&gt;
+        &lt;p&gt;Container content&lt;/p&gt;
       &lt;/Container&gt;
     &lt;/div&gt;
   );
 };
 
 export default App;</code></pre>
-<p>Стиль container може містити будь-які налаштування. Це можуть бути відступи (margin), колір фону (background-color) та багато іншого. Усі компоненти, що будуть знаходитися між відкритим та закритим тегами Container будуть обгорнуті в блок, який має стилі класу container.</p>
-<p>Ми розглянули приклад компонента обгортки з використанням стилів, але це може бути більш складна реалізація:</p>
+<p>The container style can contain any settings. These can be margins, background color, and much more. All components placed between the opening and closing Container tags will be wrapped in a block that has the container class styles.</p>
+<p>We looked at an example of a wrapper component using styles, but it can be a more complex implementation:</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 
 const Card = ({ title, children }) =&gt; {
@@ -52,21 +52,21 @@ import Card from './Card';
 const App = () =&gt; {
   return (
     &lt;div&gt;
-      &lt;h1&gt;Мій додаток&lt;/h1&gt;
-      &lt;Card title="Карта 1"&gt;
-        &lt;p&gt;Це контент першої карти.&lt;/p&gt;
-        &lt;button&gt;Дія&lt;/button&gt;
+      &lt;h1&gt;My App&lt;/h1&gt;
+      &lt;Card title="Card 1"&gt;
+        &lt;p&gt;This is the content of the first card.&lt;/p&gt;
+        &lt;button&gt;Action&lt;/button&gt;
       &lt;/Card&gt;
-      &lt;Card title="Карта 2"&gt;
-        &lt;p&gt;Це контент другої карти.&lt;/p&gt;
-        &lt;a href="#"&gt;Посилання&lt;/a&gt;
+      &lt;Card title="Card 2"&gt;
+        &lt;p&gt;This is the content of the second card.&lt;/p&gt;
+        &lt;a href="#"&gt;Link&lt;/a&gt;
       &lt;/Card&gt;
     &lt;/div&gt;
   );
 };
   
 export default App;</code></pre>
-<p>У цьому прикладі, компонент Card має властивість title, яка передається в якості заголовка карти, і props.children, який містить вміст карти між відкриваючим і закриваючим тегами. Завдяки props.children можна передавати будь-який вміст (текст, елементи, компоненти) внутрішнім елементом Card безпосередньо в розмітці, що робить компонент Card більш варіативним та повторно використовуваним.</p>
+<p>In this example, the Card component has a title property that is passed as the card's heading, and props.children, which contains the card's content between the opening and closing tags. Thanks to props.children, you can pass any content (text, elements, components) as an inner element of Card directly in the markup, making the Card component more versatile and reusable.</p>
 <p></p>
 <style><!--
 .row-container {

@@ -1,14 +1,14 @@
-<h4 style="color: #474747; font-weight: 600;">Що таке useMemo і як воно може оптимізувати рендеринг компонентів в React?</h4><br/>
-( ) useMemo - це спосіб автоматично кешувати всі результати рендерингу компонентів в додатку, забезпечуючи високий рівень продуктивності.
-(x) useMemo - це хук в React, який дозволяє оптимізувати рендеринг компонентів, запобігти непотрібних перерахувань.
-( ) Використання useMemo завжди призводить до повного припинення перерахувань та рендерингу компонентів, незалежно від вхідних залежностей.
-( ) useMemo забезпечує кешування результатів рендерингу компонентів, що робить рендеринг миттєвим у всіх випадках.
-<h4 style="color: #474747; font-weight: 600;">Як використовується useMemo для кешування результатів обчислень в React компонентах?</h4><br/>
-( ) useMemo приймає дві функції: перша - функція, яка визначає, як кешувати результат, і друга - функція, яка обчислює результат.
-( ) Використовується useMemo, передаючи йому функцію, яка обчислює результат, і масив залежностей, на основі яких відбувається кешування.
-(x) useMemo приймає функцію, яка мусить повернути результат обчислень, та масив залежностей, при зміні яких відбувається повторне обчислення.
-<h4 style="color: #474747; font-weight: 600;">Коли використання useMemo може бути особливо важливим?</h4><br/>
-( ) Використання useMemo не є важливим, оскільки React автоматично оптимізує рендеринг компонентів.
-(x) Важливе використання useMemo, коли у вас є обчислювально важкі операції, які не потрібно виконувати при кожному рендері компонента.
-( ) Використання useMemo важливе завжди, оскільки це дозволяє уникнути будь-яких перерахувань у компонентах.
-( ) Важливість використання useMemo залежить від розміру та складності компонентів, і вона завжди однакова для всіх випадків.
+<h4 style="color: #474747; font-weight: 600;">What is useMemo and how can it optimize component rendering in React?</h4><br/>
+( ) useMemo is a way to automatically cache all component rendering results in an application, ensuring a high level of performance.
+(x) useMemo is a hook in React that allows optimizing component rendering and preventing unnecessary recalculations.
+( ) Using useMemo always leads to a complete stop of recalculations and component rendering, regardless of input dependencies.
+( ) useMemo provides caching of component rendering results, making rendering instant in all cases.
+<h4 style="color: #474747; font-weight: 600;">How is useMemo used to cache computation results in React components?</h4><br/>
+( ) useMemo accepts two functions: the first is a function that determines how to cache the result, and the second is a function that computes the result.
+( ) useMemo is used by passing it a function that computes the result and a dependency array based on which caching occurs.
+(x) useMemo accepts a function that must return the computation result and a dependency array, upon changes to which recalculation occurs.
+<h4 style="color: #474747; font-weight: 600;">When can using useMemo be particularly important?</h4><br/>
+( ) Using useMemo is not important because React automatically optimizes component rendering.
+(x) Using useMemo is important when you have computationally expensive operations that do not need to be performed on every component render.
+( ) Using useMemo is always important because it allows avoiding any recalculations in components.
+( ) The importance of using useMemo depends on the size and complexity of components, and it is always the same for all cases.

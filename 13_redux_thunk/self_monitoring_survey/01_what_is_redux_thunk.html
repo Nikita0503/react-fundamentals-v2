@@ -1,25 +1,25 @@
-<h4 style="color: #474747; font-weight: 600;">Що таке middleware в Redux і яку функцію виконує Redux Thunk?</h4><br/>
-( ) Middleware - це засіб для збільшення продуктивності в Redux, і Redux Thunk відповідає за стан компонентів.
-( ) Middleware - це інструмент для забезпечення безпеки в Redux, і Redux Thunk слідкує за безпекою додатку.
-(x) Middleware - це операція, яка відпрацьовує між викликом Dispatch та обробкою Action у Reducer, а Redux Thunk дозволяє створювати асинхронні дії в Redux.
-<h4 style="color: #474747; font-weight: 600;">Які можливості Redux Thunk?</h4><br/>
-( ) Забезпечує анімацію компонентів в Redux.
-(x) Дозволяє створювати асинхронні дії (Actions) в Redux.
-( ) Застосовує стилі до компонентів.
-<h4 style="color: #474747; font-weight: 600;">Які кроки необхідно виконати для використання Redux Thunk у проекті?</h4><br/>
-(x) Встановити пакет redux-thunk та підключити його до Redux store за допомогою applyMiddleware.
-( ) Встановити пакет redux-async та використовувати його для асинхронних операцій в Redux.
-( ) Змінити всі Actions на асинхронні, безпосередньо вписуючи асинхронний код у кожен Action.
-<h4 style="color: #474747; font-weight: 600;">Які параметри отримує функція, що повертається з Redux Thunk?</h4><br/>
-( ) ActionCreator та State
-(x) Dispatch та getState
-( ) ClearStore та AsyncStorage
-<h4 style="color: #474747; font-weight: 600;">Який з прикладів відображає санку?</h4><br/>
-<span>Варіант 1:</span>
+<h4 style="color: #474747; font-weight: 600;">What is middleware in Redux and what function does Redux Thunk perform?</h4><br/>
+( ) Middleware is a means to increase performance in Redux, and Redux Thunk is responsible for component state.
+( ) Middleware is a tool for ensuring security in Redux, and Redux Thunk monitors application security.
+(x) Middleware is an operation that executes between the Dispatch call and Action processing in the Reducer, and Redux Thunk allows creating asynchronous actions in Redux.
+<h4 style="color: #474747; font-weight: 600;">What are the capabilities of Redux Thunk?</h4><br/>
+( ) Provides component animation in Redux.
+(x) Allows creating asynchronous Actions in Redux.
+( ) Applies styles to components.
+<h4 style="color: #474747; font-weight: 600;">What steps are necessary to use Redux Thunk in a project?</h4><br/>
+(x) Install the redux-thunk package and connect it to the Redux store using applyMiddleware.
+( ) Install the redux-async package and use it for asynchronous operations in Redux.
+( ) Change all Actions to asynchronous by directly writing asynchronous code in each Action.
+<h4 style="color: #474747; font-weight: 600;">What parameters does the function returned from Redux Thunk receive?</h4><br/>
+( ) ActionCreator and State
+(x) Dispatch and getState
+( ) ClearStore and AsyncStorage
+<h4 style="color: #474747; font-weight: 600;">Which example represents a thunk?</h4><br/>
+<span>Option 1:</span>
 <pre>const fetchData = () => {
   return { type: 'UPDATE_DATA', payload: { name: 'John', age: 25 } };
 };</pre><br/>
-<span>Варіант 2:</span>
+<span>Option 2:</span>
 <pre>const fetchData = () => async (dispatch, getState) => {
   try {
     const data = await fetch('https://api.example.com/data');
@@ -29,7 +29,7 @@
     dispatch({ type: 'SET_ERROR', payload: error });
   }
 };</pre><br/>
-<span>Варіант 3:</span>
+<span>Option 3:</span>
 <pre>const fetchData = async (dispatch, getState) => {
   try {
     const data = await fetch('https://api.example.com/data');
@@ -39,18 +39,19 @@
     dispatch({ type: 'SET_ERROR', payload: error });
   }
 };</pre><br/>
-( ) Варіант 1
-(x) Варіант 2
-( ) Варіант 3
-<h4 style="color: #474747; font-weight: 600;">Як можна передати параметри з компоненту до санки?</h4><br/>
-( ) Передавши їх у параметрах функції dispatch() у компоненті.
-( ) Використовуючи connect для прокидання параметрів у функцію в компоненті.
-(x) Передавши їх як параметри санки при виклику з компонента.
-<h4 style="color: #474747; font-weight: 600;">Чому необхідно використовувати функцію Dispatch при оновленні даних в Redux Store?</h4><br/>
-( ) Dispatch є необов'язковим у Redux, і можна оновлювати дані без його використання.
-(x) Dispatch відповідає за відправку Action до Reducer для оновлення Store, і без його використання дані не будуть оновлюватися.
-( ) Dispatch використовується тільки для збереження даних у Store, але не для їх оновлення.
-<h4 style="color: #474747; font-weight: 600;">Як можна передати функцію-callback з компоненту до санки?</h4><br/>
-(x) Вказавши її як параметр при виклику санки з компонента.
-( ) Вказавши її у параметрах функції dispatch() в компоненті.
-( ) Записавши її в основний файл додатку.
+( ) Option 1
+(x) Option 2
+( ) Option 3
+<h4 style="color: #474747; font-weight: 600;">How can parameters be passed from a component to a thunk?</h4><br/>
+( ) By passing them in the parameters of the dispatch() function in the component.
+( ) By using connect to pass parameters to the function in the component.
+(x) By passing them as thunk parameters when calling from the component.
+<h4 style="color: #474747; font-weight: 600;">Why is it necessary to use the Dispatch function when updating data in the Redux Store?</h4><br/>
+( ) Dispatch is optional in Redux, and data can be updated without using it.
+(x) Dispatch is responsible for sending Actions to the Reducer to update the Store, and without using it, data will not be updated.
+( ) Dispatch is used only for saving data in the Store, but not for updating it.
+<h4 style="color: #474747; font-weight: 600;">How can a callback function be passed from a component to a thunk?</h4><br/>
+(x) By specifying it as a parameter when calling the thunk from the component.
+( ) By specifying it in the parameters of the dispatch() function in the component.
+( ) By writing it in the main application file.
+

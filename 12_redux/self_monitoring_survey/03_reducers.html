@@ -1,18 +1,18 @@
-<h4 style="color: #474747; font-weight: 600;">Які параметри приймає Reducer в Redux?</h4><br/>
-( ) State та Action Type
-(x) Поточний Store та Action
-( ) Action та Payload
-<h4 style="color: #474747; font-weight: 600;">Чому Reducer не повинен змінювати поточний Store в Redux?</h4><br/>
-( ) Так як зміна Store може викликати помилку у React
-( ) Для спрощення коду
-(x) Так як Store в Redux є імутабельним
-( ) Зазвичай Redux має декілька екземплярів Store
-<h4 style="color: #474747; font-weight: 600;">Чому case default в switch у Reducer є обов'язковим?</h4><br/>
-( ) Для додавання додаткових полів у Store
-(x) Так як Reducer має завжди повертати екземпляр Store, інакше буде помилка
-( ) Щоб зменшити шанси на колізії з іншими Reducers
-<h4 style="color: #474747; font-weight: 600;">Як правильно виглядає приклад Reducer для оновлення Store в Redux?</h4><br/>
-<span>Варіант 1:</span>
+<h4 style="color: #474747; font-weight: 600;">What parameters does a Reducer accept in Redux?</h4><br/>
+( ) State and Action Type
+(x) Current Store and Action
+( ) Action and Payload
+<h4 style="color: #474747; font-weight: 600;">Why should a Reducer not modify the current Store in Redux?</h4><br/>
+( ) Because modifying the Store can cause an error in React
+( ) To simplify the code
+(x) Because the Store in Redux is immutable
+( ) Usually Redux has multiple Store instances
+<h4 style="color: #474747; font-weight: 600;">Why is the default case in the Reducer's switch mandatory?</h4><br/>
+( ) To add additional fields to the Store
+(x) Because the Reducer must always return a Store instance, otherwise there will be an error
+( ) To reduce the chances of collisions with other Reducers
+<h4 style="color: #474747; font-weight: 600;">What does a correct Reducer example for updating the Store in Redux look like?</h4><br/>
+<span>Option 1:</span>
 <pre>const userReducer = (state = initialState, action) => {
   switch(action.type){   
     case SET_NAME:
@@ -24,7 +24,7 @@
   }
 }</pre>
 <br/>
-<span>Варіант 2:</span>
+<span>Option 2:</span>
 <pre>const userReducer = (state = initialState, action) => {
   switch(action.type){   
     case SET_NAME:
@@ -42,7 +42,7 @@
   }
 }</pre>
 <br/>
-<span>Варіант 3:</span>
+<span>Option 3:</span>
 <pre>const userReducer = (state, action) => {
   switch(action.type){   
     case SET_NAME:
@@ -58,10 +58,10 @@
   }
 }</pre>
 <br/>
-( ) Варіант 1
-(x) Варіант 2
-( ) Варіант 3
-<h4 style="color: #474747; font-weight: 600;">Які є основні принципи роботи зі Store та Reducer в Redux?</h4><br/>
-( ) Store повинен бути змінюваним та містити всю бізнес-логіку додатку.
-( ) Reducer повинен змінювати Store напряму, без використання Action.
-(x) Reducer - це чиста функція, яка приймає поточний стан Store та Action, і повертає новий стан.
+( ) Option 1
+(x) Option 2
+( ) Option 3
+<h4 style="color: #474747; font-weight: 600;">What are the main principles of working with Store and Reducer in Redux?</h4><br/>
+( ) The Store should be mutable and contain all the business logic of the application.
+( ) The Reducer should modify the Store directly, without using Actions.
+(x) A Reducer is a pure function that accepts the current Store state and an Action, and returns a new state.

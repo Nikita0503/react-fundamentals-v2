@@ -1,14 +1,14 @@
-<h3 style="color: #76cdd8;"><strong>Контекст</strong></h3>
-<p>Просування даних у дочірні компоненти на декілька рівнів вкладеності вниз, можуть викликати проблеми, особливо це стосується <strong>props drilling</strong>. Для запобігання цих проблем React має вбудований механізм, який дозволяє передавати дані без використання пропсів (props). Цей механізм називається <strong>Контекст</strong> (Context):</p>
+<h3 style="color: #76cdd8;"><strong>Context</strong></h3>
+<p>Passing data down to child components through multiple levels of nesting can cause problems, especially regarding <strong>props drilling</strong>. To prevent these problems, React has a built-in mechanism that allows passing data without using props. This mechanism is called <strong>Context</strong>:</p>
 <h2><img src="blob:https://studio.elearn.epam.com/27da18ed-8a04-49f9-948f-691d748879e8" alt="" width="397" height="437" style="display: block; margin-left: auto; margin-right: auto;" /></h2>
 <pre class="prettyprint"><code class="lang-js">import React, { createContext } from 'react';
 
-// Створюємо контекст
+// Creating a context
 const MyContext = createContext();
 
-// Батьківський компонент, який надає контекст
+// Parent component that provides the context
 const ParentComponent = () =&gt; {
-  const data = 'Це дані з контексту';
+  const data = 'This is data from context';
 
   return (
     &lt;MyContext.Provider value={data}&gt;
@@ -18,9 +18,9 @@ const ParentComponent = () =&gt; {
 }
 
 export default ParentComponent;
-export { MyContext }; // експортуємо контекст, щоб його можна було використовувати в інших компонентах
+export { MyContext }; // export the context so it can be used in other components
 </code></pre>
-<p>Для того щоб дочірні компоненти мали доступ до даних контексту, їх потрібно <strong>огорнути в компонент Provider</strong>, що міститься у <strong>MyContext</strong>, який нам повернула функція <strong>createContext</strong>;</p>
+<p>In order for child components to have access to the context data, they need to be <strong>wrapped in the Provider component</strong> contained in <strong>MyContext</strong>, which was returned to us by the <strong>createContext</strong> function;</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 import GrandchildComponent from './GrandchildComponent';
 
@@ -33,13 +33,13 @@ const ChildComponent = () =&gt; {
 }
 
 export default ChildComponent;</code></pre>
-<p>ChildComponent - Дочірній компонент, який також має змогу отримати дані з контексту, але він просто містить у собі GrandchildComponent, котрий буде потребувати даніі з контексту далі.</p>
+<p>ChildComponent — a child component that also has the ability to receive data from the context, but it simply contains the GrandchildComponent, which will need the context data further down.</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useContext } from 'react';
 import { MyContext } from './ParentComponent';
 
-// «Внуковий» компонент, який отримує дані з контексту
+// "Grandchild" component that receives data from the context
 const GrandchildComponent = () =&gt; {
-  const data = useContext(MyContext); // Отримання данних з контексту
+  const data = useContext(MyContext); // Getting data from the context
 
   return (
     &lt;div&gt;
@@ -49,8 +49,8 @@ const GrandchildComponent = () =&gt; {
 }
 
 export default GrandchildComponent;</code></pre>
-<p>GrandchildComponent - компонент, котрий <strong>використовує дані з контексту</strong>. Для цього ми імпортували MyContext, котрий був у ParentComponent (найвищий комопнент у ієрархії), та використали хук <strong>useContext</strong>, якому надали <strong>MyContext</strong>, для того щоб він повернув дані цього контексту у data.</p>
-<p>Механізм Контексту можна застосовувати для передачі будь-яких даних. Наприклад, <strong>функції для зміни стану</strong> батьківського компоненту. Для зручності достатньо передавати у контекст об`єкт, який у якості полів містить ці функції або інші дані.</p>
+<p>GrandchildComponent — a component that <strong>uses data from the context</strong>. For this, we imported MyContext, which was in ParentComponent (the highest component in the hierarchy), and used the <strong>useContext</strong> hook, to which we passed <strong>MyContext</strong>, so that it returns the data of this context into data.</p>
+<p>The Context mechanism can be used to pass any data. For example, <strong>functions for changing the state</strong> of the parent component. For convenience, it is sufficient to pass an object into the context that contains these functions or other data as its fields.</p>
 <p></p>
 <style><!--
 .row-container {

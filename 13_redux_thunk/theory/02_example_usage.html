@@ -1,10 +1,10 @@
-<h3 style="color: #76cdd8;"><strong>Приклад викорстання</strong></h3>
-<p>Функції в котрі виносять код взємодії з REST API у Redux Thunk називають «Санки». «Санка» - асинхронний Action.</p>
-<p>Різниця між ними в тім, що звичайний Action Creator повертає об`єкт з Action Type та Payload (сам Action), а Санка повертає асинхронну функцію:</p>
-<pre class="prettyprint"><code class="lang-js">const sendUserData = () =&gt; async (dispatch, getState) =&gt; { 	<br />  // логіка взаємодії з REST API
+<h3 style="color: #76cdd8;"><strong>Usage Example</strong></h3>
+<p>Functions that extract REST API interaction code in Redux Thunk are called "Thunks". A "Thunk" is an asynchronous Action.</p>
+<p>The difference between them is that a regular Action Creator returns an object with Action Type and Payload (the Action itself), while a Thunk returns an asynchronous function:</p>
+<pre class="prettyprint"><code class="lang-js">const sendUserData = () =&gt; async (dispatch, getState) =&gt; { 	<br />  // REST API interaction logic
 };</code></pre>
-<p>В середині Санки є доступ до Dispatch, та getState функції, котра повертає увесь Store.</p>
-<p>На прикладі стане зрозуміліше. Додамо до попереднього компоненту кнопку «Send»:</p>
+<p>Inside the Thunk, there is access to Dispatch and the getState function, which returns the entire Store.</p>
+<p>It will become clearer with an example. Let's add a "Send" button to the previous component:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname } from '../redux/actions';
@@ -25,9 +25,9 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p>Поки що кнопка «Send» нічого не вміє. Наша задача - зробити так, щоб по натисканню на «Send» name та surname відправлялися на ендпоінт REST API.</p>
+<p>For now, the "Send" button does nothing. Our task is to make it so that when "Send" is clicked, name and surname are sent to a REST API endpoint.</p>
 <p></p>
-<p>Так як <strong>Санка - асинхронний Action</strong>, ми додаємо його у <strong>файл з Actions</strong>:</p>
+<p>Since a <strong>Thunk is an asynchronous Action</strong>, we add it to the <strong>Actions file</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */<br />
 export const SET_NAME = "SET_NAME";
 export const SET_SURNAME = "SET_SURNAME";
@@ -42,8 +42,8 @@ export const setSurname = (surname) =&gt; ({
   payload: surname
 });
 
-// Санка
-export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+// Thunk
+export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
@@ -56,18 +56,18 @@ export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     tr
         });
 
         const result = await response.json();
-        console.log("Результат:", result);
+        console.log("Result:", result);
     }catch(e){
         console.log('sendUserData error', e)
     }
 };</code></pre>
-<p><strong>sendUserData - Санка</strong>. Якщо правильно сказати, то це функція, котра повертає <strong>callback</strong>, приймаючий першим параметром <strong>Dispatch</strong>, другим <strong>getState</strong>.</p>
-<p>В тілі callback пишеться <strong>асинхронний код</strong>, наприклад <strong>взаємодія з REST API</strong>.</p>
-<p>Весь код всередині слід огорнути у конструкцію <strong>try-catch для обробки непердбачуваних помилок</strong>, адже з серверу може повернутися помилка.</p>
-<p>'const userName = getState().user.name' -  userName містить значення поля name, котре всередині userReducer.</p>
-<p>Далі - імітація відправлення цих даних до вигаданого REST API та обробка відповіді сервера з виводом результата на екран.</p>
-<p>Припустимо, що після обробки відповіді з серверу необхідно очистити поля name та surname у Store:</p>
-<pre class="prettyprint"><code class="lang-js">export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+<p><strong>sendUserData is a Thunk</strong>. To be precise, it is a function that returns a <strong>callback</strong> accepting <strong>Dispatch</strong> as the first parameter and <strong>getState</strong> as the second.</p>
+<p>Inside the callback, <strong>asynchronous code</strong> is written, for example <strong>REST API interaction</strong>.</p>
+<p>All code inside should be wrapped in a <strong>try-catch construct to handle unexpected errors</strong>, since the server may return an error.</p>
+<p>'const userName = getState().user.name' - userName contains the value of the name field inside userReducer.</p>
+<p>Next - simulating sending this data to a fictional REST API and processing the server response with output of the result to the screen.</p>
+<p>Let's assume that after processing the server response, we need to clear the name and surname fields in the Store:</p>
+<pre class="prettyprint"><code class="lang-js">export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
@@ -80,15 +80,15 @@ export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     tr
         });
 
         const result = await response.json();
-        console.log("Результат:", result);
+        console.log("Result:", result);
 	dispatch(setName(''));
         dispatch(setSurname(''));
     }catch(e){
         console.log('sendUserData error', e)
     }
 };</code></pre>
-<p>Для очистки полів, використовуємо <strong>Dispatch, котрий надає Санка</strong>.</p>
-<p>Залишилося використати Санку з компоненту. Для виклику Санки викликається Dispatch, так як і для звичайного Action:</p>
+<p>To clear the fields, we use the <strong>Dispatch provided by the Thunk</strong>.</p>
+<p>All that remains is to use the Thunk from the component. To call a Thunk, Dispatch is called just like for a regular Action:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions';

@@ -1,8 +1,8 @@
-<h3 style="color: #76cdd8;"><strong>Чому функціональні компоненти?</strong></h3>
-<p>У сучасній розробці майже усі проекти припинили застосування класових компонентів, тому в поточному курсі ми їх розглядати не будемо.</p>
-<p>Функціональні компоненти стали дедалі популярнішими у React-спільноті з оновленнями в React 16.8, коли була введена можливість використання хуків (hooks) у функціональних компонентах.</p>
-<p>Це дозволило розробникам використовувати функціональні компоненти замість класових компонентів, особливо в простих випадках, де класові компоненти були зайвими.</p>
-<p>Реалізація того ж SmartComponent але у класовому компоненті:</p>
+<h3 style="color: #76cdd8;"><strong>Why Functional Components?</strong></h3>
+<p>In modern development, almost all projects have stopped using class components, so in this course we will not cover them.</p>
+<p>Functional components became increasingly popular in the React community with updates in React 16.8, when the ability to use hooks in functional components was introduced.</p>
+<p>This allowed developers to use functional components instead of class components, especially in simple cases where class components were unnecessary.</p>
+<p>Implementation of the same SmartComponent but as a class component:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { Component } from 'react';
 
 class SmartComponent extends Components {
@@ -33,13 +33,13 @@ class SmartComponent extends Components {
 
 export default SmartComponent;
 </code></pre>
-<p>Основні переваги використання функціональних компонентів у порівнянні з класовими компонентами:</p>
+<p>The main advantages of using functional components compared to class components:</p>
 <ul>
-<li><strong>Спрощений синтаксис</strong>: Функціональні компоненти мають простий синтаксис, що робить їх легшими для розуміння, тестування та розробки.</li>
-<li><strong>Немає внутрішнього стану</strong>: Функціональні компоненти не мають внутрішнього стану, що полегшує керування станом в додатках та сприяє принципам безпечного використання незмінних даних.</li>
-<li><strong>Використання хуків</strong>: Хуки (hooks) дозволяють використовувати функціональні можливості, такі як стан, контекст, побічні ефекти, без необхідності використовувати класові компоненти. Це робить код більш зрозумілим та компактним.</li>
-<li><strong>Покращена продуктивність</strong>: Функціональні компоненти мають нижчий вплив на продуктивність, оскільки вони мають менше додаткових операцій порівняно з класовими компонентами.</li>
-<li><strong>Легше тестування</strong>: Функціональні компоненти можуть бути протестовані легше, оскільки вони мають менше внутрішнього стану та мають простий вхідний API.</li>
+<li><strong>Simplified syntax</strong>: Functional components have simple syntax, making them easier to understand, test, and develop.</li>
+<li><strong>No internal state</strong>: Functional components do not have internal state, which makes state management in applications easier and promotes the principles of safe use of immutable data.</li>
+<li><strong>Use of hooks</strong>: Hooks allow using functional capabilities such as state, context, and side effects without the need to use class components. This makes the code more understandable and compact.</li>
+<li><strong>Improved performance</strong>: Functional components have a lower impact on performance, as they have fewer additional operations compared to class components.</li>
+<li><strong>Easier testing</strong>: Functional components can be tested more easily, as they have less internal state and have a simple input API.</li>
 </ul>
 <p></p>
 <style><!--

@@ -1,13 +1,13 @@
 <h3 style="color: #76cdd8;"><strong>Store</strong></h3>
-<p>Store - <strong>едине сховище даних</strong>. Для його ініціалізації нам необхідно створити <strong>rootReducer</strong> - збірник усіх Reducers додатку.</p>
+<p>Store - a <strong>single data storage</strong>. To initialize it, we need to create a <strong>rootReducer</strong> - a collection of all the application's Reducers.</p>
 <pre class="prettyprint"><code class="lang-js">/** /redux/store */
 
 import { combineReducers, </code>createStore } from 'redux'; import userReducer from './reducer'; const rootReducer = combineReducers({ user: userReducer, }); export const store = createStore(rootReducer);</pre>
-<p>За допомогою функції <strong>combineReducers</strong> створюємо <strong>rootReducer</strong>.</p>
-<p>RootReduer приймає об`єкт, де <strong>ключи - це назви за котрими можна звертатися до Reducers</strong>, а значення - самі Reducers.</p>
-<p>Наприклад, name, котрий у userReducer, буде знаходитися за адресою: <strong>state.user.name</strong>.</p>
-<p>Та створюємо <strong>store</strong> за допомогою функції <strong>createStore</strong>, яка першим параметром приймає створений нами <strong>rootReducer</strong>.</p>
-<p>Частина написання Redux завершилася. Залишилося дати змогу компонентам отримувати дані зі Store, та оновлювати їх.</p>
+<p>Using the <strong>combineReducers</strong> function, we create the <strong>rootReducer</strong>.</p>
+<p>RootReducer accepts an object where <strong>keys are the names by which you can access the Reducers</strong>, and values are the Reducers themselves.</p>
+<p>For example, name, which is in userReducer, will be located at the address: <strong>state.user.name</strong>.</p>
+<p>And we create the <strong>store</strong> using the <strong>createStore</strong> function, which accepts our created <strong>rootReducer</strong> as the first parameter.</p>
+<p>The Redux writing part is complete. All that remains is to give components the ability to retrieve data from the Store and update it.</p>
 <p></p>
 <style><!--
 .row-container {

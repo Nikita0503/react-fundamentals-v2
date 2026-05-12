@@ -1,7 +1,7 @@
-<h3 style="color: #76cdd8;"><strong>Види компонентів</strong></h3>
-<p>Компоненти можна умовно розділити на 2 частини: <strong>Прості компоненти</strong> (Dumb components) та <strong>Розумні компоненти</strong> (Smart components).</p>
-<h3 style="color: #76cdd8;"><strong>Прості компоненти</strong></h3>
-<p>Прості компоненти також називаються «презентаційними» компонентами, тому що їх єдиний обов'язок представляти щось у DOM. Як тільки це буде зроблено, з компонентом буде покінчено. Не траба стежити за ним, не перевіряти час від часу, щоб подивитися, як ідуть справи. Розмістіть інформацію на сторінці та рухайтеся далі:</p>
+<h3 style="color: #76cdd8;"><strong>Types of Components</strong></h3>
+<p>Components can be conditionally divided into 2 categories: <strong>Dumb components</strong> and <strong>Smart components</strong>.</p>
+<h3 style="color: #76cdd8;"><strong>Dumb Components</strong></h3>
+<p>Dumb components are also called "presentational" components because their only responsibility is to present something in the DOM. Once that is done, the component is finished. There is no need to monitor it, no need to check on it from time to time to see how things are going. Place the information on the page and move on:</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 
 const SimpleComponent = () =&gt; {
@@ -9,16 +9,16 @@ const SimpleComponent = () =&gt; {
 };
 
 export default SimpleComponent;</code></pre>
-<h3 style="color: #76cdd8;"><strong>Розумні компоненти</strong></h3>
-<p>Розумні компоненти (або компоненти-контейнери), з іншого боку, несуть іншу відповідальність. Оскільки на них лягає тягар бути розумними, вони стежать за станом і <strong>дбають про те, як працює програма</strong>.</p>
-<p>Зважаючи на оновлення React 16.8, було введено поняття <strong>хуків</strong> (hooks), які дозволяють використовувати <strong>стан</strong> та функціональні можливості в функціональних компонентах, що робить їх більш потужними та зручними. Ось приклад використання функціональних компонентів з використанням хуків в React:</p>
+<h3 style="color: #76cdd8;"><strong>Smart Components</strong></h3>
+<p>Smart components (or container components), on the other hand, carry a different responsibility. Since they bear the burden of being smart, they track state and <strong>care about how the application works</strong>.</p>
+<p>With the React 16.8 update, the concept of <strong>hooks</strong> was introduced, which allows using <strong>state</strong> and functional capabilities in functional components, making them more powerful and convenient. Here is an example of using functional components with hooks in React:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
 
 const SmartComponent = () =&gt; {
-  const [count, setCount] = useState(0); // Використання хука useState для стану
+  const [count, setCount] = useState(0); // Using the useState hook for state
 
   const handleClick = () =&gt; {
-    setCount(count + 1); // Оновлення стану за допомогою setCount
+    setCount(count + 1); // Updating state using setCount
   }
 
   return (
@@ -30,9 +30,9 @@ const SmartComponent = () =&gt; {
 };
 
 export default SmartComponent;</code></pre>
-<p>У цьому прикладі ми використали хук <strong>useState</strong>, який дозволяє використовувати <strong>стан</strong> в функціональному компоненті. Ми використовуємо деструктуризацію масиву для отримання поточного значення стану count та функції setCount для оновлення стану.</p>
-<p>Також, ми використали функціональний підхід до визначення компонента, де ми повертаємо <strong>JSX</strong> (розмітка HTML + CSS, в якій можна використовувати вирази javascript у фігурних { } дужках) відразу з функції, що робить цей компонент <strong>функціональним</strong>.</p>
-<p>Цей підхід з використанням функціональних компонентів та хуків дозволяє створювати більш прості та зрозумілі компоненти, які можуть керувати станом та взаємодіяти з іншими компонентами, без використання класів та методів життєвого циклу.</p>
+<p>In this example, we used the <strong>useState</strong> hook, which allows using <strong>state</strong> in a functional component. We use array destructuring to get the current state value count and the setCount function to update the state.</p>
+<p>Also, we used a functional approach to defining the component, where we return <strong>JSX</strong> (HTML + CSS markup in which you can use JavaScript expressions in curly { } braces) directly from the function, making this component <strong>functional</strong>.</p>
+<p>This approach using functional components and hooks allows creating simpler and more understandable components that can manage state and interact with other components, without using classes and lifecycle methods.</p>
 <p></p>
 <style><!--
 .row-container {

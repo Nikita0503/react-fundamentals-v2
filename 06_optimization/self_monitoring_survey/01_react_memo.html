@@ -1,29 +1,29 @@
-<h4 style="color: #474747; font-weight: 600;">Що таке React.memo і як воно може оптимізувати рендеринг компонентів в React?</h4><br/>
-(x) React.memo є вбудованою функцією в бібліотеці React, яка дозволяє кешувати результати рендерингу компонентів і перерендерювати їх лише при зміні вхідних властивостей (props).
-( ) React.memo застосовується для автоматичної оптимізації всіх компонентів у додатку, незалежно від їхньої структури та логіки рендерингу.
-( ) React.memo слід використовувати тільки для класових компонентів, а для функціональних краще використовувати PureComponent.
-<h4 style="color: #474747; font-weight: 600;">У якому випадку застосування React.memo може бути особливо корисним?</h4><br/>
-( ) React.memo застосовується тільки для класових компонентів у React.
-( ) React.memo корисний лише для компонентів зі станом.
-(x) Застосування React.memo може бути корисним, коли ви маєте компонент, який потрібно перерендерювати тільки при зміні певних вхідних props, а інші властивості залишаються незмінними.
-<h4 style="color: #474747; font-weight: 600;">Як виглядає основний синтаксис використання React.memo для оптимізації компонентів?</h4><br/>
-<span>Варіант 1:</span>
+<h4 style="color: #474747; font-weight: 600;">What is React.memo and how can it optimize component rendering in React?</h4><br/>
+(x) React.memo is a built-in function in the React library that allows caching component rendering results and re-rendering them only when input properties (props) change.
+( ) React.memo is used to automatically optimize all components in an application, regardless of their structure and rendering logic.
+( ) React.memo should only be used for class components, while for functional components it is better to use PureComponent.
+<h4 style="color: #474747; font-weight: 600;">In which case can using React.memo be particularly useful?</h4><br/>
+( ) React.memo is only used for class components in React.
+( ) React.memo is useful only for components with state.
+(x) Using React.memo can be useful when you have a component that needs to re-render only when certain input props change, while other properties remain unchanged.
+<h4 style="color: #474747; font-weight: 600;">What does the basic syntax for using React.memo to optimize components look like?</h4><br/>
+<span>Option 1:</span>
 <pre>import MyComponent from 'react';</pre><br/>
-<span>Варіант 2:</span>
+<span>Option 2:</span>
 <pre>import React from 'react'; 
-const MyComponent = (props) => { /* код компонента */ }; 
+const MyComponent = (props) => { /* component code */ }; 
 export default React.memo(MyComponent);</pre>
 <br/>
-<span>Варіант 3:</span>
+<span>Option 3:</span>
 <pre>import React from 'react';
-const MyComponent = (props) => { /* код компонента */ };
+const MyComponent = (props) => { /* component code */ };
 export MyComponent;</pre>
 <br/>
-( ) Варіант 1
-(x) Варіант 2
-( ) Варіант 3
-<h4 style="color: #474747; font-weight: 600;">Коли використання функції порівняння в React.memo є особливо важливим?</h4><br/>
-( ) Використання функції порівняння не є важливим, оскільки React.memo завжди автоматично оптимізує рендеринг компонентів.
-(x) Використання функції порівняння важливе, коли ви хочете точно контролювати, які властивості повинні призводити до перерендерення компонента.
-( ) Функцію порівняння слід використовувати завжди, оскільки це дозволяє зробити рендеринг компонентів максимально оптимізованим.
-( ) Важливість використання функції порівняння залежить від типу компонента: для функціональних вона обов'язкова, а для класових - ні.
+( ) Option 1
+(x) Option 2
+( ) Option 3
+<h4 style="color: #474747; font-weight: 600;">When is using the comparison function in React.memo particularly important?</h4><br/>
+( ) Using the comparison function is not important because React.memo always automatically optimizes component rendering.
+(x) Using the comparison function is important when you want to precisely control which properties should trigger a component re-render.
+( ) The comparison function should always be used because it allows making component rendering as optimized as possible.
+( ) The importance of using the comparison function depends on the component type: for functional components it is mandatory, and for class components it is not.

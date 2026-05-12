@@ -1,19 +1,19 @@
-<h4 style="color: #474747; font-weight: 600;">Як базується порівняння об'єктів у JavaScript при використанні операторів == та ===?</h4><br/>
-(x) Порівняння об'єктів у JavaScript базується на порівнянні посилань (references) на об'єкти, тобто чи посилаються обидва операнди на одну і ту ж область пам'яті.
-( ) Порівняння об'єктів у JavaScript ґрунтується на порівнянні їхнього вмісту, тобто на значеннях їхніх полів.
-( ) Обидва вищезазначені варіанти правильні
-<h4 style="color: #474747; font-weight: 600;">У якому варіанті коду відбудеться перерендер компоненту в React, де стан є об'єктом?</h4><br/>
-<span>Варіант 1:</span>
+<h4 style="color: #474747; font-weight: 600;">What is object comparison in JavaScript based on when using the == and === operators?</h4><br/>
+(x) Object comparison in JavaScript is based on comparing references to objects, that is, whether both operands refer to the same memory area.
+( ) Object comparison in JavaScript is based on comparing their content, that is, the values of their fields.
+( ) Both of the above options are correct
+<h4 style="color: #474747; font-weight: 600;">In which code variant will a component re-render occur in React, where the state is an object?</h4><br/>
+<span>Option 1:</span>
 <pre>counterObj.value = counterObj.value + 1;</pre><br/>
-<span>Варіант 2:</span>
+<span>Option 2:</span>
 <pre>setCounterObj((prevObj) => ({ ...prevObj, value: prevObj.value + 1 }));
 setCounterObj(counterObj);</pre><br/>
-<span>Варіант 3:</span>
+<span>Option 3:</span>
 <pre>setCounterObj(counterObj);</pre><br/>
-( ) Вараіант 1
-(x) Вараіант 2
-( ) Вараіант 1
-<h4 style="color: #474747; font-weight: 600;">Як можна порівняти вміст двох об'єктів у JavaScript?</h4><br/>
-( ) Для порівняння вмісту об'єктів у JavaScript використовується оператор ==.
-( ) З порівнянням вмісту об'єктів у JavaScript може допомогти використання методу Object.compare().
-(x) Для зручного порівняння вмісту об'єктів у JavaScript можна використовувати бібліотеки порівняння об'єктів, наприклад Lodash.
+( ) Option 1
+(x) Option 2
+( ) Option 3
+<h4 style="color: #474747; font-weight: 600;">How can you compare the content of two objects in JavaScript?</h4><br/>
+( ) The == operator is used to compare object content in JavaScript.
+( ) The Object.compare() method can help with comparing object content in JavaScript.
+(x) For convenient comparison of object content in JavaScript, you can use object comparison libraries, such as Lodash.

@@ -1,16 +1,16 @@
-<h4 style="color: #474747; font-weight: 600;">Що таке захищений ендпоінт у контексті роботи з REST API?</h4><br/> 
-( ) Ендпоінт, який недоступний для клієнтів і завжди повертає помилку 403 Forbidden
-(x) Ендпоінт, доступ до якого вимагає надання додаткових авторизаційних даних, таких як токен доступу (access token)
-( ) Ендпоінт, який доступний лише для адміністраторів системи
-<h4 style="color: #474747; font-weight: 600;">Як можна передати токен доступу (access token) при використанні Axios?</h4><br/> 
-( ) Токен передається автоматично в кожному запиті, не потрібно додатково нічого робити
-( ) Токен додається до параметрів запиту, наприклад, axios.get('https://example.com/api/data?token=your_access_token')
-(x) Токен передається у заголовках запиту, наприклад, axios.get('https://example.com/api/data', { headers: { 'Authorization': 'Bearer your_access_token' } })
-<h4 style="color: #474747; font-weight: 600;">Що таке access token і для чого він використовується при роботі з захищеними ендпоінтами?</h4><br/> 
-( ) Access token - це ідентифікатор клієнта в системі, використовується для входу в особистий кабінет
-( ) Access token - це шифрований ключ, який використовується для шифрування даних, переданих між клієнтом і сервером
-(x) Access token - це токен, який вимагається сервером для авторизації клієнта та отримання доступу до захищених ресурсів
-<h4 style="color: #474747; font-weight: 600;">Що таке refresh token і як він використовується при роботі з токенами в контексті безпеки REST API?</h4><br/> 
-( ) Refresh token - це токен, який використовується для входу в систему і отримання доступу до ресурсів
-(x) Refresh token - це токен, який використовується для оновлення access token після закінчення його терміну дії
-( ) Refresh token - це токен, який використовується для шифрування даних, переданих між клієнтом і сервером
+<h4 style="color: #474747; font-weight: 600;">What is a protected endpoint in the context of working with REST API?</h4><br/> 
+( ) An endpoint that is inaccessible to clients and always returns a 403 Forbidden error
+(x) An endpoint that requires providing additional authorization data, such as an access token, to gain access
+( ) An endpoint that is accessible only to system administrators
+<h4 style="color: #474747; font-weight: 600;">How can an access token be passed when using Axios?</h4><br/> 
+( ) The token is automatically passed in every request, no additional action is needed
+( ) The token is added to the request parameters, for example, axios.get('https://example.com/api/data?token=your_access_token')
+(x) The token is passed in the request headers, for example, axios.get('https://example.com/api/data', { headers: { 'Authorization': 'Bearer your_access_token' } })
+<h4 style="color: #474747; font-weight: 600;">What is an access token and what is it used for when working with protected endpoints?</h4><br/> 
+( ) An access token is a client identifier in the system, used for logging into a personal account
+( ) An access token is an encrypted key used for encrypting data transmitted between the client and server
+(x) An access token is a token required by the server to authorize the client and gain access to protected resources
+<h4 style="color: #474747; font-weight: 600;">What is a refresh token and how is it used when working with tokens in the context of REST API security?</h4><br/> 
+( ) A refresh token is a token used for logging into the system and gaining access to resources
+(x) A refresh token is a token used to refresh the access token after its expiration
+( ) A refresh token is a token used for encrypting data transmitted between the client and server

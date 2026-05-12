@@ -1,6 +1,6 @@
-<h3 style="color: #76cdd8;"><strong>Кастомні хуки</strong></h3>
-<p>Сам React та різноманітні бібліотеки надають розробникам багато хуків, але <strong>зазвичай цього недостатньо</strong>. Тому розробники пишуть <strong>кастомні</strong> (створені самостійно) <strong>хуки</strong>, які допомогають ізолювати певну логіку та використовувати їх у різних компонентах.</p>
-<p>Для прикладу реалізуємо кастомний хук, котрий приймає посилання на ендпоінт REST API, та повертає відповідь (data), помилку (error, якщо виникає) та статус виконання (loading):</p>
+<h3 style="color: #76cdd8;"><strong>Custom Hooks</strong></h3>
+<p>React itself and various libraries provide developers with many hooks, but <strong>usually this is not enough</strong>. Therefore, developers write <strong>custom</strong> (self-created) <strong>hooks</strong> that help isolate certain logic and use them in different components.</p>
+<p>As an example, let's implement a custom hook that accepts a REST API endpoint URL and returns the response (data), an error (error, if one occurs), and the execution status (loading):</p>
 <pre class="prettyprint"><code class="lang-js">import { useState, useEffect } from 'react';
 
 const useAdvancedFetch = (url) =&gt; {
@@ -28,9 +28,9 @@ const useAdvancedFetch = (url) =&gt; {
     
 export default useAdvancedFetch;
 </code></pre>
-<p>Цей хук <strong>приймає URL</strong> в якості аргументу та використовує useState та useEffect хуки для виконання запиту до API, зберігання даних, помилки та статусу завантаження.</p>
-<p>Потім він повертає <strong>об'єкт з цими даними</strong>, який може бути використаний в компонентах для відображення вмісту, обробки помилок або відображення стану завантаження на основі значень <strong>data, error та loading</strong>.</p>
-<p>І тепер його можна використовувати у різних компонентах <strong>для ізоляції логіки запиту</strong>, надаючи лише url запиту. А вже спираючись на результати виконання, котрі повертає хук, налаштовувати поведінку компонента.</p>
+<p>This hook <strong>accepts a URL</strong> as an argument and uses the useState and useEffect hooks to make an API request, storing the data, error, and loading status.</p>
+<p>It then returns an <strong>object with this data</strong>, which can be used in components to display content, handle errors, or show the loading state based on the values of <strong>data, error, and loading</strong>.</p>
+<p>And now it can be used in different components <strong>to isolate the request logic</strong>, providing only the request URL. Based on the execution results returned by the hook, you can configure the component's behavior.</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 import useAdvancedFetch from './hooks/useAdvancedFetch';
 

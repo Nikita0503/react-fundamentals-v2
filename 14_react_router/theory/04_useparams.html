@@ -1,9 +1,9 @@
 <h3 style="color: #76cdd8;"><strong>useParams</strong></h3>
-<p>React Router має багато можливостей, з котрими бажано ознайомитися. Розглямено ще одну, котра доволі часто зустрічається на сайтах інтернет-магазинів.</p>
-<p>Приклад URL:</p>
+<p>React Router has many capabilities that are worth getting familiar with. Let's look at another one that is quite commonly found on online store websites.</p>
+<p>Example URL:</p>
 <pre class="prettyprint"><code class="lang-js">https://online-shop/product/1</code></pre>
-<p>Є можливість <strong>зберігати дані у адресі до сторінки</strong>, наприклад <strong>id товару</strong>. Далі, у середині компоненту, можна отримати доступ до цих даних.</p>
-<p>Додамо такий компонент до нашого прикладу:</p>
+<p>It is possible to <strong>store data in the page address</strong>, for example a <strong>product id</strong>. Then, inside the component, you can access this data.</p>
+<p>Let's add such a component to our example:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */
 
 import React from 'react';
@@ -27,7 +27,7 @@ const App = () =&gt; {
 
 export default App;
 </code></pre>
-<p>До навігації додамо сторінку - ProductPage. У шляху до неї додамо <strong>змінну - id</strong>. Таку змінну називають <strong>path variable</strong>. Реалізуємо ProductPage, де відобразимо id на сторінці:</p>
+<p>We add a page to the navigation - ProductPage. In its path, we add a <strong>variable - id</strong>. Such a variable is called a <strong>path variable</strong>. Let's implement ProductPage, where we display the id on the page:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/ProductPage.js */
 
 import React from 'react';
@@ -46,8 +46,8 @@ const ProductPage = () =&gt; {
 
 export default ProductPage;
 </code></pre>
-<p>Хук useParams повертає об`єкт, який містить path variables. За допомогою деструктуризації дістаємо id, та відображаємо його на сторінці.</p>
-<p>Таким чином, наприклад, можна зручно дістати id товару та зробити запит до серверу, що поверне деталі обраного товару.</p>
+<p>The useParams hook returns an object that contains path variables. Using destructuring, we extract the id and display it on the page.</p>
+<p>This way, for example, you can conveniently extract a product id and make a request to the server that will return the details of the selected product.</p>
 <p></p>
 <style><!--
 .row-container {

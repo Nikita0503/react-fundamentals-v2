@@ -1,39 +1,39 @@
-<h3 style="color: #76cdd8;"><strong>Форми без додаткових бібліотек</strong></h3>
-<p>Але, якщо немає бажання використати сторонні бібліотеки, у React можна працювати з формами таким чином:</p>
+<h3 style="color: #76cdd8;"><strong>Forms Without Additional Libraries</strong></h3>
+<p>However, if there is no desire to use third-party libraries, in React you can work with forms like this:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
 
 const MyForm = () =&gt; {
-  // Встановлення стану для полів форми
+  // Setting state for form fields
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Обробник зміни значення поля "Ім'я користувача"
+  // Handler for "Username" field value change
   const handleUsernameChange = (e) =&gt; {
     setUsername(e.target.value);
   };
 
-  // Обробник зміни значення поля "Email"
+  // Handler for "Email" field value change
   const handleEmailChange = (e) =&gt; {
     setEmail(e.target.value);
   };
 
-  // Обробник зміни значення поля "Пароль"
+  // Handler for "Password" field value change
   const handlePasswordChange = (e) =&gt; {
     setPassword(e.target.value);
   };
 
-  // Обробник відправки форми
+  // Form submission handler
   const handleSubmit = (e) =&gt; {
     e.preventDefault();
-    // Виконання логіки відправки форми, наприклад, на сервер
-    console.log('Дані форми:', { username, email, password });
+    // Execute form submission logic, for example, to the server
+    console.log('Form data:', { username, email, password });
   };
 
   return (
     &lt;form onSubmit={handleSubmit}&gt;
       &lt;label&gt;
-        Ім'я користувача:
+        Username:
         &lt;input type="text" value={username} onChange={handleUsernameChange} /&gt;
       &lt;/label&gt;
       &lt;label&gt;
@@ -41,19 +41,19 @@ const MyForm = () =&gt; {
         &lt;input type="email" value={email} onChange={handleEmailChange} /&gt;
       &lt;/label&gt;
       &lt;label&gt;
-        Пароль:
+        Password:
         &lt;input type="password" value={password} onChange={handlePasswordChange} /&gt;
       &lt;/label&gt;
-      &lt;button type="submit"&gt;Відправити&lt;/button&gt;
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
     &lt;/form&gt;
   );
 };
 
 export default MyForm;</code></pre>
-<p>У цьому прикладі ми використовуємо функцію useState з React для встановлення та збереження стану форми.</p>
-<p>Кожне поле вводу має свій власний обробник події onChange, який відслідковує зміни значень полів форми та оновлює стан відповідного поля. Форма також має обробник події onSubmit, який виконується при відправці форми та виконує необхідну логіку, наприклад, відправку даних на сервер.</p>
-<p>Це лише простий приклад, і реалізація більш складних функцій, таких як валідація, керування станом завантаження, тощо, може вимагати <strong>додаткової ручної роботи</strong>. Однак, використання бібліотеки <strong>Formik може спростити цей процес</strong> та надати більше функціональності, такої як автоматична валідація, керування станом, відправка даних на сервер та багато іншого.</p>
-<p>Однак, цей приклад демонструє базовий підхід до роботи з формами у React без використання Formik.</p>
+<p>In this example, we use the useState function from React to set and store the form state.</p>
+<p>Each input field has its own onChange event handler that tracks changes in form field values and updates the state of the corresponding field. The form also has an onSubmit event handler that executes when the form is submitted and performs the necessary logic, for example, sending data to the server.</p>
+<p>This is just a simple example, and implementing more complex features such as validation, loading state management, etc., may require <strong>additional manual work</strong>. However, using the <strong>Formik library can simplify this process</strong> and provide more functionality, such as automatic validation, state management, sending data to the server, and much more.</p>
+<p>However, this example demonstrates the basic approach to working with forms in React without using Formik.</p>
 <p></p>
 <style><!--
 .row-container {

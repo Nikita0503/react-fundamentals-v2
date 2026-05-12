@@ -1,14 +1,14 @@
-<h3 style="color: #76cdd8;"><strong>Підсумки</strong></h3>
-<p>В цьому модулі було розглянуто базові можливості React Router. Якщо розробляється додаток з простою навігацією, цих знань буде достатньо для реалізації проекту.</p>
-<p>Можливі питання:</p>
-<p><strong>"Для чого використовувати React Router, якщо можна користуватися звичайним &lt;a href=""&gt;?”</strong></p>
-<p>Відповідь - по-перше, можливості бібліотеки, котрі роблять додаток оптимізованішим.  Наприклад: Основна причина використання компонента &lt;Link&gt; з React Router замість звичайного тега прив'язки &lt;a href=""&gt; полягає в тому, що &lt;Link&gt; розроблений спеціально для навігації між маршрутами в односторінковому додатку (React – SPA, під капотом: весь додаток – одна сторінка).</p>
-<p>Коли ви використовуєте тег прив'язки з атрибутом href, натискання посилання посилить перезавантаження сторінки, що може бути повільним і переривати роботу додатку. Навпаки, коли ви використовуєте компонент &lt;Link&gt;, він оновлює URL-адресу і відображає новий компонент, не викликаючи повного перезавантаження сторінки, що робить роботу додатка більш швидким і плавним.  По-друге - використання бібліотеки, робить код більш структурованим, читабельним та чистим. Дуже зручна структура навігації дає можливість розробляти гнучку архітектуру та розширення додатку не викличе проблем.</p>
-<p><strong>"Чи можливо поєднати React Router з Redux у одному проекті?”</strong></p>
-<p>Відповідь - так. Для цього треба внести невеличкі зміни у App.js:</p>
+<h3 style="color: #76cdd8;"><strong>Summary</strong></h3>
+<p>In this module, we covered the basic capabilities of React Router. If you are developing an application with simple navigation, this knowledge will be sufficient for project implementation.</p>
+<p>Possible questions:</p>
+<p><strong>"Why use React Router if you can use a regular &lt;a href=""&gt;?"</strong></p>
+<p>Answer - first, the library's capabilities make the application more optimized. For example: The main reason for using the &lt;Link&gt; component from React Router instead of a regular anchor tag &lt;a href=""&gt; is that &lt;Link&gt; is designed specifically for navigation between routes in a single-page application (React is an SPA, under the hood: the entire application is one page).</p>
+<p>When you use an anchor tag with an href attribute, clicking the link will cause a full page reload, which can be slow and interrupt the application's work. On the contrary, when you use the &lt;Link&gt; component, it updates the URL and renders the new component without causing a full page reload, making the application faster and smoother. Second - using the library makes the code more structured, readable, and clean. A very convenient navigation structure allows developing flexible architecture and expanding the application won't cause problems.</p>
+<p><strong>"Is it possible to combine React Router with Redux in one project?"</strong></p>
+<p>Answer - yes. For this, you need to make small changes to App.js:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */<br />
 import React from 'react';
-import { store } from './redux/store'; // імпортувати перед компонентами
+import { store } from './redux/store'; // import before components
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
@@ -31,10 +31,10 @@ const App = () =&gt; {
 }
 
 export default App;</code></pre>
-<p>Коротше кажучи - просто огорнути навігацію у Provider. Але <strong>потрібно імпортувати store перед імпортуванням компонентів</strong> для запомігання помилок ініціалізації частин проекту.</p>
-<p><strong>"Компоненти були обгорнуті у пусті теги &lt;&gt;&lt;/&gt;. Що це таке?". </strong></p>
-<p>Відповідь - У React, коли компонент повертає <strong>більше одного елемента</strong>, вони повинні бути <strong>обгорнуті в один батьківський елемент </strong>(наприклад div).</p>
-<p>Використання <strong>фрагментів</strong> дозволяє уникнути створення додаткового DOM-елемента (того ж div) в якості батьківського елемента.</p>
+<p>In short - just wrap the navigation in Provider. But you <strong>need to import store before importing components</strong> to prevent initialization errors of project parts.</p>
+<p><strong>"Components were wrapped in empty tags &lt;&gt;&lt;/&gt;. What is that?"</strong></p>
+<p>Answer - In React, when a component returns <strong>more than one element</strong>, they must be <strong>wrapped in a single parent element</strong> (for example div).</p>
+<p>Using <strong>fragments</strong> allows avoiding the creation of an additional DOM element (like div) as a parent element.</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 
 const ComponentWithFragment = () =&gt; {
@@ -48,8 +48,8 @@ const ComponentWithFragment = () =&gt; {
 };
 
 export default ComponentWithFragment;</code></pre>
-<p>По суті, що <strong>при будуванні DOM-дерева цей фрагмент зникає</strong>. Він є просто частиною синтаксису, що дозволяє повертати декілька елементів без огортки.</p>
-<p>Припустимо що ComponentWithFragment знаходиться у div, в кому в стилях вказано flex-direction: column. То усі елементи з цього компонента розташуються згідно с цим правилом. Так як в них немає елемента контейнера</p>
+<p>Essentially, <strong>when building the DOM tree, this fragment disappears</strong>. It is simply part of the syntax that allows returning multiple elements without a wrapper.</p>
+<p>Let's assume that ComponentWithFragment is inside a div that has flex-direction: column in its styles. Then all elements from this component will be arranged according to this rule, since they don't have a container element.</p>
 <p></p>
 <p></p>
 <style><!--

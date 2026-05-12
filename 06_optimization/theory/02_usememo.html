@@ -1,27 +1,27 @@
 <h3 style="color: #76cdd8;"><strong>useMemo</strong></h3>
-<p>В React є можливість оптимізувати компоненти також з середини.</p>
-<p><strong>useMemo</strong> - це хук в React, який дозволяє оптимізувати рендеринг компонентів, <strong>запобігти непотрібних перерахувань</strong>.</p>
-<p>useMemo використовується для <strong>кешування результатів обчислень</strong> і повертає закешоване значення, якщо вхідні залежності не змінилися. Це може бути корисним, коли у вас є обчислювально важкі операції, такі як обчислення даних або виклик зовнішнього API, які не потрібно робити при кожному рендері компонента.</p>
-<p>Ось приклад використання useMemo:</p>
+<p>In React, there is also the ability to optimize components from the inside.</p>
+<p><strong>useMemo</strong> is a hook in React that allows you to optimize component rendering and <strong>prevent unnecessary recalculations</strong>.</p>
+<p>useMemo is used to <strong>cache the results of computations</strong> and returns the cached value if the input dependencies have not changed. This can be useful when you have computationally expensive operations, such as data calculations or external API calls, that do not need to be performed on every component render.</p>
+<p>Here is an example of using useMemo:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useMemo } from 'react';
 
 const MyComponent = ({ a, b }) =&gt; {
-  // Використання useMemo для кешування результату обчислення
+  // Using useMemo to cache the computation result
   const result = useMemo(() =&gt; {
-    console.log('Результат обчислення');
+    console.log('Computing result');
     return a + b;
-  }, [a, b]); // Залежності, на основі яких буде виконано повторне обчислення
+  }, [a, b]); // Dependencies based on which recalculation will be performed
 
   return (
     &lt;div&gt;
-      &lt;p&gt;Результат: {result}&lt;/p&gt;
+      &lt;p&gt;Result: {result}&lt;/p&gt;
     &lt;/div&gt;
   );
 };
 
 export default MyComponent;</code></pre>
-<p>useMemo першим параметром приймає функцію, яка мусить повернути <strong>результат обчислень</strong>, другим параметром - <strong>масив залежностей</strong>.</p>
-<p>Коли будь-яка змінна в масиві змінюється, useMemo виконає функцію знову та оновить кешований результат. У випадку, коли всі змінні в масиві залежностей залишаються незмінними між рендерами, useMemo поверне <strong>закешований результат</strong> без виконання функції обчислення заново.</p>
+<p>useMemo accepts a function as its first parameter, which must return the <strong>computation result</strong>, and a <strong>dependency array</strong> as its second parameter.</p>
+<p>When any variable in the array changes, useMemo will execute the function again and update the cached result. In the case when all variables in the dependency array remain unchanged between renders, useMemo will return the <strong>cached result</strong> without executing the computation function again.</p>
 <p></p>
 <style><!--
 .row-container {

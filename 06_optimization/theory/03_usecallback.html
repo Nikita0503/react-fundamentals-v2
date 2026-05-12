@@ -1,30 +1,30 @@
 <h3 style="color: #76cdd8;"><strong>useCallback</strong></h3>
-<p><strong>useCallback</strong> є хуком в React, який дозволяє <strong>кешувати мемоізовану версію функції</strong> між рендерами компонента.</p>
-<p>Основна ідея useCallback полягає в тому, що він повертає мемоїзовану версію функції, яка буде однаковою при кожному рендері компонента, поки не зміниться жодна залежність з масиву залежностей.</p>
-<p>Це дозволяє <strong>уникнути непотрібного створення нових функцій</strong> при кожному рендері компонента, що може відбуватись в деяких випадках, коли ми передаємо функції як пропси до дочірніх компонентів.</p>
-<p>Отже, основні переваги використання useCallback включають:</p>
+<p><strong>useCallback</strong> is a hook in React that allows you to <strong>cache a memoized version of a function</strong> between component renders.</p>
+<p>The main idea of useCallback is that it returns a memoized version of the function that will remain the same on every component render, as long as none of the dependencies in the dependency array change.</p>
+<p>This allows you to <strong>avoid unnecessary creation of new functions</strong> on every component render, which can happen in some cases when we pass functions as props to child components.</p>
+<p>So, the main advantages of using useCallback include:</p>
 <ul>
-<li><strong>Оптимізація продуктивності</strong>: Використання useCallback допомагає <strong>уникнути зайвих рендерів дочірніх компонентів</strong>, оскільки функції не будуть перестворюватись при кожному рендері батьківського компонента.</li>
-<li><strong>Забезпечення стабільності посилань</strong>: Мемоїзація функцій за допомогою useCallback дозволяє <strong>гарантувати стабільність посилань</strong> на ці функції. Це може бути корисним у випадках, коли ми передаємо ці функції як пропси в дочірні компоненти, що також мемоїзовані за допомогою React.memo.</li>
+<li><strong>Performance optimization</strong>: Using useCallback helps <strong>avoid unnecessary re-renders of child components</strong>, since functions will not be recreated on every render of the parent component.</li>
+<li><strong>Ensuring reference stability</strong>: Memoizing functions with useCallback allows you to <strong>guarantee the stability of references</strong> to these functions. This can be useful in cases where we pass these functions as props to child components that are also memoized with React.memo.</li>
 </ul>
-<p>Отже, ось приклад використання useCallback:</p>
+<p>So, here is an example of using useCallback:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState, useCallback } from 'react';
 import ChildComponent from './ChildComponent';
 
 const ParentComponent = () =&gt; {
   const [count, setCount] = useState(0);
 
-  // Оголошуємо функцію-обробник кліку з використанням useCallback,
-  // передаємо залежність [count]
+  // Declare a click handler function using useCallback,
+  // passing the dependency [count]
   const handleClick = useCallback(() =&gt; {
-    console.log('Функція-обробник кліку викликається');
+    console.log('Click handler function is called');
     setCount(count + 1);
   }, [count]);
 
   return (
     &lt;div&gt;
-      &lt;h1&gt;Лічильник: {count}&lt;/h1&gt;
-      {/* Передаємо функцію-обробник як пропс до дочірнього компонента */}
+      &lt;h1&gt;Counter: {count}&lt;/h1&gt;
+      {/* Pass the handler function as a prop to the child component */}
       &lt;ChildComponent handleClick={handleClick} /&gt;
     &lt;/div&gt;
   );
@@ -32,20 +32,20 @@ const ParentComponent = () =&gt; {
 
 export default ParentComponent;</code></pre>
 <pre class="prettyprint"><code class="lang-js">
-// Використовуємо React.memo для мемоїзації дочірнього компонента
-// Що дозволяє уникнути зайвих рендерів при зміні пропсів, якщо вони не змінюються
+// Using React.memo to memoize the child component
+// This allows avoiding unnecessary re-renders when props don't change
 import React from 'react';
 
 const ChildComponent = ({ handleClick }) =&gt; {
-  console.log('Дочірній компонент рендериться');
+  console.log('Child component renders');
   return (
-    &lt;button onClick={handleClick}&gt;Збільшити&lt;/button&gt;
+    &lt;button onClick={handleClick}&gt;Increment&lt;/button&gt;
   );
 };
 
 export default React.memo(ChildComponent);</code></pre>
-<p>У цьому прикладі ми використовуємо <strong>useCallback для кешування функції handleClick</strong>, яка є функцією-обробником кліку кнопки. Масив залежностей [count] вказує, що <strong>функція повинна бути оновлена, якщо змінюється значення count</strong> (змінна, що зберігається в стані батьківського компонента).</p>
-<p>Дочірній компонент ChildComponent також мемоїзований за допомогою React.memo, що допомагає <strong>уникнути зайвих рендерів</strong>, оскільки ми передаємо стабільну функцію <strong>handleClick як пропс, яка не змінюється</strong> (посилання на неї однакове) при кожному рендері ParentComponent.</p>
+<p>In this example, we use <strong>useCallback to cache the handleClick function</strong>, which is a button click handler function. The dependency array [count] indicates that the <strong>function should be updated if the count value changes</strong> (a variable stored in the parent component's state).</p>
+<p>The child component ChildComponent is also memoized with React.memo, which helps <strong>avoid unnecessary re-renders</strong>, since we pass a stable <strong>handleClick function as a prop that does not change</strong> (the reference to it remains the same) on every render of ParentComponent.</p>
 <p></p>
 <style><!--
 .row-container {

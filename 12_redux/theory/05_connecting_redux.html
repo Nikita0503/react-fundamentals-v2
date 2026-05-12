@@ -1,5 +1,5 @@
-<h3 style="color: #76cdd8;"><strong>Підключення Redux до проекту</strong></h3>
-<p>Зараз App.js файл виглядає так:</p>
+<h3 style="color: #76cdd8;"><strong>Connecting Redux to the Project</strong></h3>
+<p>Currently the App.js file looks like this:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */
 
 const App = () =&gt; {
@@ -9,7 +9,7 @@ const App = () =&gt; {
 };
 
 export default App;</code></pre>
-<p>Щоб дати усім компонентам <strong>доступ до Store</strong>, необхідно їх огорнути у <strong>Provider</strong> з пакету 'react-redux' та надати йому <strong>Store</strong>:</p>
+<p>To give all components <strong>access to the Store</strong>, you need to wrap them in a <strong>Provider</strong> from the 'react-redux' package and provide it with the <strong>Store</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */
 
 import { Provider } from 'react-redux';
@@ -27,7 +27,7 @@ const App = () =&gt; {
 
 
 export default App;</code></pre>
-<p>Тепер <strong>кожен компонент</strong>, котрий використовується в середині компонента App <strong>має змогу отримати та оновити дані Store</strong>.</p>
+<p>Now <strong>every component</strong> used inside the App component <strong>has the ability to retrieve and update Store data</strong>.</p>
 <p></p>
 <style><!--
 .row-container {

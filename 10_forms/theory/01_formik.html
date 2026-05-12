@@ -1,50 +1,50 @@
 <h3 style="color: #76cdd8;"><strong>Formik</strong></h3>
-<p>Форми в React використовуються для <strong>отримання вхідних даних від користувача</strong>, таких як тексти, числа, вибори, чекбокси та багато іншого. Вони є важливим елементом взаємодії користувача з веб-додатком, і дозволяють передавати ці дані на сервер для подальшої обробки або зберігання.</p>
-<p>Основні переваги використання форм у React включають:</p>
+<p>Forms in React are used to <strong>receive input data from the user</strong>, such as text, numbers, selections, checkboxes, and much more. They are an important element of user interaction with a web application and allow transmitting this data to the server for further processing or storage.</p>
+<p>The main advantages of using forms in React include:</p>
 <ul>
-<li><strong>Керування станом даних</strong>: Форми в React дозволяють використовувати внутрішні стани компонентів для зберігання та керування введеними даними, що дозволяє зручно відстежувати та змінювати значення форми.</li>
-<li><strong>Валідація даних</strong>: За допомогою форм у React можна виконувати валідацію введених даних на боці клієнта (в нашому додатку) перед відправкою на сервер. Це дозволяє відразу ж показувати помилки введення користувачеві та забезпечує більш коректну роботу з даними.</li>
-<li><strong>Передача даних на сервер</strong>: Форми в React дозволяють зручно передавати дані на сервер для подальшої обробки або зберігання на серверному боці.</li>
-<li><strong>Компонентний підхід</strong>: Використання форм у React дозволяє відокремити логіку взаємодії з формою в окремі компоненти, що дозволяє легко керувати станом форми, валідацією та обробкою подій.</li>
-<li><strong>Перевикористання коду</strong>: Форми можуть бути створені як реюзабельні (можна використати повторно) компоненти, що дозволяє їх використання на різних сторінках або в різних проектах, спрощуючи розробку та підтримку коду.</li>
+<li><strong>Data state management</strong>: Forms in React allow using internal component states to store and manage entered data, which makes it convenient to track and change form values.</li>
+<li><strong>Data validation</strong>: With forms in React, you can perform validation of entered data on the client side (in our application) before sending it to the server. This allows immediately showing input errors to the user and ensures more correct data handling.</li>
+<li><strong>Sending data to the server</strong>: Forms in React allow conveniently sending data to the server for further processing or storage on the server side.</li>
+<li><strong>Component approach</strong>: Using forms in React allows separating the form interaction logic into separate components, which makes it easy to manage form state, validation, and event handling.</li>
+<li><strong>Code reuse</strong>: Forms can be created as reusable components, which allows their use on different pages or in different projects, simplifying development and code maintenance.</li>
 </ul>
-<p>Загалом, використання форм у React дозволяє зручно та ефективно отримувати вхідні дані від користувача, забезпечує контроль над станом даних.</p>
-<p>Для роботою з формами у React ми радимо використовувати бібліотеку Formik. Для того щоб її встановити у проект, потрібно ввести команду:</p>
+<p>Overall, using forms in React allows conveniently and efficiently receiving input data from the user and provides control over data state.</p>
+<p>For working with forms in React, we recommend using the Formik library. To install it in a project, you need to enter the command:</p>
 <pre class="prettyprint"><code class="lang-js">npm install formik</code></pre>
-<p>Formik - це стороння бібліотека для React, яка надає зручні інструменти для роботи з формами. Давайте розглянемо приклад використання Formik для створення форми в React компоненті.</p>
-<p>Припустимо, ми хочемо створити форму для введення даних користувача, таких як ім'я, електронна пошта та повідомлення.</p>
-<p>Ми встановлюємо Formik як залежність та імпортуємо необхідні компоненти:</p>
+<p>Formik is a third-party library for React that provides convenient tools for working with forms. Let's look at an example of using Formik to create a form in a React component.</p>
+<p>Let's say we want to create a form for entering user data, such as name, email, and message.</p>
+<p>We install Formik as a dependency and import the necessary components:</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 const ContactForm = () =&gt; {
-  // Початкові значення полів форми
+  // Initial values of form fields
   const initialValues = {
     name: '',
     email: '',
     message: ''
   };
 
-  // Функція для обробки відправки форми
+  // Function to handle form submission
   const handleSubmit = (values, { setSubmitting }) =&gt; {
-    // Виконуємо відправку даних на сервер або виконуємо іншу логіку
+    // Send data to the server or perform other logic
     console.log(values);
     setSubmitting(false);
   };
 
-  // Валідація введених даних
+  // Validation of entered data
   const validateForm = values =&gt; {
     const errors = {};
     if (!values.name) {
-      errors.name = 'Поле "Ім\'я" є обов\'язковим';
+      errors.name = 'The "Name" field is required';
     }
     if (!values.email) {
-      errors.email = 'Поле "Електронна пошта" є обов\'язковим';
+      errors.email = 'The "Email" field is required';
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = 'Некоректна адреса електронної пошти';
+      errors.email = 'Invalid email address';
     }
     if (!values.message) {
-      errors.message = 'Поле "Повідомлення" є обов\'язковим';
+      errors.message = 'The "Message" field is required';
     }
     return errors;
   };
@@ -57,14 +57,14 @@ const ContactForm = () =&gt; {
   &gt;
     {({ isSubmitting, isValid, dirty }) =&gt; (
       &lt;Form&gt;
-        &lt;Field type="text" name="name" placeholder="Ім'я" /&gt;
+        &lt;Field type="text" name="name" placeholder="Name" /&gt;
         &lt;ErrorMessage name="name" component="div" /&gt;
-        &lt;Field type="email" name="email" placeholder="Електронна пошта" /&gt;
+        &lt;Field type="email" name="email" placeholder="Email" /&gt;
         &lt;ErrorMessage name="email" component="div" /&gt;
-        &lt;Field as="textarea" name="message" placeholder="Повідомлення" /&gt;
+        &lt;Field as="textarea" name="message" placeholder="Message" /&gt;
         &lt;ErrorMessage name="message" component="div" /&gt;
         &lt;button type="submit" disabled={isSubmitting || !isValid || !dirty}&gt;
-          Відправити
+          Submit
         &lt;/button&gt;
       &lt;/Form&gt;
     )}
@@ -73,19 +73,19 @@ const ContactForm = () =&gt; {
 
 export default ContactForm;
 </code></pre>
-<p>У цьому прикладі ми використовуємо Formik для створення <strong>форми з валідацією</strong> і обробкою <strong>події відправки форми</strong>. Форма містить три поля: "Ім'я", "Електронна пошта" та "Повідомлення". Ми встановлюємо початкові значення полів форми за допомогою <strong>initialValues</strong> переданих у компонент <strong>Formik</strong>. Далі ми передаємо функцію <strong>handleSubmit</strong>, яка буде <strong>викликатись при відправці форми</strong>, в якості обробника події <strong>onSubmit</strong> компонента Formik.</p>
-<p>Функція <strong>handleSubmit</strong> отримує два аргументи: <strong>значення форми</strong> (values) та <strong>функцію setSubmitting</strong>, яку ми можемо використовувати для керування станом відправки форми. У цьому прикладі ми просто виводимо значення форми в консоль та встановлюємо setSubmitting(false) для завершення процесу відправки.</p>
-<p>Також, ми використовуємо функцію <strong>validate</strong> для <strong>валідації введених даних</strong> у формі. Ця функція приймає значення форми (values) і повертає об'єкт з помилками, якщо вони є. У нашому прикладі ми перевіряємо, чи поля "Ім'я", "Електронна пошта" та "Повідомлення" не є пустими, та чи має поле "Електронна пошта" правильний формат електронної пошти. Якщо є помилки, вони відображаються в компоненті <strong>ErrorMessage</strong>, який виводить текст помилки на екран.</p>
-<p>Крім того, ми використовуємо компоненти Field для створення полів форми. Ми вказуємо тип поля (type), його ім'я (name) та встановлюємо значення за замовчуванням (placeholder). Використовуючи as="textarea", ми можемо використовувати <strong>Field</strong> для створення текстової області.</p>
-<p>Нарешті, ми використовуємо кнопку відправки форми з атрибутом <strong>disabled={isSubmitting || !isValid || !dirty}</strong>, який встановлюється автоматично компонентом Formik під час відправки форми, <strong>щоб уникнути подвійної відправки </strong>(<strong>isSubmitting</strong>), та уникнути відправки <strong>невалідних даних</strong> (<strong>isValid</strong><span style="font-size: 1em;">) або <strong>відправки взагалі пустої форми</strong> (<strong>dirty</strong>).</span></p>
-<p>У вказаному прикладі, isSubmitting - це змінна, яка автоматично встановлюється бібліотекою Formik під час відправки форми. Вона має значення <strong>true</strong>, коли форма <strong>наразі відправляється</strong>, тобто виконується функція onSubmit, і <strong>false</strong> в <strong>інших випадках</strong>.</p>
-<p>Застосування isSubmitting до атрибуту disabled на кнопці відправки дозволяє нам вимкнути кнопку під час відправки форми, щоб <strong>уникнути подвійної відправки</strong> або небажаної взаємодії з формою під час процесу відправки.</p>
-<p>isValid - змінна, яка також автоматично встановлюється бібліотекою Formik, що свідчить нам про валідність введених даних. Якщо її значення <strong>true</strong> - дані валідні, якщо ні, відповідно - <strong>false</strong>. Повертає true / false для неї функція <strong>validateForm</strong>. У разі повернення пустого обʼєкту, буде вважатися, що введені дані є валідними (повернеться true). Якщо об`єкт має поля то дані невалідні (повернеться false).</p>
-<p>dirty - змінна, яка також автоматично встановлюється бібліотекою Formik, що повідомляє нас про те, чи було щось введено у форму. Якщо так, то її значення буде <strong>true</strong>, у разі якщо форму не чіпали - <strong>false</strong>.</p>
-<p>Коли isSubmitting має значення <strong>true</strong> або dirty чи isValid мають значення <strong>false</strong> (!isValid || !dirty), кнопка буде <strong>заблокована і неактивна</strong>, що дозволить уникнути некоректної взаємодії з формою.</p>
-<p>Коли процес відправки завершиться, наприклад, після успішного відправлення або виникнення помилки, isSubmitting буде встановлено на <strong>false</strong> в функції onSubmit або при виникненні помилки, що дозволить <strong>знову активувати кнопку</strong> відправки форми для подальшого використання. </p>
-<p>При першій взаємодії з формою, для dirty буде встановлено значення <strong>true</strong>. Та якщо усі дані введені коректно, пройшли перевірки, то для isValid також буде встановлено значення <strong>true</strong>.</p>
-<p>Це корисний приклад використання атрибуту disabled={isSubmitting || !isValid || !dirty} разом з бібліотекою Formik, щоб забезпечити коректну взаємодію з формою під час введення даних та уникнути подвійних відправок.</p>
+<p>In this example, we use Formik to create a <strong>form with validation</strong> and handling of the <strong>form submission event</strong>. The form contains three fields: "Name", "Email", and "Message". We set the initial values of the form fields using <strong>initialValues</strong> passed to the <strong>Formik</strong> component. Then we pass the <strong>handleSubmit</strong> function, which will be <strong>called when the form is submitted</strong>, as the <strong>onSubmit</strong> event handler of the Formik component.</p>
+<p>The <strong>handleSubmit</strong> function receives two arguments: the <strong>form values</strong> (values) and the <strong>setSubmitting function</strong>, which we can use to manage the form submission state. In this example, we simply output the form values to the console and set setSubmitting(false) to complete the submission process.</p>
+<p>Also, we use the <strong>validate</strong> function for <strong>validating the entered data</strong> in the form. This function takes the form values (values) and returns an object with errors if there are any. In our example, we check whether the "Name", "Email", and "Message" fields are not empty, and whether the "Email" field has the correct email format. If there are errors, they are displayed in the <strong>ErrorMessage</strong> component, which outputs the error text on the screen.</p>
+<p>Additionally, we use Field components to create form fields. We specify the field type (type), its name (name), and set the default value (placeholder). Using as="textarea", we can use <strong>Field</strong> to create a text area.</p>
+<p>Finally, we use a form submit button with the <strong>disabled={isSubmitting || !isValid || !dirty}</strong> attribute, which is automatically set by the Formik component during form submission, <strong>to avoid double submission</strong> (<strong>isSubmitting</strong>), and to avoid submitting <strong>invalid data</strong> (<strong>isValid</strong><span style="font-size: 1em;">) or <strong>submitting a completely empty form</strong> (<strong>dirty</strong>).</span></p>
+<p>In the given example, isSubmitting is a variable that is automatically set by the Formik library during form submission. It has a value of <strong>true</strong> when the form is <strong>currently being submitted</strong>, i.e., the onSubmit function is executing, and <strong>false</strong> in <strong>other cases</strong>.</p>
+<p>Applying isSubmitting to the disabled attribute on the submit button allows us to disable the button during form submission to <strong>avoid double submission</strong> or unwanted interaction with the form during the submission process.</p>
+<p>isValid is a variable that is also automatically set by the Formik library, indicating the validity of the entered data. If its value is <strong>true</strong> — the data is valid, if not — <strong>false</strong> respectively. The <strong>validateForm</strong> function returns true / false for it. If an empty object is returned, the entered data will be considered valid (true will be returned). If the object has fields, the data is invalid (false will be returned).</p>
+<p>dirty is a variable that is also automatically set by the Formik library, informing us whether something has been entered in the form. If so, its value will be <strong>true</strong>, if the form has not been touched — <strong>false</strong>.</p>
+<p>When isSubmitting has a value of <strong>true</strong> or dirty or isValid have a value of <strong>false</strong> (!isValid || !dirty), the button will be <strong>blocked and inactive</strong>, which will help avoid incorrect interaction with the form.</p>
+<p>When the submission process is complete, for example, after a successful submission or an error occurs, isSubmitting will be set to <strong>false</strong> in the onSubmit function or when an error occurs, which will allow <strong>reactivating the submit button</strong> for further use.</p>
+<p>On the first interaction with the form, dirty will be set to <strong>true</strong>. And if all data is entered correctly and passes the checks, isValid will also be set to <strong>true</strong>.</p>
+<p>This is a useful example of using the disabled={isSubmitting || !isValid || !dirty} attribute together with the Formik library to ensure correct interaction with the form during data entry and avoid double submissions.</p>
 <p></p>
 <style><!--
 .row-container {

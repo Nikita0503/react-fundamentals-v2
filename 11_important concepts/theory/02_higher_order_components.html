@@ -1,11 +1,11 @@
-<h3 style="color: #76cdd8;"><strong>Компоненти вищого порядку</strong></h3>
-<p><strong>Компоненти вищого порядку</strong> (Higher-Order Components або HOCs) в React - це <strong>функції</strong>, які <strong>приймають компонент</strong> React в якості вхідного параметра і <strong>повертають новий компонент</strong> React в якості виходу. HOC не є частиною синтаксису React, а є <strong>патерном використання функцій вищого порядку</strong> в JavaScript.</p>
-<p>Одна з основних використань HOC - це <strong>розширення функціональності</strong> компонентів React <strong>без зміни їхньої реалізації</strong>. HOC можуть бути використані для додавання спільної логіки до різних компонентів, такої як логування, авторизація, кешування, операції з мережею, переклад та багато іншого.</p>
+<h3 style="color: #76cdd8;"><strong>Higher-Order Components</strong></h3>
+<p><strong>Higher-Order Components</strong> (HOCs) in React are <strong>functions</strong> that <strong>accept a React component</strong> as an input parameter and <strong>return a new React component</strong> as output. HOC is not part of React's syntax, but rather a <strong>pattern of using higher-order functions</strong> in JavaScript.</p>
+<p>One of the main uses of HOC is <strong>extending the functionality</strong> of React components <strong>without changing their implementation</strong>. HOCs can be used to add shared logic to different components, such as logging, authorization, caching, network operations, translation, and much more.</p>
 <p><img src="blob:https://studio.elearn.epam.com/23335eec-79f3-4885-86ee-5e8514689638" alt="" /></p>
-<p>Для прикладу розглянемо HOC, де у разі якщо користувач <strong>авторизований</strong>, повертаємо <strong>наданий компонент</strong>, якщо <strong>ні</strong> - повертаємо <strong>надпис «Немає доступу»</strong>:</p>
+<p>As an example, let's look at a HOC where if the user is <strong>authorized</strong>, we return the <strong>provided component</strong>, if <strong>not</strong> — we return the <strong>message "Access denied"</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">import React from 'react';
 
-// Оголошуємо основний компонент, який буде обгортатися HOC
+// Declare the main component that will be wrapped by the HOC
 const MyComponent = () =&gt; {
   return (
     &lt;div&gt;
@@ -14,27 +14,27 @@ const MyComponent = () =&gt; {
   );
 };
 
-// Оголошуємо HOC з назвою withAuthorization
+// Declare the HOC named withAuthorization
 const withAuthorization = (WrappedComponent) =&gt; {
   return (props) =&gt; {
-    // Тут має бути власна логіка перевірки авторизації
-    const isAuthorized = true; // В даному прикладі завжди повертає true
+    // Here should be your own authorization check logic
+    const isAuthorized = true; // In this example it always returns true
 
     if (isAuthorized) {
-      // Якщо користувач авторизований, повертаємо обгорнутий компонент
+      // If the user is authorized, return the wrapped component
       return &lt;WrappedComponent {...props} /&gt;;
     } else {
-      // Якщо користувач не авторизований, повертаємо надпис "Немає доступу"
-      return &lt;div&gt;Немає доступу&lt;/div&gt;;
+      // If the user is not authorized, return the message "Access denied"
+      return &lt;div&gt;Access denied&lt;/div&gt;;
     }
   }
 };
 
-// Використовуємо HOC для обгортання основного компоненту
+// Use the HOC to wrap the main component
 const MyComponentWithAuthorization = withAuthorization(MyComponent);
 
 export default MyComponentWithAuthorization;</code></pre>
-<p>У цьому коді <strong>withAuthorization</strong> є <strong>HOC</strong>, який <strong>приймає WrappedComponent</strong> (основний компонент) і <strong>повертає новий функціональний компонент</strong>, який перевіряє, чи користувач авторизований. Якщо користувач <strong>авторизований</strong>, HOC повертає <strong>WrappedComponent</strong> з усіма переданими йому властивостями (props), в <strong>іншому випадку</strong> повертає <strong>надпис "Немає доступу"</strong>. Компонент MyComponent є основним компонентом, який може бути обгорнутий HOC withAuthorization, щоб додати логіку авторизації до його відображення.</p>
+<p>In this code, <strong>withAuthorization</strong> is a <strong>HOC</strong> that <strong>accepts WrappedComponent</strong> (the main component) and <strong>returns a new functional component</strong> that checks whether the user is authorized. If the user is <strong>authorized</strong>, the HOC returns <strong>WrappedComponent</strong> with all its passed props, <strong>otherwise</strong> it returns the <strong>message "Access denied"</strong>. The MyComponent is the main component that can be wrapped by the HOC withAuthorization to add authorization logic to its rendering.</p>
 <h2><img src="blob:https://studio.elearn.epam.com/017f8167-9fc9-44e3-84e5-de7c3ce7d640" alt="" style="display: block; margin-left: auto; margin-right: auto;" /></h2>
 <p></p>
 <style><!--

@@ -1,9 +1,9 @@
-<h3 style="color: #76cdd8;"><strong>Що таке React Router</strong></h3>
-<p>Здебільшого React використовується для розробки проектів середнього розміру. Такі проекти містять більше ніж 1 сторінку. В React однією з найбільш популярних бібліотек для навігації є <strong>React Router</strong>.</p>
-<p>Для початку роботи з React Router необхідно зробити 2 кроки:</p>
-<p>Встановити у проект:</p>
+<h3 style="color: #76cdd8;"><strong>What is React Router</strong></h3>
+<p>React is mostly used for developing medium-sized projects. Such projects contain more than 1 page. In React, one of the most popular navigation libraries is <strong>React Router</strong>.</p>
+<p>To start working with React Router, you need to take 2 steps:</p>
+<p>Install it in the project:</p>
 <pre class="prettyprint"><code class="lang-js">npm install react-router-dom</code></pre>
-<p>Зробити 2 компоненти-сторінки, на які користувач переходитиме:</p>
+<p>Create 2 page components that the user will navigate to:</p>
 <pre class="prettyprint"><code class="lang-js">/** /pages/HomePage.js */
 
 import React from 'react';
@@ -32,7 +32,7 @@ const ProfilePage = () =&gt; {
 
 export default ProfilePage; 
 </code></pre>
-<p>Зазвичай налаштування навігації відбувається у файлі App.js:</p>
+<p>Usually, navigation configuration is done in the App.js file:</p>
 <pre class="prettyprint"><code class="lang-js">/** App.js */
 
 import React from 'react';
@@ -56,11 +56,11 @@ const App = () =&gt; {
 export default App;
 
 </code></pre>
-<p>Усі компоненти навігації імпортуються з пакету 'react-router-dom':</p>
-<p><strong>BrowserRouter</strong> - це компонент, який дозволяє використовувати URL-адресу браузера для відображення різних сторінок в додатку. Він <strong>слідкує за змінами URL-адреси і змінює відображуваний контент</strong> відповідно до нового URL-адреси.</p>
-<p><strong>Routes</strong> - це компонент, що містить <strong>список шляхів</strong> (Routes), на які може перейти користувач, і вказує, який компонент має відобразитися при потраплянні на кожен з цих шляхів. Кожен шлях представляє собою <strong>URL-адресу</strong>, яка пов'язана з певним компонентом. В середині Routes компонента можуть розміщатися <strong>тільки Route компоненти</strong>.</p>
-<p><strong>Route</strong> – це компонент, який зіставляє шлях із компонентом, який повинен відображатися, коли користувач потрапляє на цей шлях. Кожен Route містить інформацію про шлях (path) та компонент (element - сторінка), який має бути відображений при попаданні на цей шлях. Крім того, у Route можна передати додаткові параметри, які допомагають налаштувати відображення компонента на сторінці.</p>
-<p>Залишилося надати змогу переходити між сторінками (роутами).</p>
+<p>All navigation components are imported from the 'react-router-dom' package:</p>
+<p><strong>BrowserRouter</strong> - is a component that allows using the browser URL to display different pages in the application. It <strong>monitors URL changes and changes the displayed content</strong> according to the new URL.</p>
+<p><strong>Routes</strong> - is a component that contains a <strong>list of paths</strong> (Routes) that the user can navigate to, and specifies which component should be displayed when reaching each of these paths. Each path represents a <strong>URL</strong> associated with a specific component. Inside the Routes component, only <strong>Route components</strong> can be placed.</p>
+<p><strong>Route</strong> – is a component that maps a path to a component that should be displayed when the user reaches that path. Each Route contains information about the path (path) and the component (element - page) that should be displayed when reaching that path. Additionally, extra parameters can be passed to Route that help configure the component's display on the page.</p>
+<p>All that remains is to provide the ability to navigate between pages (routes).</p>
 <p></p>
 <p></p>
 <style><!--

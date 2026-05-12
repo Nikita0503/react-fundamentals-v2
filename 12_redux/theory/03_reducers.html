@@ -1,5 +1,5 @@
 <h3 style="color: #76cdd8;"><strong>Reducers</strong></h3>
-<p>Reducer - <strong>чиста функція</strong>, котра мусить <strong>повернути оновлений екземпляр Store</strong>. Reducer приймає 1 параметром поточний Store, 2 параметром Action. Так як <strong>Store в Redux є імутабельним</strong>, Reducer не повинен змінювати Store. Він мусить <strong>повернути новий Store на основі попереднього</strong>:</p>
+<p>A Reducer is a <strong>pure function</strong> that must <strong>return an updated instance of the Store</strong>. The Reducer accepts the current Store as the 1st parameter and an Action as the 2nd parameter. Since the <strong>Store in Redux is immutable</strong>, the Reducer must not modify the Store. It must <strong>return a new Store based on the previous one</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">/** /redux/reducer.js */
 
 import {SET_NAME, SET_SURNAME} from './actions';
@@ -27,14 +27,14 @@ const userReducer = (state = initialState, action) =&gt; {
 }
 
 export default userReducer;</code></pre>
-<p><strong>InitialState</strong> - частина Store за яку відповідає Reducer.</p>
-<p>'state = initialeState' - у разі коли на місце state передали null(nullable), javascript підставить замість null(nullable) значення initialState. Таке відбувається при <strong>ініціалізації Redux</strong>.</p>
-<p>Після того як Action попадає у Reducer, звіряємо <strong>action.type</strong> з <strong>кейсами</strong> в котрих Reducer зможе обробити наданий <strong>action.payload</strong> використовуючи <strong>switch-case</strong>.</p>
-<p>Якщо action.type = SET_NAME, то Reducer поверне <strong>новий екземпляр Store, де name буде оновленим</strong> (його значенням буде те що було в action.payload), а усі останні поля (surname) залишаться незмінними.</p>
-<p>Після того як Reducer поверне новий Store, <strong>View/UI відобразить актуальні дані</strong>. Якщо action.type не підходить ні до одного з кейсів, то Reducer відпрацює <strong>кейс default</strong> та поверне Store без змін.</p>
-<p><strong>Увага</strong>:</p>
-<p><strong>case default є обов`язковим</strong>, так як reducer мусить кожного разу повертати екземпляр Store.</p>
-<p>При ініциалізації Redux, reducer приймає декілька разів свої внутрішні Actions, котрі не припадають на ваші кейси. Тому потрібен default case.</p>
+<p><strong>InitialState</strong> - the part of the Store that the Reducer is responsible for.</p>
+<p>'state = initialState' - in case null(nullable) is passed in place of state, JavaScript will substitute the initialState value instead of null(nullable). This happens during <strong>Redux initialization</strong>.</p>
+<p>After the Action reaches the Reducer, we compare <strong>action.type</strong> with <strong>cases</strong> in which the Reducer can process the provided <strong>action.payload</strong> using <strong>switch-case</strong>.</p>
+<p>If action.type = SET_NAME, then the Reducer will return a <strong>new instance of the Store where name will be updated</strong> (its value will be what was in action.payload), and all other fields (surname) will remain unchanged.</p>
+<p>After the Reducer returns the new Store, <strong>View/UI will display the current data</strong>. If action.type does not match any of the cases, the Reducer will execute the <strong>default case</strong> and return the Store without changes.</p>
+<p><strong>Note</strong>:</p>
+<p><strong>The default case is mandatory</strong>, since the reducer must return a Store instance every time.</p>
+<p>During Redux initialization, the reducer receives its internal Actions several times, which do not match your cases. That is why the default case is needed.</p>
 <style><!--
 .row-container {
         display: flex;

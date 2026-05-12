@@ -1,30 +1,30 @@
-<h3 style="color: #76cdd8;"><strong>Яку проблему вирішують стейт-менеджери?</strong></h3>
-<p>У попередніх темах ми розглядали можливості керування <strong>стейтом</strong> (даними додатку) за допомогою інструментів вбудованих в сам React. На реальних проектах для цього використовуються <strong>стейт-менеджери</strong>.</p>
-<p>Коли код стає більшим, керування даними стає все більш складнішим та збільшується <strong>ймовірність допустити помилки</strong>, при котрих <strong>поведінка даних</strong> та додатку стане <strong>непередбаченою</strong>. Також, існує поняття props drilling, котре робить код незручним, нечитабельним та може породжувати <strong>зайві рендери компонентів</strong>, що призводить до подіння продуктивності додатку.</p>
-<h3 style="color: #76cdd8;"><strong>Що таке Redux?</strong></h3>
-<p>Самим популярним стейт-менеджером для React є Redux.</p>
-<p>Його принципи:</p>
+<h3 style="color: #76cdd8;"><strong>What problem do state managers solve?</strong></h3>
+<p>In previous topics, we looked at the possibilities of managing <strong>state</strong> (application data) using tools built into React itself. In real projects, <strong>state managers</strong> are used for this purpose.</p>
+<p>As the code grows larger, data management becomes increasingly complex and the <strong>likelihood of making mistakes</strong> increases, where the <strong>behavior of data</strong> and the application becomes <strong>unpredictable</strong>. Also, there is the concept of props drilling, which makes code inconvenient, unreadable, and can cause <strong>unnecessary component re-renders</strong>, leading to decreased application performance.</p>
+<h3 style="color: #76cdd8;"><strong>What is Redux?</strong></h3>
+<p>The most popular state manager for React is Redux.</p>
+<p>Its principles:</p>
 <ul>
-<li><strong>Утримання даних окремо від компонентів</strong> у єдиному сховищі (Store);</li>
-<li>Давати змогу компонентам можливість <strong>отримати дані</strong> зі сховища, реагувати на їх зміну (відображати актуальні);</li>
-<li><strong>Змінювати дані</strong> за допомогою спеціальних функцій (Dispatch, Reducers) та об`єктів (Actions)</li>
+<li><strong>Keeping data separate from components</strong> in a single storage (Store);</li>
+<li>Giving components the ability to <strong>retrieve data</strong> from the store, react to its changes (display current data);</li>
+<li><strong>Modifying data</strong> using special functions (Dispatch, Reducers) and objects (Actions)</li>
 </ul>
 <p><img src="blob:https://studio.elearn.epam.com/eec33403-b0da-4386-8718-5ab74d5a6026" alt="" /></p>
-<p>Розглянемо як виглядає Redux з середини:</p>
+<p>Let's look at how Redux looks from the inside:</p>
 <p><img src="blob:https://studio.elearn.epam.com/573b9a36-06f1-41d0-8cfa-3469b49a322d" alt="" /></p>
-<p>Простою мовою:</p>
+<p>In simple terms:</p>
 <ul>
 <ul>
-<li><strong>View/UI</strong> – компонент</li>
-<li><strong>Store</strong> - сховище даних</li>
-<li><strong>Subscribe</strong> - View/UI <strong>підписується</strong> на зміну даних у Store. View/UI буде розуміти про те що у Store дані оновлюються і буде відображати актуальні</li>
-<li><strong>Reducer</strong> - функція, котра вміє <strong>оновлювати дані</strong> у Store</li>
-<li><strong>Action</strong> - об`єкт, який приймає в себе функція Reducer. Він містить у собі <strong>нові дані</strong>, котрі оновлять Store</li>
-<li><strong>Dispatch</strong> -  функція котра викликається з View/UI <strong>при потребі оновлення</strong> даних у Store. Вона приймає в себе Action, котрий передає його до Reducer.</li>
+<li><strong>View/UI</strong> – component</li>
+<li><strong>Store</strong> - data storage</li>
+<li><strong>Subscribe</strong> - View/UI <strong>subscribes</strong> to data changes in the Store. View/UI will know that data in the Store is being updated and will display the current values</li>
+<li><strong>Reducer</strong> - a function that knows how to <strong>update data</strong> in the Store</li>
+<li><strong>Action</strong> - an object that the Reducer function accepts. It contains <strong>new data</strong> that will update the Store</li>
+<li><strong>Dispatch</strong> - a function called from View/UI <strong>when data needs to be updated</strong> in the Store. It accepts an Action, which passes it to the Reducer.</li>
 </ul>
 </ul>
-<p>На перший погляд, архітектура здається заскладною. Але її переваги відчуваються при збільшенні проекту. Такий підхід забеспечує стабільний та комфортний контроль даних при їх великих об'ємах та складній структурі.</p>
-<p>Розглянемо компонент з 2 реактивними зміними:</p>
+<p>At first glance, the architecture seems overly complex. But its advantages are felt as the project grows. This approach ensures stable and comfortable data control with large volumes and complex structures.</p>
+<p>Let's look at a component with 2 reactive variables:</p>
 <pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
 import React from 'react';
 
@@ -41,9 +41,9 @@ const UserData = () =&gt; {
 }
 
 export default UserData;</code></pre>
-<p>Наше завдання - зробити так, щоб name та surname перенеслися до Store.</p>
-<p>Перший крок - створити папку redux у корені проекту.</p>
-<p>Другий - встановити Redux:</p>
+<p>Our task is to move name and surname to the Store.</p>
+<p>First step - create a redux folder in the project root.</p>
+<p>Second - install Redux:</p>
 <pre class="prettyprint"><code class="lang-js">npm install redux react-redux</code></pre>
 <p></p>
 <p></p>

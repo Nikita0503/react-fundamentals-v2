@@ -1,77 +1,77 @@
 <h3 style="color: #76cdd8;"><strong>useEffect</strong></h3>
-<p>React дозволяє взаємодіяти з етапами життя компоненту. Тобто виконувати якийсь <strong>код під час цих етапів</strong>. Для цього React надає хук <strong>useEffect</strong>.</p>
-<p>useEffect є одним з хуків в React, який дозволяє виконувати <strong>ефекти</strong>, тобто виконувати дії, які повинні відбутися після рендерингу компонента.</p>
-<p>Він може бути використаний для взаємодії з зовнішніми ресурсами, такими як REST API-запити, підписка на події, маніпуляції з DOM, таймери, та багато іншого.</p>
-<p>Синтаксис використання <strong>useEffect</strong> виглядає наступним чином:</p>
+<p>React allows you to interact with the stages of a component's life. That is, to execute some <strong>code during these stages</strong>. For this, React provides the <strong>useEffect</strong> hook.</p>
+<p>useEffect is one of the hooks in React that allows you to perform <strong>effects</strong>, that is, to perform actions that should happen after the component renders.</p>
+<p>It can be used to interact with external resources, such as REST API requests, event subscriptions, DOM manipulations, timers, and much more.</p>
+<p>The syntax for using <strong>useEffect</strong> looks as follows:</p>
 <pre class="prettyprint"><code class="lang-js">useEffect(() =&gt; {
-  // Логіка ефекту
-}, []); //масив залежностей</code></pre>
-<p>useEffect приймає в себе 2 параметри:</p>
+  // Effect logic
+}, []); // dependency array</code></pre>
+<p>useEffect accepts 2 parameters:</p>
 <ul>
-<li><strong>Функція</strong>, яка виконується, коли ефект викликається</li>
-<li><strong>Масив залежностей</strong>, від якого залежуть виклики ефекту</li>
+<li><strong>Function</strong> that is executed when the effect is called</li>
+<li><strong>Dependency array</strong> on which the effect calls depend</li>
 </ul>
-<p>У прикладі вище масив залежностей <strong>пустий</strong>. Це значить що ефект (тобто функція, яка надана першим параметром) <strong>буде викликаний 1 раз - після першого рендеру</strong> (першої відмальовки компоненту).</p>
-<p>Такий підхід використовують як раз для запитів до REST API, встановлення таймерів, підписок на події і так далі. Приклад:</p>
+<p>In the example above, the dependency array is <strong>empty</strong>. This means that the effect (i.e., the function provided as the first parameter) <strong>will be called 1 time - after the first render</strong> (first drawing of the component).</p>
+<p>This approach is used precisely for REST API requests, setting timers, event subscriptions, and so on. Example:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
 
 const ExampleComponent = () =&gt; {
   const [data, setData] = useState(null);
 
   useEffect(() =&gt; {
-    // Виконання запиту до API
+    // Making a request to the API
     fetch("https://api.example.com/data")
       .then(response =&gt; response.json())
       .then(result =&gt; setData(result))
-      .catch(error =&gt; console.error("Помилка під час отримання даних:", error));
-  }, []); // Порожній масив залежностей - ефект виконується 1 раз, тільки після монтування компонента
+      .catch(error =&gt; console.error("Error while fetching data:", error));
+  }, []); // Empty dependency array - effect runs 1 time, only after component mounts
 
   return (
     &lt;div&gt;
       {data &amp;&amp; (
-        // Відображення даних з API, якщо вони отримані
-        &lt;p&gt;Дані з API: {data}&lt;/p&gt;
+        // Displaying data from API if received
+        &lt;p&gt;Data from API: {data}&lt;/p&gt;
       )}
     &lt;/div&gt;
   );
 };
 
 export default ExampleComponent;</code></pre>
-<p>У цьому прикладі, <strong>дані з API</strong> отримуються в <strong>useEffect</strong> і зберігаються у стані компонента за допомогою функції setData. Якщо дані успішно отримані, вони відображаються в компоненті у вигляді текстового повідомлення. В іншому випадку, компонент не відображає нічого.</p>
-<p>Як компонент думає в цьому разі:</p>
+<p>In this example, <strong>data from the API</strong> is fetched in <strong>useEffect</strong> and stored in the component's state using the setData function. If the data is successfully received, it is displayed in the component as a text message. Otherwise, the component displays nothing.</p>
+<p>How the component thinks in this case:</p>
 <ul>
-<li>Відмалювати компонент з <strong>початковими даними</strong>. Так як data = null, то компонент поверне пустий div.</li>
-<li>Викликати <strong>useEffect</strong>, де виконується <strong>запит до REST API</strong></li>
-<li>Результат виклику помістити у змінну data, за допомогою setData. Тобто, <strong>оновити стан компоненту</strong>.</li>
-<li>Відмалювати компонент з <strong>актуальними (оновленими) даними</strong>.</li>
+<li>Render the component with <strong>initial data</strong>. Since data = null, the component will return an empty div.</li>
+<li>Call <strong>useEffect</strong>, where a <strong>REST API request</strong> is made</li>
+<li>Place the result of the call into the data variable using setData. That is, <strong>update the component's state</strong>.</li>
+<li>Render the component with <strong>up-to-date (updated) data</strong>.</li>
 </ul>
-<p>Логіка у JSX (у розмітці) де перевіряється чи містить data дані (data &amp;&amp; … ), якщо так, то поверне</p>
-<p>"<strong>&lt;div&gt;&lt;p&gt;</strong>Дані з API: «дані»<strong>&lt;/p&gt;&lt;/div&amp;gt</strong>"</p>
-<p>або якщо ні, то поверне</p>
+<p>The logic in JSX (in the markup) where it checks whether data contains data (data &amp;&amp; … ), if yes, it will return</p>
+<p>"<strong>&lt;div&gt;&lt;p&gt;</strong>Data from API: «data»<strong>&lt;/p&gt;&lt;/div&amp;gt</strong>"</p>
+<p>or if no, it will return</p>
 <p>"<strong>&lt;div&gt;&lt;/div&gt;</strong>"</p>
-<p>Це називається <strong>«умовний рендеринг»</strong>.</p>
-<p>useEffect у такому виконанні, де масив залежностей пустий, буде викликано 1 раз за весь життєвий цикл компоненту.</p>
-<p>Це аналог реалізації методу життєвого циклу <strong>componentDidMount</strong> класового компоненту, тільки у функціональому компоненті.</p>
-<p>*Якщо у useEffect другим параметром <strong>не передавати</strong> масив залежностей, тобто передати тільки функцію першим параметром, то цей ефект буде викликатися <strong>після кожного рендеру</strong> компоненту.</p>
-<p>Реалізуємо метод <strong>componentDidUpdate</strong> класового компоненту у функціональному компоненті, за допомогою <strong>useEffect</strong>.</p>
-<p><strong>componentDidUpdate</strong> є одним з методів життєвого циклу компонента в класових компонентах React, який викликається після оновлення компонента.</p>
-<p>У функціональних компонентах, еквівалентним для componentDidUpdate є використання <strong>useEffect разом з відповідними залежностями</strong>:</p>
+<p>This is called <strong>"conditional rendering"</strong>.</p>
+<p>useEffect in this implementation, where the dependency array is empty, will be called 1 time during the entire lifecycle of the component.</p>
+<p>This is the equivalent of implementing the <strong>componentDidMount</strong> lifecycle method of a class component, but in a functional component.</p>
+<p>*If you <strong>do not pass</strong> a dependency array as the second parameter to useEffect, that is, pass only the function as the first parameter, then this effect will be called <strong>after every render</strong> of the component.</p>
+<p>Let's implement the <strong>componentDidUpdate</strong> method of a class component in a functional component using <strong>useEffect</strong>.</p>
+<p><strong>componentDidUpdate</strong> is one of the lifecycle methods of a component in React class components, which is called after the component updates.</p>
+<p>In functional components, the equivalent of componentDidUpdate is using <strong>useEffect with corresponding dependencies</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
 
 const Counter = () =&gt; {
-  // Використання хука useState для створення стану зі значенням 0
+  // Using the useState hook to create state with value 0
   const [count, setCount] = useState(0);
 
-  // Функція для збільшення значення лічильника
+  // Function to increment the counter value
   const increment = () =&gt; {
-    // Використання функції setCount з передачею нового значення стану
+    // Using the setCount function passing a new state value
     setCount(count + 1);
   };
 
-  // Використання useEffect для виконання певної логіки після оновлення компонента
+  // Using useEffect to execute certain logic after the component updates
   useEffect(() =&gt; {
-    console.log("Значення count змінилося:", count);
-  }, [count]); // Залежність від значення count
+    console.log("The count value has changed:", count);
+  }, [count]); // Dependency on the count value
 
   return (
     &lt;div&gt;
@@ -82,34 +82,34 @@ const Counter = () =&gt; {
 };
 
 export default Counter;</code></pre>
-<p>У цьому прикладі useEffect <strong>виконується після кожної зміни count</strong>.</p>
-<p>В проектах, така реалізація useEffect використовується в якості <strong>реакції на зміни даних</strong> для виклику інших функцій або оновлення логіки відображення компоненту.</p>
-<p>Останній метод життєвого циклу, з яким вміє працювати <strong>useEffect</strong>, у класовому компоненті називається <strong>componentWillUnmount</strong>. Він викликається <strong>під час демонтування компонента</strong> з DOM (знищення):</p>
+<p>In this example, useEffect <strong>executes after every change to count</strong>.</p>
+<p>In projects, this implementation of useEffect is used as a <strong>reaction to data changes</strong> to call other functions or update the component's display logic.</p>
+<p>The last lifecycle method that <strong>useEffect</strong> can work with, in a class component is called <strong>componentWillUnmount</strong>. It is called <strong>when the component is unmounted</strong> from the DOM (destroyed):</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
 
 const Counter = () =&gt; {
-  // Використання хука useState для створення стану
+  // Using the useState hook to create state
   const [count, setCount] = useState(0);
 
-  // Ефект, що виконується при монтуванні компонента
+  // Effect that runs when the component mounts
   useEffect(() =&gt; {
-    // Код, що виконується при монтуванні компонента
+    // Code that runs when the component mounts
     console.log("Component mounted");
 
-    // Функція очищення, що виконується перед видаленням компонента з DOM
+    // Cleanup function that runs before the component is removed from the DOM
     return () =&gt; {
-      // Код, що виконується перед знищенням компонента
+      // Code that runs before the component is destroyed
       console.log("Component unmounted");
       setCount(0);
     };
-  }, []); // Порожній масив залежностей означає, що ефект виконується тільки при монтуванні та розмонтуванні компонента
+  }, []); // Empty dependency array means the effect runs only on mount and unmount
 
-  // Функція для збільшення значення лічильника
+  // Function to increment the counter value
   const increment = () =&gt; {
     setCount(count + 1);
   };
 
-  // Рендер компонента
+  // Render the component
   return (
     &lt;div&gt;
       &lt;p&gt;Count: {count}&lt;/p&gt;
@@ -119,25 +119,25 @@ const Counter = () =&gt; {
 };
 
 export default Counter;</code></pre>
-<p>У цьому прикладі, функція очищення буде виконана <strong>при знищенні компонента</strong>, вона встановить значення count на 0. Функція очищення мусить повертатися (в return) з функції, котра була передана в useEffect першим параметром.</p>
-<p>У проектах таку реалізацію <strong>useEffect</strong> використовують дуже часто для роботи з <strong>підписками на події</strong>:</p>
+<p>In this example, the cleanup function will be executed <strong>when the component is destroyed</strong>, it will set the count value to 0. The cleanup function must be returned (in return) from the function that was passed to useEffect as the first parameter.</p>
+<p>In projects, this implementation of <strong>useEffect</strong> is very often used for working with <strong>event subscriptions</strong>:</p>
 <pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from 'react';
 
 const Counter = () =&gt; {
   const [count, setCount] = useState(0);
 
   useEffect(() =&gt; {
-    // Функція-підписка на подію
+    // Event subscription function
     const handleClick = () =&gt; {
       setCount(count + 1);
     };
 
-    // Додаємо прослуховувач події при монтуванні компонента
+    // Adding an event listener when the component mounts
     document.addEventListener('click', handleClick);
 
-    // Функція очищення, яка виконається перед знищенням компонента
+    // Cleanup function that runs before the component is destroyed
     return () =&gt; {
-      // Відписуємося від події при знищенні компонента
+      // Unsubscribing from the event when the component is destroyed
       document.removeEventListener('click', handleClick);
     };
   }, []);
@@ -150,7 +150,7 @@ const Counter = () =&gt; {
 };
 
 export default Counter;</code></pre>
-<p>Кількість useEffect у компоненті <strong>необмежена</strong>. Можна використовувати стільки, скільки потрібно. Але це потрібно робити уважно, щоб компонент мав <strong>очевидну поведінку</strong> та не було зайвого навантаження на браузер.</p>
+<p>The number of useEffect hooks in a component is <strong>unlimited</strong>. You can use as many as needed. But this should be done carefully so that the component has <strong>predictable behavior</strong> and there is no unnecessary load on the browser.</p>
 <p></p>
 <style><!--
 .row-container {

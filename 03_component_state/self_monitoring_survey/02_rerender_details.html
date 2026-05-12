@@ -1,17 +1,17 @@
-<h4 style="color: #474747; font-weight: 600;">Що буде, якщо викликати setCount із тим самим значенням count (setCount(count)) у функціональному компоненті React, що використовує хук useState?</h4><br/>
-( ) Запуститься перерендер компонента, але із затримкою.
-(x) Не відбудеться перерендер компонента, React оптимізує ігнорування подібних оновлень.
-( ) З'явиться помилка виконання (runtime error) через неявну рекурсію.
-<h4 style="color: #474747; font-weight: 600;">Які основні принципи визначення необхідності перерендеру компонента в React?</h4><br/>
-( ) Перерендер відбувається завжди при виклику setCount незалежно від значення count.
-(x) Перерендер відбувається тільки при зміні значення в стані компонента.
-( ) Перерендер відбудеться, якщо setCount викликається з тим самим значенням, що і поточний стан.
-<h4 style="color: #474747; font-weight: 600;">Основні принципи перерендеру компонента React при використанні хука useState та об'єктів у стані компонента</h4><br/>
-( ) Перерендер завжди відбудеться при кожному виклику setCount, незалежно від змін у стані об'єкта.
-( ) Перерендер завжди відбудеться, якщо будь-який ключ у об'єкті стану змінюється, навіть якщо посилання залишається незмінним.
-(x) Перерендер відбудеться тільки у випадку, якщо setCount викликається з новим об'єктом, а не тим самим посиланням на об'єкт.
-<h4 style="color: #474747; font-weight: 600;">У компоненті Counter стан є об'єктом, в якому варіанті коду відбудеться перерендер?</h4><br/>
-<span>Варіант 1:</span><br/>
+<h4 style="color: #474747; font-weight: 600;">What will happen if you call setCount with the same count value (setCount(count)) in a React functional component that uses the useState hook?</h4><br/>
+( ) A component re-render will be triggered, but with a delay.
+(x) No component re-render will occur, React optimizes by ignoring such updates.
+( ) A runtime error will appear due to implicit recursion.
+<h4 style="color: #474747; font-weight: 600;">What are the main principles for determining whether a component re-render is needed in React?</h4><br/>
+( ) A re-render always occurs when setCount is called regardless of the count value.
+(x) A re-render occurs only when the value in the component's state changes.
+( ) A re-render will occur if setCount is called with the same value as the current state.
+<h4 style="color: #474747; font-weight: 600;">Main principles of React component re-rendering when using the useState hook and objects in component state</h4><br/>
+( ) A re-render will always occur on every setCount call, regardless of changes in the state object.
+( ) A re-render will always occur if any key in the state object changes, even if the reference remains unchanged.
+(x) A re-render will occur only if setCount is called with a new object, not the same object reference.
+<h4 style="color: #474747; font-weight: 600;">In the Counter component, the state is an object. In which code variant will a re-render occur?</h4><br/>
+<span>Option 1:</span><br/>
 <pre>import React, { useState } from 'react';
 
 const Counter = () => {
@@ -32,7 +32,7 @@ const Counter = () => {
 
 export default Counter;</pre>
 <br/>
-<span>Варіант 2:</span>
+<span>Option 2:</span>
 <pre>import React, { useState } from 'react';
 
 const Counter = () => {
@@ -52,5 +52,5 @@ const Counter = () => {
 
 export default Counter;</pre>
 <br/>
-( ) Варіант 1
-(x) Варіант 2
+( ) Option 1
+(x) Option 2
