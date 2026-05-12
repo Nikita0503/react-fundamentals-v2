@@ -1,0 +1,176 @@
+<h3 style="color: #76cdd8;"><strong>Zod Validation</strong></h3>
+<p><strong>Schema-based validation</strong> means defining your validation rules as a standalone schema object, separate from your UI components. This approach gives you:</p>
+<ul>
+<li><strong>Separation of concerns</strong> — validation logic is not mixed with rendering logic.</li>
+<li><strong>Reusability</strong> — the same schema can validate forms, API responses, environment variables, etc.</li>
+<li><strong>Composability</strong> — schemas can be extended, merged, picked, and omitted.</li>
+<li><strong>Type safety</strong> — TypeScript types are derived directly from the schema (single source of truth).</li>
+<li><strong>Testability</strong> — schemas can be unit-tested independently of any component.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What is Zod?</strong></h3>
+<p><strong>Zod</strong> is a TypeScript-first schema validation library. It lets you define a schema that describes the shape and constraints of your data, then validate any value against that schema at runtime. If validation fails, Zod provides detailed, structured error messages.</p>
+
+<h3 style="color: #76cdd8;"><strong>Installation</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">npm install zod @hookform/resolvers</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Basic Zod Schema</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+// Derive the TypeScript type FROM the schema
+type ContactForm = z.infer&lt;typeof contactSchema&gt;;
+</code></pre>
+<p>The key point here is <code>z.infer&lt;typeof schema&gt;</code> — it <strong>derives the TypeScript type directly from the schema</strong>. This means you define your data shape once (in the schema) and get both runtime validation and compile-time type checking from the same source. No duplication, no drift.</p>
+
+<h3 style="color: #76cdd8;"><strong>Connecting Zod to React Hook Form</strong></h3>
+<p>The <code>@hookform/resolvers</code> package provides adapters that connect schema libraries (Zod, Yup, Joi, etc.) to React Hook Form. For Zod, you use <code>zodResolver</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type ContactForm = z.infer&lt;typeof contactSchema&gt;;
+
+const ContactPage = () =&gt; {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm&lt;ContactForm&gt;({
+    resolver: zodResolver(contactSchema),
+  });
+
+  const onSubmit = (data: ContactForm) =&gt; {
+    console.log(data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register("name")} placeholder="Name" /&gt;
+      {errors.name &amp;&amp; &lt;span&gt;{errors.name.message}&lt;/span&gt;}
+
+      &lt;input {...register("email")} placeholder="Email" /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email.message}&lt;/span&gt;}
+
+      &lt;textarea {...register("message")} placeholder="Message" /&gt;
+      {errors.message &amp;&amp; &lt;span&gt;{errors.message.message}&lt;/span&gt;}
+
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+<p>Notice that with Zod, you <strong>no longer pass validation rules to <code>register()</code></strong>. All validation is defined in the schema and applied automatically through the resolver.</p>
+
+<h3 style="color: #76cdd8;"><strong>Benefits of Schema-Based Validation</strong></h3>
+<ul>
+<li><strong>Validation logic is testable independently</strong> — you can write unit tests for your schema without rendering any component.</li>
+<li><strong>Types are auto-derived</strong> — <code>z.infer</code> eliminates the need to manually define and maintain a separate TypeScript type.</li>
+<li><strong>Schemas are composable</strong> — use <code>.extend()</code>, <code>.merge()</code>, <code>.pick()</code>, and <code>.omit()</code> to build new schemas from existing ones.</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">// Composing schemas
+const baseUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
+// Extend with additional fields
+const registrationSchema = baseUserSchema.extend({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string(),
+}).refine((data) =&gt; data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+// Pick only certain fields
+const loginSchema = baseUserSchema.pick({ email: true }).extend({
+  password: z.string().min(1, "Password is required"),
+});
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Common Zod Methods</strong></h3>
+<p>Here are the most commonly used Zod methods for form validation:</p>
+<ul>
+<li><code>z.string()</code> — validates that the value is a string</li>
+<li><code>z.number()</code> — validates that the value is a number</li>
+<li><code>z.boolean()</code> — validates that the value is a boolean</li>
+<li><code>z.enum(["a", "b", "c"])</code> — validates that the value is one of the specified options</li>
+<li><code>z.array(z.string())</code> — validates an array of a given type</li>
+<li><code>z.optional()</code> — makes a field optional (value can be undefined)</li>
+<li><code>z.nullable()</code> — allows null as a value</li>
+<li><code>.min(n)</code> / <code>.max(n)</code> — minimum/maximum length (strings) or value (numbers)</li>
+<li><code>.email()</code> — validates email format</li>
+<li><code>.url()</code> — validates URL format</li>
+<li><code>.regex(pattern)</code> — validates against a regular expression</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">const profileSchema = z.object({
+  username: z.string().min(3).max(20),
+  age: z.number().min(18).max(120),
+  website: z.string().url().optional(),
+  role: z.enum(["admin", "user", "moderator"]),
+  tags: z.array(z.string()).min(1, "At least one tag required"),
+  bio: z.string().nullable(),
+});
+</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

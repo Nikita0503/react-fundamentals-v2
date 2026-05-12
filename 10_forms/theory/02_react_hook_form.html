@@ -1,0 +1,181 @@
+<h3 style="color: #76cdd8;"><strong>React Hook Form</strong></h3>
+<p><strong>React Hook Form (RHF)</strong> is a performant, flexible form library for React built on <strong>uncontrolled components and refs</strong>. Instead of re-rendering the entire form on every keystroke, RHF keeps input values in the DOM and only triggers re-renders when necessary (e.g., on validation errors or submission).</p>
+
+<h3 style="color: #76cdd8;"><strong>Why React Hook Form over Formik?</strong></h3>
+<ul>
+<li><strong>Fewer re-renders</strong> — RHF uses uncontrolled inputs by default, so typing doesn't cause re-renders.</li>
+<li><strong>Smaller bundle size</strong> — RHF is significantly lighter than Formik (~8KB vs ~33KB gzipped).</li>
+<li><strong>Better TypeScript support</strong> — RHF is built with TypeScript and provides excellent type inference.</li>
+<li><strong>Actively maintained</strong> — Formik has been effectively abandoned since 2022. RHF is actively developed.</li>
+<li><strong>Built-in or schema-based validation</strong> — supports inline rules, Zod, Yup, and other schema libraries via resolvers.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Installation</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">npm install react-hook-form</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Core API: useForm()</strong></h3>
+<p>The <code>useForm()</code> hook is the foundation of React Hook Form. It returns an object with everything you need to manage a form:</p>
+<ul>
+<li><code>register("fieldName")</code> — connects an input to the form. It spreads <code>ref</code>, <code>onChange</code>, <code>onBlur</code>, and <code>name</code> onto the input element.</li>
+<li><code>handleSubmit(onValid, onInvalid)</code> — wraps your submit handler. It validates the form first and only calls your handler if validation passes.</li>
+<li><code>formState</code> — an object containing form metadata:
+  <ul>
+    <li><code>errors</code> — validation errors for each field</li>
+    <li><code>isSubmitting</code> — whether the form is currently submitting</li>
+    <li><code>isDirty</code> — whether any field has been modified from its default value</li>
+    <li><code>isValid</code> — whether the form currently passes all validation rules</li>
+    <li><code>dirtyFields</code> — which fields have been modified</li>
+    <li><code>touchedFields</code> — which fields have been focused and blurred</li>
+  </ul>
+</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Basic Example — Contact Form</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm } from "react-hook-form";
+
+type ContactForm = {
+  name: string;
+  email: string;
+  message: string;
+};
+
+const ContactPage = () =&gt; {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm&lt;ContactForm&gt;();
+
+  const onSubmit = (data: ContactForm) =&gt; {
+    console.log(data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input
+        {...register("name", { required: "Name is required" })}
+        placeholder="Name"
+      /&gt;
+      {errors.name &amp;&amp; &lt;span&gt;{errors.name.message}&lt;/span&gt;}
+
+      &lt;input
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Invalid email",
+          },
+        })}
+        placeholder="Email"
+      /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email.message}&lt;/span&gt;}
+
+      &lt;textarea
+        {...register("message", { required: "Message is required" })}
+        placeholder="Message"
+      /&gt;
+      {errors.message &amp;&amp; &lt;span&gt;{errors.message.message}&lt;/span&gt;}
+
+      &lt;button type="submit" disabled={isSubmitting}&gt;
+        Submit
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>register() Validation Options</strong></h3>
+<p>The second argument to <code>register</code> accepts validation rules:</p>
+<ul>
+<li><code>required</code> — field must have a value (can be a boolean or a string with an error message)</li>
+<li><code>min</code> / <code>max</code> — minimum/maximum numeric value</li>
+<li><code>minLength</code> / <code>maxLength</code> — minimum/maximum string length</li>
+<li><code>pattern</code> — a regex pattern the value must match</li>
+<li><code>validate</code> — a custom validation function (or object of functions) that returns <code>true</code> or an error message string</li>
+</ul>
+<pre class="prettyprint"><code class="lang-tsx">register("age", {
+  required: "Age is required",
+  min: { value: 18, message: "Must be at least 18" },
+  max: { value: 120, message: "Invalid age" },
+});
+
+register("username", {
+  minLength: { value: 3, message: "At least 3 characters" },
+  maxLength: { value: 20, message: "Max 20 characters" },
+  validate: (value) =&gt;
+    value !== "admin" || "Username 'admin' is not allowed",
+});
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Errors Object</strong></h3>
+<p>The <code>errors</code> object from <code>formState</code> contains validation errors keyed by field name. Each error has a <code>type</code> (e.g., "required", "pattern") and a <code>message</code> string:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Access error message for a field
+{errors.email?.message}
+
+// Check if a specific field has an error
+{errors.email &amp;&amp; &lt;span className="error"&gt;{errors.email.message}&lt;/span&gt;}
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Validation Mode</strong></h3>
+<p>By default, React Hook Form validates on <strong>submit</strong> (<code>mode: "onSubmit"</code>). You can change when validation triggers:</p>
+<ul>
+<li><code>"onSubmit"</code> — validate only when the form is submitted (default)</li>
+<li><code>"onChange"</code> — validate on every change event</li>
+<li><code>"onBlur"</code> — validate when an input loses focus</li>
+<li><code>"onTouched"</code> — validate on the first blur, then on every change</li>
+<li><code>"all"</code> — validate on both blur and change</li>
+</ul>
+<pre class="prettyprint"><code class="lang-tsx">const { register, handleSubmit } = useForm&lt;ContactForm&gt;({
+  mode: "onBlur", // validate when user leaves a field
+});
+</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

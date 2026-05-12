@@ -1,0 +1,309 @@
+<h3 style="color: #76cdd8;"><strong>Advanced Patterns</strong></h3>
+<p>React Hook Form provides a rich set of features beyond basic registration and validation. This section covers the most important advanced patterns you'll use in real applications.</p>
+
+<h3 style="color: #76cdd8;"><strong>useForm Options</strong></h3>
+<p>The <code>useForm()</code> hook accepts a configuration object with several useful options:</p>
+<ul>
+<li><code>defaultValues</code> — initial values for all form fields (important for edit forms)</li>
+<li><code>mode</code> — when validation triggers ("onSubmit", "onChange", "onBlur", "onTouched", "all")</li>
+<li><code>resetOptions</code> — controls behavior when default values change</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Default Values</strong></h3>
+<p>Default values are essential for <strong>edit forms</strong> where you pre-populate fields with existing data:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm } from "react-hook-form";
+
+type ProfileForm = {
+  name: string;
+  email: string;
+  bio: string;
+};
+
+const EditProfile = () =&gt; {
+  const { register, handleSubmit } = useForm&lt;ProfileForm&gt;({
+    defaultValues: {
+      name: "Alice",
+      email: "alice@example.com",
+      bio: "Software developer",
+    },
+  });
+
+  const onSubmit = (data: ProfileForm) =&gt; {
+    console.log("Updated:", data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input {...register("name")} /&gt;
+      &lt;input {...register("email")} /&gt;
+      &lt;textarea {...register("bio")} /&gt;
+      &lt;button type="submit"&gt;Save&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>watch() — Subscribe to Field Changes</strong></h3>
+<p>The <code>watch()</code> function lets you subscribe to field value changes. This is useful for <strong>conditional rendering</strong> based on the current form state:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm } from "react-hook-form";
+
+type OrderForm = {
+  deliveryMethod: "pickup" | "delivery";
+  address: string;
+};
+
+const OrderPage = () =&gt; {
+  const { register, handleSubmit, watch } = useForm&lt;OrderForm&gt;({
+    defaultValues: { deliveryMethod: "pickup", address: "" },
+  });
+
+  const deliveryMethod = watch("deliveryMethod");
+
+  return (
+    &lt;form onSubmit={handleSubmit(console.log)}&gt;
+      &lt;select {...register("deliveryMethod")}&gt;
+        &lt;option value="pickup"&gt;Pickup&lt;/option&gt;
+        &lt;option value="delivery"&gt;Delivery&lt;/option&gt;
+      &lt;/select&gt;
+
+      {deliveryMethod === "delivery" &amp;&amp; (
+        &lt;input {...register("address")} placeholder="Delivery address" /&gt;
+      )}
+
+      &lt;button type="submit"&gt;Order&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>setValue(), getValues(), and reset()</strong></h3>
+<p>These methods provide <strong>programmatic access</strong> to form values:</p>
+<ul>
+<li><code>setValue("fieldName", value)</code> — set a field's value programmatically</li>
+<li><code>getValues()</code> — get current form values without subscribing to changes</li>
+<li><code>reset()</code> — reset the form to its default values (useful after successful submission)</li>
+</ul>
+<pre class="prettyprint"><code class="lang-tsx">const { setValue, getValues, reset, handleSubmit } = useForm&lt;ContactForm&gt;({
+  defaultValues: { name: "", email: "", message: "" },
+});
+
+// Set a value programmatically
+setValue("email", "user@example.com");
+
+// Get all current values
+const currentValues = getValues();
+
+// Reset form after successful submission
+const onSubmit = async (data: ContactForm) =&gt; {
+  await submitToServer(data);
+  reset(); // resets to defaultValues
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Nested Objects and Arrays</strong></h3>
+<p>React Hook Form supports nested data structures using dot notation and bracket notation:</p>
+<pre class="prettyprint"><code class="lang-tsx">type UserForm = {
+  address: {
+    street: string;
+    city: string;
+    zip: string;
+  };
+  items: { name: string; quantity: number }[];
+};
+
+// Register nested fields
+register("address.street");
+register("address.city");
+register("address.zip");
+
+// Register array items
+register("items.0.name");
+register("items.0.quantity");
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>useFieldArray — Dynamic Lists</strong></h3>
+<p><code>useFieldArray</code> is designed for managing <strong>dynamic lists</strong> of fields — where users can add or remove items. It provides methods like <code>append</code>, <code>remove</code>, <code>prepend</code>, <code>insert</code>, <code>swap</code>, and <code>move</code>.</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm, useFieldArray } from "react-hook-form";
+
+type SkillsForm = {
+  skills: { name: string }[];
+};
+
+const SkillsEditor = () =&gt; {
+  const { register, control, handleSubmit } = useForm&lt;SkillsForm&gt;({
+    defaultValues: {
+      skills: [{ name: "" }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "skills",
+  });
+
+  const onSubmit = (data: SkillsForm) =&gt; {
+    console.log(data.skills);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      {fields.map((field, index) =&gt; (
+        &lt;div key={field.id}&gt;
+          &lt;input
+            {...register(`skills.${index}.name`, { required: "Skill name is required" })}
+            placeholder={`Skill #${index + 1}`}
+          /&gt;
+          &lt;button type="button" onClick={() =&gt; remove(index)}&gt;
+            Remove
+          &lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+
+      &lt;button type="button" onClick={() =&gt; append({ name: "" })}&gt;
+        Add Skill
+      &lt;/button&gt;
+
+      &lt;button type="submit"&gt;Save&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>FormProvider + useFormContext</strong></h3>
+<p>When your form is split across multiple nested components, passing <code>register</code> and <code>errors</code> through props becomes tedious. <code>FormProvider</code> and <code>useFormContext</code> solve this by sharing the form instance via React context:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm, FormProvider, useFormContext } from "react-hook-form";
+
+type CheckoutForm = {
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+};
+
+// Child component — accesses form without props
+const ShippingFields = () =&gt; {
+  const { register, formState: { errors } } = useFormContext&lt;CheckoutForm&gt;();
+
+  return (
+    &lt;div&gt;
+      &lt;input {...register("address", { required: "Address is required" })} placeholder="Address" /&gt;
+      {errors.address &amp;&amp; &lt;span&gt;{errors.address.message}&lt;/span&gt;}
+
+      &lt;input {...register("city", { required: "City is required" })} placeholder="City" /&gt;
+      {errors.city &amp;&amp; &lt;span&gt;{errors.city.message}&lt;/span&gt;}
+    &lt;/div&gt;
+  );
+};
+
+// Parent component — provides form context
+const CheckoutPage = () =&gt; {
+  const methods = useForm&lt;CheckoutForm&gt;();
+
+  const onSubmit = (data: CheckoutForm) =&gt; {
+    console.log(data);
+  };
+
+  return (
+    &lt;FormProvider {...methods}&gt;
+      &lt;form onSubmit={methods.handleSubmit(onSubmit)}&gt;
+        &lt;input {...methods.register("name")} placeholder="Name" /&gt;
+        &lt;input {...methods.register("email")} placeholder="Email" /&gt;
+
+        &lt;ShippingFields /&gt;
+
+        &lt;button type="submit"&gt;Place Order&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/FormProvider&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Controller — External UI Libraries</strong></h3>
+<p>The <code>Controller</code> component is used to integrate React Hook Form with <strong>external controlled components</strong> (like custom Select, DatePicker, or Slider components from UI libraries) that don't expose a native <code>ref</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm, Controller } from "react-hook-form";
+import { DatePicker } from "some-ui-library";
+
+type EventForm = {
+  title: string;
+  date: Date;
+};
+
+const EventPage = () =&gt; {
+  const { register, control, handleSubmit } = useForm&lt;EventForm&gt;();
+
+  return (
+    &lt;form onSubmit={handleSubmit(console.log)}&gt;
+      &lt;input {...register("title")} placeholder="Event title" /&gt;
+
+      &lt;Controller
+        name="date"
+        control={control}
+        rules={{ required: "Date is required" }}
+        render={({ field, fieldState: { error } }) =&gt; (
+          &lt;&gt;
+            &lt;DatePicker
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            /&gt;
+            {error &amp;&amp; &lt;span&gt;{error.message}&lt;/span&gt;}
+          &lt;/&gt;
+        )}
+      /&gt;
+
+      &lt;button type="submit"&gt;Create Event&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+<p>Use <code>Controller</code> only when the component doesn't work with <code>register()</code> (i.e., it doesn't accept a <code>ref</code>). For native HTML inputs, always prefer <code>register()</code>.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

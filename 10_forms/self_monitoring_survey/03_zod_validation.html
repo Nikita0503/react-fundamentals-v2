@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What does z.infer&lt;typeof schema&gt; do in Zod?</h4><br/>
+( ) It runs the schema validation at runtime and returns the validated data.
+(x) It derives a TypeScript type directly from the schema definition, so you don't need to define the type manually.
+( ) It infers the validation mode (onChange, onBlur, onSubmit) from the schema.
+( ) It creates a new Zod schema by inferring rules from an existing TypeScript type.
+<h4 style="color: #474747; font-weight: 600;">How do you connect a Zod schema to React Hook Form?</h4><br/>
+( ) Pass the schema directly to the register() function as a second argument.
+( ) Import ZodForm from react-hook-form and wrap your form with it.
+(x) Use zodResolver from @hookform/resolvers/zod and pass it as the resolver option in useForm().
+( ) Call schema.validate() inside the handleSubmit callback manually.
+<h4 style="color: #474747; font-weight: 600;">Where does validation logic live when using Zod with React Hook Form?</h4><br/>
+( ) Inside each input's onChange handler in the component.
+( ) In the register() call as inline validation rules.
+(x) In the Zod schema, separate from the component — making it reusable and independently testable.
+( ) In a global validation middleware that intercepts all form submissions.
+<h4 style="color: #474747; font-weight: 600;">What does the @hookform/resolvers package provide?</h4><br/>
+( ) It provides pre-built form components (Input, Select, Checkbox) for React Hook Form.
+( ) It resolves merge conflicts between multiple useForm instances.
+(x) It provides adapter functions (like zodResolver) that connect schema validation libraries to React Hook Form.
+( ) It provides server-side validation endpoints for React Hook Form.

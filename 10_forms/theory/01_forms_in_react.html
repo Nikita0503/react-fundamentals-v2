@@ -1,0 +1,156 @@
+<h3 style="color: #76cdd8;"><strong>Forms in React</strong></h3>
+<p>Forms are a fundamental part of any web application. They allow users to <strong>input data</strong>, <strong>validate it</strong>, and <strong>submit it</strong> for processing. In React, handling forms requires a deliberate approach because React manages the UI through state and rendering cycles.</p>
+<p>There are <strong>two main approaches</strong> to handling form inputs in React:</p>
+
+<h3 style="color: #76cdd8;"><strong>Controlled Components</strong></h3>
+<p>In a controlled component, the input's value is <strong>driven by React state</strong>. Every change to the input triggers a state update via an <code>onChange</code> handler, and React re-renders the component with the new value. The React state is the "single source of truth" for the input.</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+
+const ControlledInput = () =&gt; {
+  const [name, setName] = useState("");
+
+  return (
+    &lt;input
+      value={name}
+      onChange={(e) =&gt; setName(e.target.value)}
+      placeholder="Enter name"
+    /&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Uncontrolled Components</strong></h3>
+<p>In an uncontrolled component, the input's value <strong>lives in the DOM</strong> itself. You access the current value via a <code>ref</code> when you need it (e.g., on form submission). React does not track every keystroke.</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef } from "react";
+
+const UncontrolledInput = () =&gt; {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  const handleSubmit = () =&gt; {
+    console.log(inputRef.current?.value);
+  };
+
+  return (
+    &lt;&gt;
+      &lt;input ref={inputRef} placeholder="Enter name" /&gt;
+      &lt;button onClick={handleSubmit}&gt;Submit&lt;/button&gt;
+    &lt;/&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Controlled Form Example</strong></h3>
+<p>Here is a simple controlled form with two fields — name and email — using <code>useState</code> and manual <code>onChange</code> handlers:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, FormEvent } from "react";
+
+type FormData = {
+  name: string;
+  email: string;
+};
+
+const SimpleForm = () =&gt; {
+  const [formData, setFormData] = useState&lt;FormData&gt;({ name: "", email: "" });
+  const [errors, setErrors] = useState&lt;Partial&lt;FormData&gt;&gt;({});
+
+  const validate = (): boolean =&gt; {
+    const newErrors: Partial&lt;FormData&gt; = {};
+    if (!formData.name) newErrors.name = "Name is required";
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: FormEvent) =&gt; {
+    e.preventDefault();
+    if (validate()) {
+      console.log("Submitted:", formData);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        value={formData.name}
+        onChange={(e) =&gt; setFormData({ ...formData, name: e.target.value })}
+        placeholder="Name"
+      /&gt;
+      {errors.name &amp;&amp; &lt;span&gt;{errors.name}&lt;/span&gt;}
+
+      &lt;input
+        value={formData.email}
+        onChange={(e) =&gt; setFormData({ ...formData, email: e.target.value })}
+        placeholder="Email"
+      /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email}&lt;/span&gt;}
+
+      &lt;button type="submit"&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Problems with Manual Form Handling at Scale</strong></h3>
+<p>The approach above works fine for simple forms with 1–2 fields. However, as forms grow in complexity, you quickly run into problems:</p>
+<ul>
+<li><strong>One useState per field</strong> (or one large state object) — managing many fields becomes tedious and error-prone.</li>
+<li><strong>Manual validation logic</strong> — writing validation rules inline clutters the component and is hard to reuse.</li>
+<li><strong>Manual error state tracking</strong> — you need a separate state object for errors and logic to clear them at the right time.</li>
+<li><strong>Manual touched/dirty tracking</strong> — knowing which fields the user has interacted with requires even more state.</li>
+<li><strong>Re-renders on every keystroke</strong> — controlled components trigger a re-render for every character typed, which can cause performance issues in large forms.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Conclusion</strong></h3>
+<p>For simple forms with 1–2 fields, manual state management with <code>useState</code> is perfectly fine. But for complex forms with many fields, nested data, dynamic lists, and advanced validation — <strong>use a form library</strong>. It will handle state, validation, error tracking, and performance for you.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
