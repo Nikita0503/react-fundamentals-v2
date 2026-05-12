@@ -1,11 +1,180 @@
-<h3 style="color: #76cdd8;"><strong>Summary</strong></h3>
-<p>In this module, we covered connecting and using Redux Thunk with a simple example. Asynchronous code was moved to a separate file, and as a result - the code became more readable and the architecture more correct.</p>
-<p>Possible questions:</p>
-<p><strong>"Are there alternatives to Redux Thunk?"</strong></p>
-<p>Answer - yes, there are. It is <strong>Redux Saga</strong>. This middleware is significantly more complex than Redux Thunk, but more flexible. It should be used in large projects with more complex REST API interaction processes.</p>
-<p><strong>"At what stage should Redux Thunk be connected to the project?"</strong></p>
-<p>Answer - preferably from the very beginning. If you or the development team has decided to use a set of middlewares or libraries, it is better to install and connect them right away, for more convenient project architecture building.</p>
-<p></p>
+<h3 style="color: #76cdd8;"><strong>Decision Guide: When to Use What</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #f0f0f0;">
+<th>Scenario</th>
+<th>Solution</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simple async in one component</td>
+<td><code>useEffect</code> + <code>useState</code></td>
+<td>No need for global state — keep it local</td>
+</tr>
+<tr>
+<td>Async data needed in Redux store</td>
+<td><code>createAsyncThunk</code> + <code>extraReducers</code></td>
+<td>Multiple consumers, complex state logic, non-CRUD operations</td>
+</tr>
+<tr>
+<td>Multiple CRUD endpoints, caching, auto-refetch</td>
+<td>RTK Query</td>
+<td>Minimal boilerplate, automatic cache management, tag-based invalidation</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Quick Reference: createAsyncThunk API</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #f0f0f0;">
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>createAsyncThunk(typePrefix, payloadCreator)</code></td>
+<td>Creates a thunk that dispatches pending/fulfilled/rejected actions</td>
+</tr>
+<tr>
+<td><code>thunkAPI.rejectWithValue(value)</code></td>
+<td>Return structured error data in the rejected action's payload</td>
+</tr>
+<tr>
+<td><code>thunkAPI.getState()</code></td>
+<td>Access current Redux state inside the thunk</td>
+</tr>
+<tr>
+<td><code>thunkAPI.dispatch(action)</code></td>
+<td>Dispatch other actions from within the thunk</td>
+</tr>
+<tr>
+<td><code>extraReducers: (builder) => {}</code></td>
+<td>Handle thunk lifecycle actions in a slice</td>
+</tr>
+<tr>
+<td><code>.addCase(thunk.pending, reducer)</code></td>
+<td>Handle the loading state</td>
+</tr>
+<tr>
+<td><code>.addCase(thunk.fulfilled, reducer)</code></td>
+<td>Handle successful response</td>
+</tr>
+<tr>
+<td><code>.addCase(thunk.rejected, reducer)</code></td>
+<td>Handle error state</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Quick Reference: RTK Query API</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #f0f0f0;">
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>createApi({ ... })</code></td>
+<td>Define your API — endpoints, base URL, tags</td>
+</tr>
+<tr>
+<td><code>fetchBaseQuery({ baseUrl })</code></td>
+<td>Lightweight fetch wrapper with JSON handling</td>
+</tr>
+<tr>
+<td><code>builder.query&lt;Result, Arg&gt;</code></td>
+<td>Define a GET endpoint (reading data)</td>
+</tr>
+<tr>
+<td><code>builder.mutation&lt;Result, Arg&gt;</code></td>
+<td>Define a POST/PUT/DELETE endpoint (changing data)</td>
+</tr>
+<tr>
+<td><code>providesTags</code></td>
+<td>Declare what cache tags a query provides</td>
+</tr>
+<tr>
+<td><code>invalidatesTags</code></td>
+<td>Declare what cache tags a mutation invalidates</td>
+</tr>
+<tr>
+<td><code>useXxxQuery(arg, options?)</code></td>
+<td>Auto-generated hook for queries</td>
+</tr>
+<tr>
+<td><code>useXxxMutation()</code></td>
+<td>Auto-generated hook for mutations — returns [trigger, result]</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td>Option to conditionally skip a query</td>
+</tr>
+<tr>
+<td><code>pollingInterval</code></td>
+<td>Option to refetch at a regular interval (ms)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Common Patterns</strong></h3>
+<p><strong>Optimistic Updates</strong> — update the cache immediately before the server responds:</p>
+<pre class="prettyprint"><code class="lang-ts">addPost: builder.mutation&lt;Post, Omit&lt;Post, "id"&gt;&gt;({
+  query: (newPost) => ({
+    url: "/posts",
+    method: "POST",
+    body: newPost,
+  }),
+  async onQueryStarted(newPost, { dispatch, queryFulfilled }) {
+    // Optimistically add to cache
+    const patchResult = dispatch(
+      postsApi.util.updateQueryData("getPosts", undefined, (draft) => {
+        draft.push({ ...newPost, id: "temp-id" });
+      })
+    );
+    try {
+      await queryFulfilled;
+    } catch {
+      // Revert on failure
+      patchResult.undo();
+    }
+  },
+})</code></pre>
+
+<p><strong>Conditional Fetching</strong> — only fetch when a condition is met:</p>
+<pre class="prettyprint"><code class="lang-tsx">const { data } = useGetUserProfileQuery(userId, {
+  skip: !userId, // Don't fetch until we have a userId
+});</code></pre>
+
+<p><strong>Polling</strong> — keep data fresh with automatic refetching:</p>
+<pre class="prettyprint"><code class="lang-tsx">const { data: notifications } = useGetNotificationsQuery(undefined, {
+  pollingInterval: 10000, // Refetch every 10 seconds
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Typical File Structure with RTK Query</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">store/
+  store.ts          // configureStore — combines reducers + API middleware
+  hooks.ts          // useAppDispatch, useAppSelector
+  slices/
+    userSlice.ts    // createSlice for non-API state (UI state, auth, etc.)
+    cartSlice.ts
+  api/
+    postsApi.ts     // createApi for posts endpoints
+    usersApi.ts     // createApi for users endpoints
+    baseQuery.ts    // shared fetchBaseQuery config (optional)</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Key Takeaways</strong></h3>
+<ul>
+<li><strong>createAsyncThunk</strong> — use when you need full control over async logic in Redux, or for non-CRUD operations (WebSocket messages, complex multi-step flows)</li>
+<li><strong>RTK Query</strong> — use for standard API interactions (CRUD). It eliminates boilerplate and gives you caching, invalidation, and auto-generated hooks for free</li>
+<li>Both tools are part of <code>@reduxjs/toolkit</code> — no extra packages needed</li>
+<li>You can use both in the same app: RTK Query for data fetching, createAsyncThunk for complex async logic that doesn't fit the query/mutation model</li>
+</ul>
 <p></p>
 <style><!--
 .row-container {
@@ -57,4 +226,3 @@
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>

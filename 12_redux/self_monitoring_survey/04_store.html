@@ -1,16 +1,86 @@
-<h4 style="color: #474747; font-weight: 600;">What is the main function of combineReducers in Redux?</h4><br/>
-( ) Collecting all Actions into one object
-( ) Creating a Store instance
-(x) Combining all Reducers into one rootReducer
-<h4 style="color: #474747; font-weight: 600;">Why are the keys in the object passed to combineReducers important in Redux?</h4><br/>
-( ) To add additional fields to the Store
-(x) Keys indicate how to access different Reducers in the Store, for example, state.user.name
-( ) To check the presence of Reducers in the application
-<h4 style="color: #474747; font-weight: 600;">Why is it not recommended to modify the Store directly in Redux?</h4><br/>
-( ) This leads to automatic deletion of all data in the Store
-( ) To save memory space
-(x) The Store in Redux is immutable, meaning it should not be modified directly
-<h4 style="color: #474747; font-weight: 600;">How can data be updated in the Store in Redux?</h4><br/>
-( ) By modifying values in the Store directly
-( ) By using the modifyStore function
-(x) By using Dispatch, Action, and Reducer, which update values in the Store
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Store & configureStore</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does <code>configureStore</code> provide by default that the legacy <code>createStore</code> does not?</h4>
+<form>
+<input type="radio" name="q1" /> Automatic state persistence to localStorage<br/>
+<input type="radio" name="q1" /> (x) Redux DevTools integration, redux-thunk middleware, and development-only checks for mutations and non-serializable values<br/>
+<input type="radio" name="q1" /> Built-in API fetching capabilities<br/>
+<input type="radio" name="q1" /> Automatic React component memoization<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. What are <code>RootState</code> and <code>AppDispatch</code>?</h4>
+<pre class="prettyprint"><code class="lang-ts">export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+<form>
+<input type="radio" name="q2" /> Manually written interfaces that describe the store shape<br/>
+<input type="radio" name="q2" /> (x) Types inferred from the store itself — RootState is the shape of the entire state tree, AppDispatch is the dispatch function type (including thunk support)<br/>
+<input type="radio" name="q2" /> React context types for the Provider component<br/>
+<input type="radio" name="q2" /> Generic types exported from the @reduxjs/toolkit package<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What is the role of the <code>&lt;Provider store={store}&gt;</code> component?</h4>
+<form>
+<input type="radio" name="q3" /> It creates the Redux store when the app mounts<br/>
+<input type="radio" name="q3" /> It automatically dispatches actions when props change<br/>
+<input type="radio" name="q3" /> (x) It makes the store available to all nested components via React Context, enabling useSelector and useDispatch to work<br/>
+<input type="radio" name="q3" /> It subscribes all child components to every state change<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. What happens if you use <code>useSelector</code> in a component that is NOT wrapped in a <code>&lt;Provider&gt;</code>?</h4>
+<form>
+<input type="radio" name="q4" /> It returns <code>undefined</code> silently<br/>
+<input type="radio" name="q4" /> It uses a default empty store<br/>
+<input type="radio" name="q4" /> (x) It throws a runtime error because there is no store in the React context<br/>
+<input type="radio" name="q4" /> It works but without type safety<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

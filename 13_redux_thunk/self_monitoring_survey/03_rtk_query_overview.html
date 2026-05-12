@@ -1,0 +1,84 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: RTK Query Overview</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does <code>createApi</code> do in RTK Query?</h4>
+<form>
+<input type="radio" name="q1" /> Creates a REST API server with Express<br/>
+<input type="radio" name="q1" /> (x) Defines your entire API in one place — endpoints, base URL, cache tags — and auto-generates hooks, a reducer, and middleware<br/>
+<input type="radio" name="q1" /> Creates async thunks for each endpoint automatically<br/>
+<input type="radio" name="q1" /> Generates TypeScript types from an OpenAPI spec<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. What is the difference between <code>builder.query</code> and <code>builder.mutation</code>?</h4>
+<form>
+<input type="radio" name="q2" /> <code>builder.query</code> is for TypeScript and <code>builder.mutation</code> is for JavaScript<br/>
+<input type="radio" name="q2" /> <code>builder.query</code> caches data and <code>builder.mutation</code> does not<br/>
+<input type="radio" name="q2" /> (x) <code>builder.query</code> is for reading data (GET requests), <code>builder.mutation</code> is for changing data (POST/PUT/DELETE)<br/>
+<input type="radio" name="q2" /> There is no difference — they are aliases for the same function<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What does <code>fetchBaseQuery</code> wrap?</h4>
+<form>
+<input type="radio" name="q3" /> Axios HTTP client<br/>
+<input type="radio" name="q3" /> XMLHttpRequest<br/>
+<input type="radio" name="q3" /> (x) The native <code>fetch</code> API — it's a lightweight wrapper that handles JSON serialization, base URLs, and headers<br/>
+<input type="radio" name="q3" /> Node.js <code>http</code> module<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. Which of the following does RTK Query handle automatically?</h4>
+<form>
+<input type="radio" name="q4" /> Only loading states<br/>
+<input type="radio" name="q4" /> Only caching and deduplication<br/>
+<input type="radio" name="q4" /> Only error handling<br/>
+<input type="radio" name="q4" /> (x) All of the above: caching, deduplication, loading states, error states, polling, cache invalidation, and refetching<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

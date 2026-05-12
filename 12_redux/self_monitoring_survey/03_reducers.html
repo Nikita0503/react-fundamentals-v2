@@ -1,101 +1,90 @@
-<h4 style="color: #474747; font-weight: 600;">What parameters does a Reducer accept in Redux?</h4><br/>
-( ) State and Action Type
-(x) Current Store and Action
-( ) Action and Payload
-<h4 style="color: #474747; font-weight: 600;">Why should a Reducer not modify the current Store in Redux?</h4><br/>
-( ) Because modifying the Store can cause an error in React
-( ) To simplify the code
-(x) Because the Store in Redux is immutable
-( ) Usually Redux has multiple Store instances
-<h4 style="color: #474747; font-weight: 600;">Why is the default case in the Reducer's switch mandatory?</h4><br/>
-( ) To add additional fields to the Store
-(x) Because the Reducer must always return a Store instance, otherwise there will be an error
-( ) To reduce the chances of collisions with other Reducers
-<h4 style="color: #474747; font-weight: 600;">What does a correct Reducer example for updating the Store in Redux look like?</h4><br/>
-<span>Option 1:</span>
-<pre>// userReducer.ts
-interface UserState {
-  name: string;
-  surname: string;
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Reducers</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. Which of the following is a rule that ALL reducers must follow?</h4>
+<form>
+<input type="radio" name="q1" /> They must return a Promise<br/>
+<input type="radio" name="q1" /> They can make API calls to fetch fresh data<br/>
+<input type="radio" name="q1" /> (x) They must be pure functions — same inputs always produce the same output, no side effects<br/>
+<input type="radio" name="q1" /> They must dispatch other actions to update related state<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. Why is it safe to write <code>state.name = action.payload</code> inside a <code>createReducer</code> or <code>createSlice</code> reducer?</h4>
+<form>
+<input type="radio" name="q2" /> Because Redux automatically clones the state before passing it to the reducer<br/>
+<input type="radio" name="q2" /> Because JavaScript objects are always passed by value<br/>
+<input type="radio" name="q2" /> (x) Because RTK uses Immer under the hood — it wraps state in a Proxy and converts mutations into immutable updates<br/>
+<input type="radio" name="q2" /> Because React re-renders regardless of whether state is mutated or replaced<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What pattern does <code>createReducer</code> use to define case handlers?</h4>
+<pre class="prettyprint"><code class="lang-ts">const userReducer = createReducer(initialState, (builder) =&gt; {
+  builder
+    .addCase(setName, (state, action) =&gt; {
+      state.name = action.payload;
+    });
+});</code></pre>
+<form>
+<input type="radio" name="q3" /> The switch-case pattern<br/>
+<input type="radio" name="q3" /> The observer pattern<br/>
+<input type="radio" name="q3" /> (x) The builder callback pattern — <code>builder.addCase()</code> chains handlers for each action type<br/>
+<input type="radio" name="q3" /> The factory pattern<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. What happens if a reducer receives an action it doesn't handle?</h4>
+<form>
+<input type="radio" name="q4" /> It throws an error<br/>
+<input type="radio" name="q4" /> It resets state to initialState<br/>
+<input type="radio" name="q4" /> It logs a warning to the console<br/>
+<input type="radio" name="q4" /> (x) It returns the current state unchanged — unhandled actions are simply ignored<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
 }
-
-type UserAction = {
-  type: string;
-  payload: string;
-};
-
-const userReducer = (state: UserState = initialState, action: UserAction): UserState => {
-  switch(action.type){   
-    case SET_NAME:
-      state.name = action.payload
-      break;
-    case SET_SURNAME:
-      state.surname = action.payload
-      break;
-  }
-}</pre>
-<br/>
-<span>Option 2:</span>
-<pre>// userReducer.ts
-interface UserState {
-  name: string;
-  surname: string;
-}
-
-type UserAction = {
-  type: string;
-  payload: string;
-};
-
-const userReducer = (state: UserState = initialState, action: UserAction): UserState => {
-  switch(action.type){   
-    case SET_NAME:
-      return {
-        ...state,
-        name: action.payload
-      }
-    case SET_SURNAME:
-      return {
-        ...state,
-        surname: action.payload
-      }
-    default: 
-        return state
-  }
-}</pre>
-<br/>
-<span>Option 3:</span>
-<pre>// userReducer.ts
-interface UserState {
-  name: string;
-  surname: string;
-}
-
-type UserAction = {
-  type: string;
-  payload: string;
-};
-
-const userReducer = (state: UserState, action: UserAction): UserState => {
-  switch(action.type){   
-    case SET_NAME:
-      return {
-        ...state,
-        name: action.payload
-      }
-    case SET_SURNAME:
-      return {
-        ...state,
-        surname: action.payload
-      }
-  }
-}</pre>
-<br/>
-( ) Option 1
-(x) Option 2
-( ) Option 3
-<h4 style="color: #474747; font-weight: 600;">What are the main principles of working with Store and Reducer in Redux?</h4><br/>
-( ) The Store should be mutable and contain all the business logic of the application.
-( ) The Reducer should modify the Store directly, without using Actions.
-(x) A Reducer is a pure function that accepts the current Store state and an Action, and returns a new state.
-
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

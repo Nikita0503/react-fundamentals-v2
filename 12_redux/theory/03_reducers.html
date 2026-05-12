@@ -1,45 +1,159 @@
-<h3 style="color: #76cdd8;"><strong>Reducers</strong></h3>
-<p>A Reducer is a <strong>pure function</strong> that must <strong>return an updated instance of the Store</strong>. The Reducer accepts the current Store as the 1st parameter and an Action as the 2nd parameter. Since the <strong>Store in Redux is immutable</strong>, the Reducer must not modify the Store. It must <strong>return a new Store based on the previous one</strong>:</p>
-<pre class="prettyprint"><code class="lang-ts">/** /redux/reducer.ts */
+<h3 style="color: #76cdd8;"><strong>What is a Reducer?</strong></h3>
+<p>A <strong>reducer</strong> is a pure function that takes the current state and an action, and returns a <strong>new state</strong>:</p>
+<pre class="prettyprint"><code class="lang-ts">// The signature:
+(state, action) =&gt; newState</code></pre>
+<p><strong>Rules of reducers:</strong></p>
+<ul>
+<li><strong>Pure</strong> — same inputs always produce the same output</li>
+<li><strong>No side effects</strong> — no API calls, no random values, no Date.now()</li>
+<li><strong>No mutations</strong> — never modify the existing state object, always return a new one</li>
+<li><strong>Synchronous</strong> — no async/await inside reducers</li>
+</ul>
 
-import { SET_NAME, SET_SURNAME, UserAction } from './actions';
-
+<h3 style="color: #76cdd8;"><strong>The Classic (Legacy) Approach</strong></h3>
+<p>Traditionally, reducers used a <code>switch/case</code> statement and manual immutable updates:</p>
+<pre class="prettyprint"><code class="lang-ts">// types
 type UserState = {
   name: string;
-  surname: string;
+  email: string;
+  preferences: {
+    theme: "light" | "dark";
+    notifications: boolean;
+  };
 };
 
 const initialState: UserState = {
-  name: '',
-  surname: '',
-};
+  name: "",
+  email: "",
+  preferences: {
+    theme: "light",
+    notifications: true,
+  },
+};</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// reducer with switch/case
+import { SET_NAME, SET_EMAIL, RESET_USER } from "./constants";
+import type { UserAction } from "./types";
 
 const userReducer = (state = initialState, action: UserAction): UserState =&gt; {
-  switch(action.type){   
+  switch (action.type) {
     case SET_NAME:
-      return {
-        ...state,
-        name: action.payload
-      }
-    case SET_SURNAME:
-      return {
-        ...state,
-        surname: action.payload
-      }
-    default: 
-        return state
-  }
-}
+      return { ...state, name: action.payload };
 
-export default userReducer;</code></pre>
-<p><strong>InitialState</strong> - the part of the Store that the Reducer is responsible for.</p>
-<p>'state = initialState' - in case null(nullable) is passed in place of state, JavaScript will substitute the initialState value instead of null(nullable). This happens during <strong>Redux initialization</strong>.</p>
-<p>After the Action reaches the Reducer, we compare <strong>action.type</strong> with <strong>cases</strong> in which the Reducer can process the provided <strong>action.payload</strong> using <strong>switch-case</strong>.</p>
-<p>If action.type = SET_NAME, then the Reducer will return a <strong>new instance of the Store where name will be updated</strong> (its value will be what was in action.payload), and all other fields (surname) will remain unchanged.</p>
-<p>After the Reducer returns the new Store, <strong>View/UI will display the current data</strong>. If action.type does not match any of the cases, the Reducer will execute the <strong>default case</strong> and return the Store without changes.</p>
-<p><strong>Note</strong>:</p>
-<p><strong>The default case is mandatory</strong>, since the reducer must return a Store instance every time.</p>
-<p>During Redux initialization, the reducer receives its internal Actions several times, which do not match your cases. That is why the default case is needed.</p>
+    case SET_EMAIL:
+      return { ...state, email: action.payload };
+
+    case RESET_USER:
+      return initialState;
+
+    default:
+      return state;
+  }
+};</code></pre>
+
+<p><strong>The problem with nested updates:</strong></p>
+<p>Immutable updates get ugly fast when state is nested:</p>
+<pre class="prettyprint"><code class="lang-ts">// Updating a nested field — spread at every level!
+case SET_THEME:
+  return {
+    ...state,
+    preferences: {
+      ...state.preferences,
+      theme: action.payload,
+    },
+  };
+
+// Imagine 3-4 levels deep... it becomes unreadable and error-prone</code></pre>
+
+<p><strong>Other issues with the classic approach:</strong></p>
+<ul>
+<li>Easy to forget the spread operator and accidentally mutate state</li>
+<li>The <code>default</code> case is easy to forget (must return current state)</li>
+<li>TypeScript requires a discriminated union for proper type narrowing</li>
+<li>Large reducers become hard to read</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The RTK Way: createReducer()</strong></h3>
+<p>Redux Toolkit's <code>createReducer</code> uses a <strong>builder pattern</strong> and <strong>Immer</strong> under the hood:</p>
+<pre class="prettyprint"><code class="lang-ts">import { createReducer } from "@reduxjs/toolkit";
+import { setName, setEmail, setTheme, resetUser } from "./actions";
+
+type UserState = {
+  name: string;
+  email: string;
+  preferences: {
+    theme: "light" | "dark";
+    notifications: boolean;
+  };
+};
+
+const initialState: UserState = {
+  name: "",
+  email: "",
+  preferences: {
+    theme: "light",
+    notifications: true,
+  },
+};
+
+const userReducer = createReducer(initialState, (builder) =&gt; {
+  builder
+    .addCase(setName, (state, action) =&gt; {
+      state.name = action.payload; // "mutating" is safe here!
+    })
+    .addCase(setEmail, (state, action) =&gt; {
+      state.email = action.payload;
+    })
+    .addCase(setTheme, (state, action) =&gt; {
+      state.preferences.theme = action.payload; // nested update — just assign!
+    })
+    .addCase(resetUser, () =&gt; {
+      return initialState; // return a new value to replace entirely
+    });
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why "mutating" is safe — Immer explained</strong></h3>
+<p>When you write <code>state.name = action.payload</code> inside <code>createReducer</code>, you're <strong>not actually mutating</strong> the real state. Here's what happens:</p>
+<ol>
+<li>Immer creates a <strong>draft</strong> (a proxy copy) of the current state</li>
+<li>Your code "mutates" the draft</li>
+<li>Immer compares the draft to the original and produces a <strong>new immutable object</strong> with only the changed parts</li>
+</ol>
+<pre class="prettyprint"><code class="lang-ts">// What you write:
+state.preferences.theme = "dark";
+
+// What Immer produces (behind the scenes):
+{
+  ...state,
+  preferences: {
+    ...state.preferences,
+    theme: "dark",
+  },
+}
+// Same result, zero boilerplate!</code></pre>
+<p><strong>Two ways to update state in createReducer:</strong></p>
+<ul>
+<li><strong>Mutate the draft</strong> — write assignments directly (Immer handles immutability)</li>
+<li><strong>Return a new value</strong> — useful for resetting state entirely. Do NOT combine both in the same case.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript benefits</strong></h3>
+<p>With <code>createReducer</code> + <code>createAction</code>, TypeScript automatically knows:</p>
+<ul>
+<li>The shape of <code>state</code> (from <code>initialState</code>)</li>
+<li>The type of <code>action.payload</code> (from the action creator's generic)</li>
+<li>No manual discriminated unions needed</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">builder.addCase(setName, (state, action) =&gt; {
+  // TypeScript knows:
+  // - state is UserState
+  // - action.payload is string
+  state.name = action.payload;
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Coming up: createSlice</strong></h3>
+<p>In practice, <code>createReducer</code> is rarely used directly either. The <code>createSlice</code> function combines <strong>initial state + reducers + action creators</strong> into a single, concise definition. But understanding how reducers work is essential — <code>createSlice</code> just generates them for you.</p>
+<p></p>
 <style><!--
 .row-container {
         display: flex;
@@ -90,5 +204,3 @@ export default userReducer;</code></pre>
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>
-<p></p>

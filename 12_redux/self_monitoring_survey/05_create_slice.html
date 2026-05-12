@@ -1,0 +1,96 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: createSlice</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does <code>createSlice</code> return?</h4>
+<form>
+<input type="radio" name="q1" /> Only a reducer function<br/>
+<input type="radio" name="q1" /> Only action creators<br/>
+<input type="radio" name="q1" /> (x) An object with <code>actions</code> (auto-generated action creators), <code>reducer</code> (the combined reducer function), and <code>name</code> (the slice name)<br/>
+<input type="radio" name="q1" /> A configured store ready to use<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. When should you use separate <code>createAction</code> + <code>createReducer</code> instead of <code>createSlice</code>?</h4>
+<form>
+<input type="radio" name="q2" /> When you have more than 5 actions in a feature<br/>
+<input type="radio" name="q2" /> (x) When you have shared actions that multiple reducers need to respond to (e.g., a <code>logout</code> action that resets user, cart, and notifications)<br/>
+<input type="radio" name="q2" /> When you need TypeScript support for payloads<br/>
+<input type="radio" name="q2" /> When your state has nested objects<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What does <code>PayloadAction&lt;T&gt;</code> do in a slice reducer?</h4>
+<pre class="prettyprint"><code class="lang-ts">setEmail(state, action: PayloadAction&lt;string&gt;) {
+  state.email = action.payload;
+}</code></pre>
+<form>
+<input type="radio" name="q3" /> It validates the payload at runtime and throws if the type doesn't match<br/>
+<input type="radio" name="q3" /> It converts the payload to the specified type automatically<br/>
+<input type="radio" name="q3" /> (x) It provides TypeScript type information — telling the compiler that <code>action.payload</code> is of type <code>T</code> (string in this case)<br/>
+<input type="radio" name="q3" /> It makes the payload field required on the action object<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. Given this slice, what is the generated action type string when you call <code>increment()</code>?</h4>
+<pre class="prettyprint"><code class="lang-ts">const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment(state) {
+      state.value += 1;
+    },
+  },
+});</code></pre>
+<form>
+<input type="radio" name="q4" /> <code>"INCREMENT"</code><br/>
+<input type="radio" name="q4" /> <code>"increment"</code><br/>
+<input type="radio" name="q4" /> (x) <code>"counter/increment"</code><br/>
+<input type="radio" name="q4" /> <code>"counterSlice/increment"</code><br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

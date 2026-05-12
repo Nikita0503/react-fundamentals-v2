@@ -1,1 +1,92 @@
-TODO
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Summary & Decision Making</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. A component needs to fetch a list of products from an API. The data is used only in this one component and doesn't need to be shared. What's the best approach?</h4>
+<form>
+<input type="radio" name="q1" /> <code>createAsyncThunk</code> + <code>extraReducers</code> in a Redux slice<br/>
+<input type="radio" name="q1" /> RTK Query with <code>createApi</code><br/>
+<input type="radio" name="q1" /> (x) <code>useEffect</code> + <code>useState</code> (or React Query) — no need for Redux when data is local to one component<br/>
+<input type="radio" name="q1" /> A custom Redux middleware<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. You have 10 REST endpoints (CRUD for users, posts, comments). You need caching, automatic refetching, and loading states. What should you use?</h4>
+<form>
+<input type="radio" name="q2" /> 10 separate <code>createAsyncThunk</code> calls with 10 slices<br/>
+<input type="radio" name="q2" /> (x) RTK Query — define all endpoints in <code>createApi</code>, get auto-generated hooks with caching and invalidation for free<br/>
+<input type="radio" name="q2" /> <code>useEffect</code> + <code>useState</code> in each component<br/>
+<input type="radio" name="q2" /> A single thunk that fetches all data at once<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What does this code do?</h4>
+<pre class="prettyprint"><code class="lang-ts">const fetchTodos = createAsyncThunk&lt;Todo[], void, { rejectValue: string }>(
+  "todos/fetch",
+  async (_, thunkAPI) => {
+    const res = await fetch("/api/todos");
+    if (!res.ok) return thunkAPI.rejectWithValue("Failed to load");
+    return res.json();
+  }
+);</code></pre>
+<form>
+<input type="radio" name="q3" /> Creates a reducer that handles todo state<br/>
+<input type="radio" name="q3" /> Creates a React hook called <code>useFetchTodos</code><br/>
+<input type="radio" name="q3" /> (x) Creates an async thunk that fetches todos, returns <code>Todo[]</code> on success, and returns a typed string error via <code>rejectWithValue</code> on failure — generating pending/fulfilled/rejected actions<br/>
+<input type="radio" name="q3" /> Creates an API endpoint with automatic caching<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. When would you use <code>createAsyncThunk</code> instead of RTK Query?</h4>
+<form>
+<input type="radio" name="q4" /> When you have more than 5 API endpoints<br/>
+<input type="radio" name="q4" /> When you need TypeScript support<br/>
+<input type="radio" name="q4" /> (x) When you have complex async logic that doesn't fit the query/mutation model — like WebSocket flows, multi-step operations, or when you need the result in Redux state alongside other non-API state<br/>
+<input type="radio" name="q4" /> When you want automatic caching and deduplication<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

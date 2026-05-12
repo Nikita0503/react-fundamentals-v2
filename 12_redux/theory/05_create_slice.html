@@ -1,0 +1,241 @@
+<h3 style="color: #76cdd8;"><strong>createSlice = Actions + Reducer + Initial State in One Place</strong></h3>
+<p><code>createSlice</code> is the most important function in Redux Toolkit. It combines everything you need for a feature's state into a single, concise declaration:</p>
+<ul>
+<li>Initial state</li>
+<li>Reducer logic (with Immer)</li>
+<li>Action creators (auto-generated from reducer names)</li>
+</ul>
+<p>No more jumping between files for constants, types, action creators, and reducers. One function, one file, one feature.</p>
+
+<h3 style="color: #76cdd8;"><strong>Syntax</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+const mySlice = createSlice({
+  name: "sliceName",       // Used as prefix for action types
+  initialState: { ... },   // The initial state value
+  reducers: {              // Object of "case reducers"
+    actionName(state, action: PayloadAction&lt;PayloadType&gt;) {
+      // Mutate state directly (Immer handles immutability)
+    },
+  },
+});</code></pre>
+<ul>
+<li><code>name</code> — becomes the prefix for all generated action types (e.g., <code>"user/setName"</code>)</li>
+<li><code>initialState</code> — the starting state for this slice</li>
+<li><code>reducers</code> — an object where each key becomes an action creator and its value is the reducer logic</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What createSlice Returns</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">const mySlice = createSlice({ ... });
+
+// What you get back:
+mySlice.name;       // "sliceName" — the name you passed in
+mySlice.reducer;    // The combined reducer function (pass to configureStore)
+mySlice.actions;    // Object of auto-generated action creators
+                    // { actionName: (payload) => ({ type: "sliceName/actionName", payload }) }</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full Example: userSlice</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// store/slices/userSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type UserState = {
+  name: string;
+  email: string;
+};
+
+const initialState: UserState = {
+  name: "",
+  email: "",
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setName(state, action: PayloadAction&lt;string&gt;) {
+      state.name = action.payload;
+    },
+    setEmail(state, action: PayloadAction&lt;string&gt;) {
+      state.email = action.payload;
+    },
+    resetUser(state) {
+      state.name = initialState.name;
+      state.email = initialState.email;
+    },
+  },
+});
+
+// Export actions for use in components
+export const { setName, setEmail, resetUser } = userSlice.actions;
+
+// Export reducer for use in configureStore
+export default userSlice.reducer;</code></pre>
+
+<p>The generated action types are:</p>
+<ul>
+<li><code>setName("Alice")</code> → <code>{ type: "user/setName", payload: "Alice" }</code></li>
+<li><code>setEmail("a@b.com")</code> → <code>{ type: "user/setEmail", payload: "a@b.com" }</code></li>
+<li><code>resetUser()</code> → <code>{ type: "user/resetUser" }</code></li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>PayloadAction&lt;T&gt; for Typing Payloads</strong></h3>
+<p><code>PayloadAction&lt;T&gt;</code> is a generic type from RTK that types the <code>action.payload</code> field:</p>
+<pre class="prettyprint"><code class="lang-ts">import { PayloadAction } from "@reduxjs/toolkit";
+
+// PayloadAction&lt;string&gt; means action.payload is string
+setName(state, action: PayloadAction&lt;string&gt;) {
+  state.name = action.payload; // TypeScript knows this is string
+}
+
+// PayloadAction&lt;{ id: number; quantity: number }&gt; for complex payloads
+addItem(state, action: PayloadAction&lt;{ id: number; quantity: number }&gt;) {
+  state.items.push(action.payload); // TypeScript knows the shape
+}
+
+// No PayloadAction = no payload expected
+resetUser(state) {
+  // action parameter omitted — this action carries no data
+}</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Before vs After: Side-by-Side Comparison</strong></h3>
+<p><strong>Before (createAction + createReducer separately — ~40 lines):</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { createAction, createReducer } from "@reduxjs/toolkit";
+
+// Actions (separate)
+export const setName = createAction&lt;string&gt;("user/setName");
+export const setEmail = createAction&lt;string&gt;("user/setEmail");
+export const resetUser = createAction("user/resetUser");
+
+// State type
+type UserState = {
+  name: string;
+  email: string;
+};
+
+const initialState: UserState = {
+  name: "",
+  email: "",
+};
+
+// Reducer (separate)
+export const userReducer = createReducer(initialState, (builder) =&gt; {
+  builder
+    .addCase(setName, (state, action) =&gt; {
+      state.name = action.payload;
+    })
+    .addCase(setEmail, (state, action) =&gt; {
+      state.email = action.payload;
+    })
+    .addCase(resetUser, (state) =&gt; {
+      state.name = initialState.name;
+      state.email = initialState.email;
+    });
+});</code></pre>
+
+<p><strong>After (createSlice — ~20 lines):</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type UserState = { name: string; email: string };
+const initialState: UserState = { name: "", email: "" };
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setName(state, action: PayloadAction&lt;string&gt;) {
+      state.name = action.payload;
+    },
+    setEmail(state, action: PayloadAction&lt;string&gt;) {
+      state.email = action.payload;
+    },
+    resetUser(state) {
+      state.name = initialState.name;
+      state.email = initialState.email;
+    },
+  },
+});
+
+export const { setName, setEmail, resetUser } = userSlice.actions;
+export default userSlice.reducer;</code></pre>
+<p>Same functionality, half the code, zero boilerplate.</p>
+
+<h3 style="color: #76cdd8;"><strong>When to Use createSlice vs Separate createAction/createReducer</strong></h3>
+<p><strong>Use createSlice (90% of cases):</strong></p>
+<ul>
+<li>Standard CRUD operations (set, update, delete, reset)</li>
+<li>Feature-scoped state (user, cart, notifications, settings)</li>
+<li>Actions that belong to a single reducer</li>
+<li>Any time you're starting a new feature</li>
+</ul>
+
+<p><strong>Use separate createAction/createReducer (10% of cases):</strong></p>
+<ul>
+<li>Shared actions consumed by <strong>multiple</strong> reducers (e.g., a <code>logout</code> action that resets user, cart, and notifications)</li>
+<li>Complex action preparation logic (custom <code>prepare</code> callbacks that need to be reused)</li>
+<li>Actions that come from external libraries or middleware</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Export Pattern</strong></h3>
+<p>The standard export pattern for a slice file:</p>
+<pre class="prettyprint"><code class="lang-ts">// Named exports for actions (used in components)
+export const { setName, setEmail, resetUser } = userSlice.actions;
+
+// Default export for the reducer (used in configureStore)
+export default userSlice.reducer;</code></pre>
+<p>This convention keeps imports clean:</p>
+<pre class="prettyprint"><code class="lang-ts">// In store.ts — import the reducer
+import userReducer from "./slices/userSlice";
+
+// In components — import specific actions
+import { setName, setEmail } from "../store/slices/userSlice";</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

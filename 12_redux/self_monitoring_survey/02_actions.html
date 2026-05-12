@@ -1,12 +1,88 @@
-<h4 style="color: #474747; font-weight: 600;">What fields does an action object have in Redux?</h4><br/>
-( ) StoreType and ActionName
-( ) Payload and ActionValue
-(x) ActionType and Payload
-<h4 style="color: #474747; font-weight: 600;">What is an Action Creator in the context of Redux?</h4><br/>
-(x) A function that forms and returns an Action object
-( ) A function that defines the action type
-( ) An object that contains Action Type and Payload
-<h4 style="color: #474747; font-weight: 600;">Why is it useful to extract Action Type into a constant?</h4><br/>
-( ) To speed up code execution
-( ) To hide the action type
-(x) For convenience and to avoid typos when writing
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Actions</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does a Redux action object always contain?</h4>
+<form>
+<input type="radio" name="q1" /> A <code>type</code> string and a <code>data</code> object<br/>
+<input type="radio" name="q1" /> (x) A <code>type</code> string (required) and optionally a <code>payload</code><br/>
+<input type="radio" name="q1" /> A <code>name</code> string and a <code>value</code> field<br/>
+<input type="radio" name="q1" /> A <code>type</code> string, a <code>payload</code>, and a <code>reducer</code> reference<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. What does <code>createAction&lt;string&gt;("user/setName")</code> return?</h4>
+<form>
+<input type="radio" name="q2" /> A plain action object <code>{ type: "user/setName" }</code><br/>
+<input type="radio" name="q2" /> (x) An action creator function that, when called with a string argument, produces <code>{ type: "user/setName", payload: string }</code><br/>
+<input type="radio" name="q2" /> A reducer function that handles the "user/setName" action<br/>
+<input type="radio" name="q2" /> A string constant "user/setName"<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What is the main advantage of RTK's <code>createAction</code> over the legacy approach (manual constants + types + creator functions)?</h4>
+<form>
+<input type="radio" name="q3" /> It makes actions run faster at runtime<br/>
+<input type="radio" name="q3" /> It allows actions to carry multiple payloads<br/>
+<input type="radio" name="q3" /> (x) It eliminates boilerplate — one line gives you the type constant, TypeScript inference, and the action creator<br/>
+<input type="radio" name="q3" /> It automatically connects actions to reducers<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. Given this code, what is the value of <code>action.type</code>?</h4>
+<pre class="prettyprint"><code class="lang-ts">import { createAction } from "@reduxjs/toolkit";
+
+const addItem = createAction&lt;{ id: string; price: number }&gt;("cart/addItem");
+const action = addItem({ id: "abc", price: 9.99 });</code></pre>
+<form>
+<input type="radio" name="q4" /> <code>"addItem"</code><br/>
+<input type="radio" name="q4" /> <code>"cart_addItem"</code><br/>
+<input type="radio" name="q4" /> (x) <code>"cart/addItem"</code><br/>
+<input type="radio" name="q4" /> <code>"CART_ADD_ITEM"</code><br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

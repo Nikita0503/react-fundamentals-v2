@@ -1,0 +1,182 @@
+<h3 style="color: #76cdd8;"><strong>useSelector — Reading Data from the Store</strong></h3>
+<p><code>useSelector</code> is a React-Redux hook that lets you extract data from the Redux store. It takes a <strong>selector function</strong> that receives the entire state and returns the piece you need:</p>
+<pre class="prettyprint"><code class="lang-ts">import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+
+// Selector function: (state: RootState) => value
+const name = useSelector((state: RootState) =&gt; state.user.name);</code></pre>
+<p>Every time the store updates, <code>useSelector</code> re-runs your selector. If the returned value has changed (by reference), the component re-renders. If it hasn't — no re-render.</p>
+
+<h3 style="color: #76cdd8;"><strong>useDispatch — Sending Actions to the Store</strong></h3>
+<p><code>useDispatch</code> returns the store's <code>dispatch</code> function. You use it to send actions:</p>
+<pre class="prettyprint"><code class="lang-ts">import { useDispatch } from "react-redux";
+import { setName } from "../store/slices/userSlice";
+
+const dispatch = useDispatch();
+dispatch(setName("Alice"));</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Two Approaches to Typing</strong></h3>
+
+<p><strong>Approach 1: Generic annotations (verbose)</strong></p>
+<p>You can type each usage manually with generics:</p>
+<pre class="prettyprint"><code class="lang-ts">import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../store/store";
+
+// Must annotate every useSelector call
+const name = useSelector&lt;RootState, string&gt;((state) =&gt; state.user.name);
+const email = useSelector&lt;RootState, string&gt;((state) =&gt; state.user.email);
+const items = useSelector&lt;RootState, CartItem[]&gt;((state) =&gt; state.cart.items);
+
+// Must annotate every useDispatch call
+const dispatch = useDispatch&lt;AppDispatch&gt;();</code></pre>
+<p><strong>Problems:</strong></p>
+<ul>
+<li>Repetitive — you type <code>RootState</code> and <code>AppDispatch</code> in every component</li>
+<li>Easy to forget — if you skip the generic, you lose type safety</li>
+<li>Noisy — clutters the component code</li>
+</ul>
+
+<p><strong>Approach 2: Typed hooks (recommended)</strong></p>
+<p>Create pre-typed hooks <strong>once</strong>, use them everywhere:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/hooks.ts
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();
+export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();</code></pre>
+<p>Now in components — no generics needed, full type safety automatically:</p>
+<pre class="prettyprint"><code class="lang-ts">import { useAppDispatch, useAppSelector } from "../store/hooks";
+
+// TypeScript knows state.user.name is string — no annotation needed
+const name = useAppSelector((state) =&gt; state.user.name);
+const dispatch = useAppDispatch();</code></pre>
+<p><strong>Why this is better:</strong></p>
+<ul>
+<li>DRY — types defined once, used everywhere</li>
+<li>Less noise — components stay clean</li>
+<li>Impossible to forget — the hook is always typed</li>
+<li>Refactor-friendly — change the store shape, types update everywhere</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Full Component Example Using Typed Hooks</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// components/UserProfile.tsx
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setName, setEmail, resetUser } from "../store/slices/userSlice";
+
+const UserProfile = () =&gt; {
+  const dispatch = useAppDispatch();
+  const name = useAppSelector((state) =&gt; state.user.name);
+  const email = useAppSelector((state) =&gt; state.user.email);
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;User Profile&lt;/h2&gt;
+      &lt;input
+        value={name}
+        onChange={(e) =&gt; dispatch(setName(e.target.value))}
+        placeholder="Name"
+      /&gt;
+      &lt;input
+        value={email}
+        onChange={(e) =&gt; dispatch(setEmail(e.target.value))}
+        placeholder="Email"
+      /&gt;
+      &lt;p&gt;{name} — {email}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch(resetUser())}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export { UserProfile };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Selector Patterns</strong></h3>
+<p><strong>Inline selectors</strong> — quick and simple for one-off usage:</p>
+<pre class="prettyprint"><code class="lang-ts">const name = useAppSelector((state) =&gt; state.user.name);</code></pre>
+
+<p><strong>Extracted selectors</strong> — reusable, testable, and named:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/slices/userSlice.ts (at the bottom of the slice file)
+export const selectUserName = (state: RootState) =&gt; state.user.name;
+export const selectUserEmail = (state: RootState) =&gt; state.user.email;
+export const selectUser = (state: RootState) =&gt; state.user;
+
+// In component:
+import { selectUserName, selectUserEmail } from "../store/slices/userSlice";
+
+const name = useAppSelector(selectUserName);
+const email = useAppSelector(selectUserEmail);</code></pre>
+<p><strong>When to extract selectors:</strong></p>
+<ul>
+<li>The same selector is used in multiple components</li>
+<li>The selector computes derived data (filtering, sorting, totals)</li>
+<li>You want to unit-test the selection logic</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Performance: When Does useSelector Cause Re-renders?</strong></h3>
+<p><code>useSelector</code> uses <strong>reference equality</strong> (<code>===</code>) to decide if the component should re-render:</p>
+<ul>
+<li>If the selected value is the same reference → no re-render</li>
+<li>If the selected value is a new reference → re-render</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">// ✅ Good — primitive value, cheap comparison
+const name = useAppSelector((state) =&gt; state.user.name);
+
+// ⚠️ Careful — creates a new array reference every time
+const expensiveItems = useAppSelector((state) =&gt;
+  state.cart.items.filter((item) =&gt; item.price &gt; 100)
+);
+// This will re-render on EVERY store update, even unrelated ones!
+
+// ✅ Fix — use a memoized selector (e.g., with createSelector from reselect)
+// or extract the filtering logic outside the selector</code></pre>
+<p><strong>Rule of thumb:</strong> Select the smallest piece of state you need. Prefer selecting primitives or stable references over computing new arrays/objects inside the selector.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

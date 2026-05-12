@@ -1,0 +1,262 @@
+<h3 style="color: #76cdd8;"><strong>Real Apps Have Multiple Slices</strong></h3>
+<p>A real application doesn't have just one piece of state. You'll typically have separate slices for different domains:</p>
+<ul>
+<li><code>user</code> — authentication, profile info</li>
+<li><code>cart</code> — shopping cart items, totals</li>
+<li><code>notifications</code> — alerts, unread count</li>
+<li><code>settings</code> — theme, language preferences</li>
+</ul>
+<p>Each slice manages its own piece of state <strong>independently</strong>. They don't know about each other — they just coexist in the same store.</p>
+
+<h3 style="color: #76cdd8;"><strong>How to Combine: Just Add to configureStore</strong></h3>
+<p>Combining slices is trivial — just add each slice's reducer to the <code>reducer</code> object in <code>configureStore</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./slices/userSlice";
+import cartReducer from "./slices/cartSlice";
+import notificationsReducer from "./slices/notificationsSlice";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    cart: cartReducer,
+    notifications: notificationsReducer,
+  },
+});
+
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+<p>Each key in the <code>reducer</code> object becomes a top-level key in your state tree. The <code>RootState</code> type automatically reflects all slices.</p>
+
+<h3 style="color: #76cdd8;"><strong>Accessing Different Slices</strong></h3>
+<p>In components, you access each slice through its key on the state object:</p>
+<pre class="prettyprint"><code class="lang-ts">// Access user slice
+const name = useAppSelector((state) =&gt; state.user.name);
+
+// Access cart slice
+const items = useAppSelector((state) =&gt; state.cart.items);
+const totalItems = useAppSelector((state) =&gt; state.cart.items.length);
+
+// Access notifications slice
+const unreadCount = useAppSelector((state) =&gt; state.notifications.unreadCount);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>File Structure for a Real App</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">store/
+  store.ts                  // configureStore + RootState + AppDispatch
+  hooks.ts                  // useAppSelector, useAppDispatch
+  slices/
+    userSlice.ts            // User state: name, email, auth status
+    cartSlice.ts            // Cart state: items, quantities
+    notificationsSlice.ts   // Notifications: list, unread count</code></pre>
+<p>Each slice file is self-contained: state type, initial state, reducers, exported actions, exported reducer. The store file just imports and combines them.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Example: Two Slices Working Together</strong></h3>
+
+<p><strong>store/slices/userSlice.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type UserState = {
+  name: string;
+  email: string;
+};
+
+const initialState: UserState = {
+  name: "",
+  email: "",
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setName(state, action: PayloadAction&lt;string&gt;) {
+      state.name = action.payload;
+    },
+    setEmail(state, action: PayloadAction&lt;string&gt;) {
+      state.email = action.payload;
+    },
+  },
+});
+
+export const { setName, setEmail } = userSlice.actions;
+export default userSlice.reducer;</code></pre>
+
+<p><strong>store/slices/cartSlice.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type CartItem = {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+};
+
+type CartState = {
+  items: CartItem[];
+};
+
+const initialState: CartState = {
+  items: [],
+};
+
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {
+    addItem(state, action: PayloadAction&lt;Omit&lt;CartItem, "quantity"&gt;&gt;) {
+      const existing = state.items.find((item) =&gt; item.id === action.payload.id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.items.push({ ...action.payload, quantity: 1 });
+      }
+    },
+    removeItem(state, action: PayloadAction&lt;string&gt;) {
+      state.items = state.items.filter((item) =&gt; item.id !== action.payload);
+    },
+    clearCart(state) {
+      state.items = [];
+    },
+  },
+});
+
+export const { addItem, removeItem, clearCart } = cartSlice.actions;
+export default cartSlice.reducer;</code></pre>
+
+<p><strong>store/store.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./slices/userSlice";
+import cartReducer from "./slices/cartSlice";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    cart: cartReducer,
+  },
+});
+
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+
+<p><strong>store/hooks.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();
+export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();</code></pre>
+
+<p><strong>components/Dashboard.tsx — reading from both slices</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setName } from "../store/slices/userSlice";
+import { addItem, clearCart } from "../store/slices/cartSlice";
+
+const Dashboard = () =&gt; {
+  const dispatch = useAppDispatch();
+
+  // Reading from user slice
+  const userName = useAppSelector((state) =&gt; state.user.name);
+
+  // Reading from cart slice
+  const cartItems = useAppSelector((state) =&gt; state.cart.items);
+  const totalPrice = useAppSelector((state) =&gt;
+    state.cart.items.reduce((sum, item) =&gt; sum + item.price * item.quantity, 0)
+  );
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Welcome, {userName || "Guest"}&lt;/h1&gt;
+
+      &lt;button
+        onClick={() =&gt;
+          dispatch(addItem({ id: "1", title: "TypeScript Book", price: 29.99 }))
+        }
+      &gt;
+        Add Book to Cart
+      &lt;/button&gt;
+
+      &lt;h2&gt;Cart ({cartItems.length} items)&lt;/h2&gt;
+      &lt;ul&gt;
+        {cartItems.map((item) =&gt; (
+          &lt;li key={item.id}&gt;
+            {item.title} x{item.quantity} — ${item.price * item.quantity}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      &lt;p&gt;Total: ${totalPrice.toFixed(2)}&lt;/p&gt;
+
+      &lt;button onClick={() =&gt; dispatch(clearCart())}&gt;Clear Cart&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export { Dashboard };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Each Slice is Independent</strong></h3>
+<p>Key principle: each slice only manages its own state. Dispatching <code>setName("Alice")</code> only affects the <code>user</code> slice — the <code>cart</code> slice is completely unaffected. This makes state changes predictable and easy to debug.</p>
+
+<h3 style="color: #76cdd8;"><strong>What If One Slice Needs to React to Another Slice's Action?</strong></h3>
+<p>Sometimes you need cross-slice communication. For example: when a user logs out, you want to clear the cart too. This is done with <code>extraReducers</code> — a way for a slice to listen to actions it didn't define:</p>
+<pre class="prettyprint"><code class="lang-ts">// Teaser — covered in detail in Module 13 (async/thunks)
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: { /* ... */ },
+  extraReducers: (builder) =&gt; {
+    // React to an action from another slice
+    builder.addCase(logout, (state) =&gt; {
+      state.items = [];
+    });
+  },
+});</code></pre>
+<p>This keeps slices decoupled — the cart slice doesn't import from the user slice's internals, it just listens for a specific action type.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

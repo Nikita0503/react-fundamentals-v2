@@ -1,0 +1,190 @@
+<h3 style="color: #76cdd8;"><strong>Module 12 — Quick Reference / Cheat Sheet</strong></h3>
+
+<h3 style="color: #76cdd8;"><strong>Core Concepts Recap</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr style="background-color: #2d2d2d; color: #76cdd8;">
+<th>Concept</th><th>What It Is</th><th>Analogy</th>
+</tr>
+<tr>
+<td><strong>Action</strong></td><td>Plain object describing what happened (<code>{ type, payload }</code>)</td><td>An event message</td>
+</tr>
+<tr>
+<td><strong>Reducer</strong></td><td>Pure function: <code>(state, action) → newState</code></td><td>Event handler</td>
+</tr>
+<tr>
+<td><strong>Store</strong></td><td>Single object holding the entire app state</td><td>Database for the frontend</td>
+</tr>
+<tr>
+<td><strong>Slice</strong></td><td>Bundle of reducer + actions + initial state for one feature</td><td>A feature module</td>
+</tr>
+<tr>
+<td><strong>Dispatch</strong></td><td>Function to send actions to the store</td><td>Sending a message</td>
+</tr>
+<tr>
+<td><strong>Selector</strong></td><td>Function to read specific data from the store</td><td>A database query</td>
+</tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>API Summary</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr style="background-color: #2d2d2d; color: #76cdd8;">
+<th>Function</th><th>Purpose</th><th>Returns</th>
+</tr>
+<tr>
+<td><code>createAction&lt;T&gt;(type)</code></td><td>Create a typed action creator</td><td>Action creator function with <code>.type</code> and <code>.match()</code></td>
+</tr>
+<tr>
+<td><code>createReducer(init, builder)</code></td><td>Create a reducer with Immer support</td><td>Reducer function</td>
+</tr>
+<tr>
+<td><code>createSlice({ name, initialState, reducers })</code></td><td>Create actions + reducer in one place</td><td><code>{ actions, reducer, name }</code></td>
+</tr>
+<tr>
+<td><code>configureStore({ reducer })</code></td><td>Create the store with DevTools + middleware</td><td>Store object</td>
+</tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Decision Guide: useState vs Context vs Redux</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr style="background-color: #2d2d2d; color: #76cdd8;">
+<th>Scenario</th><th>Use</th><th>Why</th>
+</tr>
+<tr>
+<td>Form input, toggle, local UI state</td><td><code>useState</code></td><td>Simple, component-scoped, no sharing needed</td>
+</tr>
+<tr>
+<td>Theme, locale, auth status (read-mostly)</td><td>Context</td><td>Rarely changes, many components read it</td>
+</tr>
+<tr>
+<td>Frequently updated shared state (cart, notifications)</td><td>Redux</td><td>Fine-grained subscriptions, DevTools, predictable updates</td>
+</tr>
+<tr>
+<td>Complex state logic (many actions, derived data)</td><td>Redux</td><td>Reducers organize logic, selectors compute derived state</td>
+</tr>
+<tr>
+<td>Server data (API responses, caching)</td><td>React Query / RTK Query</td><td>Built-in caching, refetching, loading states</td>
+</tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Typical Project Structure</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">src/
+  store/
+    store.ts              // configureStore, RootState, AppDispatch
+    hooks.ts              // useAppSelector, useAppDispatch
+    slices/
+      userSlice.ts        // createSlice for user feature
+      cartSlice.ts        // createSlice for cart feature
+      notificationsSlice.ts
+  components/
+    UserProfile.tsx       // Uses useAppSelector + useAppDispatch
+    Cart.tsx
+  App.tsx                 // Wraps everything in &lt;Provider store={store}&gt;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Key TypeScript Types</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// Derived from the store — always up to date
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;
+
+// For typing action payloads in slice reducers
+import { PayloadAction } from "@reduxjs/toolkit";
+
+setName(state, action: PayloadAction&lt;string&gt;) {
+  state.name = action.payload; // payload is typed as string
+}
+
+// Typed hooks — use these instead of raw useSelector/useDispatch
+export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();
+export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Common Mistakes to Avoid</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr style="background-color: #2d2d2d; color: #76cdd8;">
+<th>Mistake</th><th>Why It's Wrong</th><th>Fix</th>
+</tr>
+<tr>
+<td>Mutating state outside of a reducer</td><td>Immer only works inside <code>createSlice</code>/<code>createReducer</code>. Mutating elsewhere breaks Redux.</td><td>Always dispatch an action to change state</td>
+</tr>
+<tr>
+<td>Forgetting <code>&lt;Provider&gt;</code></td><td><code>useSelector</code>/<code>useDispatch</code> throw errors without a store in context</td><td>Wrap your app root in <code>&lt;Provider store={store}&gt;</code></td>
+</tr>
+<tr>
+<td>Circular imports between slices</td><td>Slice A imports from Slice B which imports from Slice A → crash</td><td>Use <code>extraReducers</code> to listen to other slices' actions instead of importing their internals</td>
+</tr>
+<tr>
+<td>Putting non-serializable values in state</td><td>Functions, class instances, Promises break DevTools and time-travel</td><td>Store only plain data (strings, numbers, arrays, objects)</td>
+</tr>
+<tr>
+<td>Creating new references in selectors</td><td><code>.filter()</code> or <code>.map()</code> inside <code>useSelector</code> creates a new array every render</td><td>Use memoized selectors (createSelector) or select primitives</td>
+</tr>
+<tr>
+<td>Using raw <code>useSelector</code>/<code>useDispatch</code> without typing</td><td>Loses type safety — <code>state</code> becomes <code>unknown</code></td><td>Use typed hooks (<code>useAppSelector</code>, <code>useAppDispatch</code>)</td>
+</tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>The Complete Data Flow</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// 1. User clicks a button
+&lt;button onClick={() =&gt; dispatch(addItem({ id: "1", title: "Book", price: 20 }))}&gt;
+
+// 2. Action is created
+{ type: "cart/addItem", payload: { id: "1", title: "Book", price: 20 } }
+
+// 3. Store dispatches action to the reducer
+// cartSlice reducer handles "cart/addItem"
+
+// 4. Reducer produces new state (via Immer)
+state.items.push({ ...action.payload, quantity: 1 });
+
+// 5. Store notifies subscribers
+// useSelector re-runs, component re-renders with new data</code></pre>
+<p>This unidirectional flow — <strong>UI → Action → Reducer → Store → UI</strong> — is what makes Redux predictable and debuggable.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

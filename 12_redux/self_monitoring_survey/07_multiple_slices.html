@@ -1,0 +1,91 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Multiple Slices</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. How do you combine multiple slices into a single store?</h4>
+<form>
+<input type="radio" name="q1" /> By calling <code>combineReducers()</code> manually and passing it to <code>createStore()</code><br/>
+<input type="radio" name="q1" /> By importing all slices into a single "mega-slice"<br/>
+<input type="radio" name="q1" /> (x) By adding each slice's reducer to the <code>reducer</code> object in <code>configureStore</code> — each key becomes a top-level state property<br/>
+<input type="radio" name="q1" /> By creating a separate store for each slice and merging them<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. Given this store configuration, how do you access the cart items in a component?</h4>
+<pre class="prettyprint"><code class="lang-ts">const store = configureStore({
+  reducer: {
+    user: userReducer,
+    cart: cartReducer,
+    notifications: notificationsReducer,
+  },
+});</code></pre>
+<form>
+<input type="radio" name="q2" /> <code>useAppSelector((state) =&gt; state.items)</code><br/>
+<input type="radio" name="q2" /> <code>useAppSelector((state) =&gt; state.cartReducer.items)</code><br/>
+<input type="radio" name="q2" /> (x) <code>useAppSelector((state) =&gt; state.cart.items)</code><br/>
+<input type="radio" name="q2" /> <code>useAppSelector((state) =&gt; state.cartSlice.items)</code><br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What is the recommended file structure for a Redux store with multiple features?</h4>
+<form>
+<input type="radio" name="q3" /> Put all reducers in a single <code>reducers.ts</code> file<br/>
+<input type="radio" name="q3" /> (x) A <code>store/</code> folder with <code>store.ts</code>, <code>hooks.ts</code>, and a <code>slices/</code> subfolder containing one file per feature slice<br/>
+<input type="radio" name="q3" /> Separate <code>actions/</code>, <code>reducers/</code>, and <code>constants/</code> folders (one file per action type)<br/>
+<input type="radio" name="q3" /> One file per component that contains both the slice and the component code<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. If one slice needs to react to another slice's action (e.g., cart clears when user logs out), what mechanism does RTK provide?</h4>
+<form>
+<input type="radio" name="q4" /> Import the other slice's state directly and modify it<br/>
+<input type="radio" name="q4" /> Use <code>useEffect</code> in a component to watch one slice and dispatch to another<br/>
+<input type="radio" name="q4" /> (x) Use <code>extraReducers</code> in the slice definition to listen for actions defined outside the slice<br/>
+<input type="radio" name="q4" /> Create a shared "meta-reducer" that wraps both slices<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

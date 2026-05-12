@@ -1,23 +1,186 @@
-<h3 style="color: #76cdd8;"><strong>Store</strong></h3>
-<p>Store - a <strong>single data storage</strong>. To initialize it, we need to create a <strong>rootReducer</strong> - a collection of all the application's Reducers.</p>
-<pre class="prettyprint"><code class="lang-ts">/** /redux/store.ts */
+<h3 style="color: #76cdd8;"><strong>What is the Store?</strong></h3>
+<p>The <strong>store</strong> is the single source of truth for your entire application's state. It:</p>
+<ul>
+<li>Holds the complete state tree</li>
+<li>Allows access to state via <code>getState()</code></li>
+<li>Allows state updates via <code>dispatch(action)</code></li>
+<li>Registers listeners via <code>subscribe()</code></li>
+</ul>
+<p>There is only <strong>one store</strong> per application. Different "areas" of state are managed by different reducers, but they all live in the same store.</p>
 
-import { combineReducers, createStore } from 'redux';
-import userReducer from './reducer';
+<h3 style="color: #76cdd8;"><strong>The Legacy createStore (deprecated)</strong></h3>
+<p>The old way used <code>createStore</code> from the <code>redux</code> package. You may see it in older codebases:</p>
+<pre class="prettyprint"><code class="lang-ts">// ❌ Deprecated — don't use in new code
+import { createStore } from "redux";
+const store = createStore(rootReducer);</code></pre>
+<p>This still works but provides no middleware, no DevTools, and no development safety checks out of the box.</p>
 
-const rootReducer = combineReducers({
-  user: userReducer,
+<h3 style="color: #76cdd8;"><strong>The RTK Way: configureStore()</strong></h3>
+<p>Redux Toolkit's <code>configureStore</code> is the modern replacement. It gives you everything you need with sensible defaults:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import { userReducer } from "./userReducer";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});</code></pre>
+
+<p><strong>What configureStore does automatically:</strong></p>
+<ul>
+<li>✅ Sets up <strong>Redux DevTools</strong> — inspect state, time-travel debug, see action history</li>
+<li>✅ Adds <strong>redux-thunk</strong> middleware — for async logic (API calls, etc.)</li>
+<li>✅ Adds <strong>serializable check</strong> middleware (dev only) — warns if you put non-serializable values in state (functions, class instances, Promises)</li>
+<li>✅ Adds <strong>immutability check</strong> middleware (dev only) — catches accidental mutations outside of Immer</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript: Deriving Types from the Store</strong></h3>
+<p>The key TypeScript pattern: derive your types <strong>from the store itself</strong>, not the other way around:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import { userReducer } from "./userReducer";
+import { cartReducer } from "./cartReducer";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    cart: cartReducer,
+  },
 });
 
-export type RootState = ReturnType&lt;typeof rootReducer&gt;;
-export type AppDispatch = typeof store.dispatch;
+// Infer types FROM the store — single source of truth
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+<p>Now <code>RootState</code> automatically reflects the shape of your entire state tree. Add a new reducer — the type updates automatically. No manual maintenance.</p>
 
-export const store = createStore(rootReducer);</code></pre>
-<p>Using the <strong>combineReducers</strong> function, we create the <strong>rootReducer</strong>.</p>
-<p>RootReducer accepts an object where <strong>keys are the names by which you can access the Reducers</strong>, and values are the Reducers themselves.</p>
-<p>For example, name, which is in userReducer, will be located at the address: <strong>state.user.name</strong>.</p>
-<p>And we create the <strong>store</strong> using the <strong>createStore</strong> function, which accepts our created <strong>rootReducer</strong> as the first parameter.</p>
-<p>The Redux writing part is complete. All that remains is to give components the ability to retrieve data from the Store and update it.</p>
+<h3 style="color: #76cdd8;"><strong>Typed Hooks (recommended)</strong></h3>
+<p>Create pre-typed hooks so you don't have to annotate types every time you use Redux in a component:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/hooks.ts
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+// Use these throughout your app instead of plain useDispatch/useSelector
+export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();
+export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Connecting to React: Provider</strong></h3>
+<p>The store needs to be made available to your React component tree via the <code>&lt;Provider&gt;</code> component:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+
+const App = () =&gt; (
+  &lt;Provider store={store}&gt;
+    &lt;YourAppContent /&gt;
+  &lt;/Provider&gt;
+);
+
+export default App;</code></pre>
+<p>The <code>Provider</code> uses React Context internally to make the store accessible to any nested component via <code>useSelector</code> and <code>useDispatch</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>Recommended File Structure</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// A clean store setup:
+src/
+  store/
+    store.ts        // configureStore + type exports
+    hooks.ts        // useAppDispatch, useAppSelector
+    userSlice.ts    // (we'll cover slices next)
+    cartSlice.ts</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full Working Example</strong></h3>
+<p>Let's put it all together — a minimal but complete setup:</p>
+
+<p><strong>store/userReducer.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { createReducer, createAction } from "@reduxjs/toolkit";
+
+// Actions
+export const setName = createAction&lt;string&gt;("user/setName");
+export const setEmail = createAction&lt;string&gt;("user/setEmail");
+
+// State type
+type UserState = {
+  name: string;
+  email: string;
+};
+
+const initialState: UserState = {
+  name: "",
+  email: "",
+};
+
+// Reducer
+export const userReducer = createReducer(initialState, (builder) =&gt; {
+  builder
+    .addCase(setName, (state, action) =&gt; {
+      state.name = action.payload;
+    })
+    .addCase(setEmail, (state, action) =&gt; {
+      state.email = action.payload;
+    });
+});</code></pre>
+
+<p><strong>store/store.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { configureStore } from "@reduxjs/toolkit";
+import { userReducer } from "./userReducer";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});
+
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+
+<p><strong>store/hooks.ts</strong></p>
+<pre class="prettyprint"><code class="lang-ts">import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+export const useAppDispatch = useDispatch.withTypes&lt;AppDispatch&gt;();
+export const useAppSelector = useSelector.withTypes&lt;RootState&gt;();</code></pre>
+
+<p><strong>App.tsx</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">import { Provider } from "react-redux";
+import { store } from "./store/store";
+import { UserForm } from "./components/UserForm";
+
+const App = () =&gt; (
+  &lt;Provider store={store}&gt;
+    &lt;UserForm /&gt;
+  &lt;/Provider&gt;
+);
+
+export default App;</code></pre>
+
+<p><strong>components/UserForm.tsx</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setName, setEmail } from "../store/userReducer";
+
+const UserForm = () =&gt; {
+  const dispatch = useAppDispatch();
+  const name = useAppSelector((state) =&gt; state.user.name);
+  const email = useAppSelector((state) =&gt; state.user.email);
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        value={name}
+        onChange={(e) =&gt; dispatch(setName(e.target.value))}
+        placeholder="Name"
+      /&gt;
+      &lt;input
+        value={email}
+        onChange={(e) =&gt; dispatch(setEmail(e.target.value))}
+        placeholder="Email"
+      /&gt;
+      &lt;p&gt;Hello, {name} ({email})&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export { UserForm };</code></pre>
+<p>This is a fully functional Redux setup with TypeScript. The component reads from the store and dispatches actions — all type-safe, all predictable.</p>
 <p></p>
 <style><!--
 .row-container {
@@ -69,4 +232,3 @@ export const store = createStore(rootReducer);</code></pre>
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>

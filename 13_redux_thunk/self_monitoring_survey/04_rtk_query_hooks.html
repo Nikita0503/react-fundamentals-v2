@@ -1,0 +1,88 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: RTK Query Hooks</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does the <code>useGetPostsQuery()</code> hook return?</h4>
+<form>
+<input type="radio" name="q1" /> Just the data array or <code>null</code><br/>
+<input type="radio" name="q1" /> A Promise that resolves with the posts<br/>
+<input type="radio" name="q1" /> (x) An object with <code>data</code>, <code>isLoading</code>, <code>isFetching</code>, <code>isSuccess</code>, <code>isError</code>, <code>error</code>, and <code>refetch</code><br/>
+<input type="radio" name="q1" /> A tuple of <code>[data, setData]</code> like useState<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. How does cache invalidation work in RTK Query?</h4>
+<form>
+<input type="radio" name="q2" /> You manually call <code>dispatch(invalidateCache())</code> after every mutation<br/>
+<input type="radio" name="q2" /> Cache expires after a fixed timeout (30 seconds by default)<br/>
+<input type="radio" name="q2" /> (x) Queries declare <code>providesTags</code> and mutations declare <code>invalidatesTags</code> — when a mutation invalidates a tag, all queries providing that tag automatically refetch<br/>
+<input type="radio" name="q2" /> You must call <code>refetch()</code> in the component after every mutation<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What happens when a mutation with <code>invalidatesTags: ["Post"]</code> succeeds?</h4>
+<form>
+<input type="radio" name="q3" /> Nothing — you must manually refetch<br/>
+<input type="radio" name="q3" /> The entire Redux store is cleared and rebuilt<br/>
+<input type="radio" name="q3" /> (x) All queries that have <code>providesTags: ["Post"]</code> automatically refetch their data<br/>
+<input type="radio" name="q3" /> The "Post" tag is permanently removed from the cache<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. What is the naming convention for auto-generated RTK Query hooks?</h4>
+<pre class="prettyprint"><code class="lang-ts">endpoints: (builder) => ({
+  getPosts: builder.query&lt;Post[], void&gt;({ ... }),
+  addPost: builder.mutation&lt;Post, NewPost&gt;({ ... }),
+})</code></pre>
+<form>
+<input type="radio" name="q4" /> <code>query_getPosts</code> and <code>mutation_addPost</code><br/>
+<input type="radio" name="q4" /> <code>usePosts</code> and <code>useAddPost</code><br/>
+<input type="radio" name="q4" /> (x) <code>useGetPostsQuery</code> and <code>useAddPostMutation</code> — pattern is <code>use{EndpointName}Query</code> / <code>use{EndpointName}Mutation</code><br/>
+<input type="radio" name="q4" /> <code>useGetPostsHook</code> and <code>useAddPostHook</code><br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

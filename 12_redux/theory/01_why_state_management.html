@@ -1,0 +1,120 @@
+<h3 style="color: #76cdd8;"><strong>Why do we need global state management?</strong></h3>
+<p>As your React application grows, you'll face a common challenge: <strong>how do you share data between components that are far apart in the tree?</strong></p>
+<p>Consider a typical app: a header shows the user's name, a sidebar shows their avatar, and a settings page lets them update their profile. All these components need access to the same user data, but they live in completely different parts of the component tree.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Prop Drilling Problem</strong></h3>
+<p>The naive solution is to pass data down through props at every level:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App → Layout → Header → UserMenu → Avatar
+// Every intermediate component must accept and forward the prop
+
+const Layout = ({ user }: { user: User }) =&gt; (
+  &lt;div&gt;
+    &lt;Header user={user} /&gt;
+    &lt;Sidebar user={user} /&gt;
+    &lt;Main user={user} /&gt;
+  &lt;/div&gt;
+);
+
+const Header = ({ user }: { user: User }) =&gt; (
+  &lt;nav&gt;
+    &lt;UserMenu user={user} /&gt;  {/* Header doesn't use user, just passes it */}
+  &lt;/nav&gt;
+);</code></pre>
+<p>This is called <strong>prop drilling</strong>. It makes code harder to maintain, creates unnecessary coupling between components, and causes re-renders in components that don't even use the data.</p>
+
+<h3 style="color: #76cdd8;"><strong>When is useState enough?</strong></h3>
+<p><strong>Local UI state</strong> — things that only one component (or its direct children) cares about:</p>
+<ul>
+<li>Is a modal open or closed?</li>
+<li>What's the current input value?</li>
+<li>Is a dropdown expanded?</li>
+<li>Which tab is active?</li>
+</ul>
+<p>If the state doesn't need to be shared — <code>useState</code> is perfect. Keep it simple.</p>
+
+<h3 style="color: #76cdd8;"><strong>When is Context enough?</strong></h3>
+<p><strong>Low-frequency, app-wide values</strong> that rarely change:</p>
+<ul>
+<li>Current theme (light/dark)</li>
+<li>Locale / language</li>
+<li>Authentication status (logged in or not)</li>
+</ul>
+<p>Context is great for these because they update infrequently. But Context has a limitation: <strong>every consumer re-renders when the value changes</strong>, even if they only use a small part of it.</p>
+
+<h3 style="color: #76cdd8;"><strong>When do you need Redux / Redux Toolkit?</strong></h3>
+<p>You benefit from a dedicated state manager when:</p>
+<ul>
+<li><strong>Complex shared state</strong> — multiple components read and write the same data</li>
+<li><strong>Frequent updates</strong> — state changes often (e.g., form data, filters, lists)</li>
+<li><strong>Many consumers</strong> — dozens of components subscribe to the same slice of state</li>
+<li><strong>Predictability</strong> — you need a clear, traceable history of what changed and why</li>
+<li><strong>Debugging</strong> — Redux DevTools let you time-travel through state changes</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The Redux Data Flow</strong></h3>
+<p>Redux follows a <strong>unidirectional data flow</strong>. Here's the mental model:</p>
+<pre class="prettyprint"><code class="lang-ts">// The cycle:
+// Component → dispatch(action) → reducer → new state → Component re-renders
+
+// 1. Something happens in the UI (user clicks a button)
+// 2. Component dispatches an action: { type: "user/setName", payload: "Alice" }
+// 3. The reducer receives current state + action, returns NEW state
+// 4. The store updates, and subscribed components re-render with fresh data</code></pre>
+<p>This predictable cycle means you always know <strong>what</strong> changed, <strong>why</strong> it changed, and <strong>when</strong> it changed. No magic, no hidden mutations.</p>
+
+<h3 style="color: #76cdd8;"><strong>Redux Toolkit (RTK) — the modern way</strong></h3>
+<p>In this module, we'll use <strong>Redux Toolkit</strong> (RTK) — the official, recommended way to write Redux. It eliminates boilerplate while keeping all the benefits of Redux's architecture.</p>
+<p>Install it:</p>
+<pre class="prettyprint"><code class="lang-ts">npm install @reduxjs/toolkit react-redux</code></pre>
+<p>That's it — one package gives you everything you need. No more installing <code>redux</code>, <code>redux-thunk</code>, <code>immer</code>, or <code>reselect</code> separately.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

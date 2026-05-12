@@ -1,0 +1,220 @@
+<h3 style="color: #76cdd8;"><strong>What is RTK Query?</strong></h3>
+<p>RTK Query is a <strong>data fetching and caching tool</strong> built directly into Redux Toolkit. It's designed to simplify the most common data-fetching patterns in Redux apps.</p>
+<p>Think of it as Redux's answer to React Query / TanStack Query — but integrated into the Redux store.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why Does It Exist?</strong></h3>
+<p>The <code>createAsyncThunk</code> + <code>extraReducers</code> approach works, but it requires a lot of boilerplate for <strong>every single endpoint</strong>:</p>
+<ul>
+<li>Define the thunk</li>
+<li>Define the state shape (data, status, error)</li>
+<li>Handle 3 lifecycle actions in extraReducers</li>
+<li>Manually manage cache invalidation</li>
+<li>Manually handle refetching</li>
+<li>Repeat for every API endpoint...</li>
+</ul>
+<p>RTK Query eliminates all of this repetition.</p>
+
+<h3 style="color: #76cdd8;"><strong>What RTK Query Handles Automatically</strong></h3>
+<ul>
+<li><strong>Caching</strong> — responses are cached and reused</li>
+<li><strong>Deduplication</strong> — multiple components requesting the same data = one network request</li>
+<li><strong>Polling</strong> — automatic refetching at intervals</li>
+<li><strong>Cache invalidation</strong> — tag-based system to refetch stale data</li>
+<li><strong>Loading states</strong> — <code>isLoading</code>, <code>isFetching</code>, <code>isSuccess</code>, <code>isError</code></li>
+<li><strong>Error states</strong> — structured error handling</li>
+<li><strong>Refetch on focus/reconnect</strong> — configurable automatic refetching</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Core Concepts</strong></h3>
+<p><strong><code>createApi</code></strong> — the single function where you define your entire API. All endpoints, their types, and their cache behavior live here.</p>
+<p><strong><code>fetchBaseQuery</code></strong> — a lightweight wrapper around the native <code>fetch</code> API. Think of it like a simpler axios — it handles JSON serialization, base URLs, and headers.</p>
+
+<h3 style="color: #76cdd8;"><strong>Basic Setup</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// store/api/postsApi.ts
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+type Post = {
+  id: string;
+  title: string;
+  body: string;
+  authorId: string;
+};
+
+export const postsApi = createApi({
+  reducerPath: "postsApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  tagTypes: ["Post"],
+  endpoints: (builder) => ({
+    getPosts: builder.query&lt;Post[], void&gt;({
+      query: () => "/posts",
+      providesTags: ["Post"],
+    }),
+    getPostById: builder.query&lt;Post, string&gt;({
+      query: (postId) => `/posts/${postId}`,
+      providesTags: (result, error, id) => [{ type: "Post", id }],
+    }),
+    addPost: builder.mutation&lt;Post, Omit&lt;Post, "id"&gt;&gt;({
+      query: (newPost) => ({
+        url: "/posts",
+        method: "POST",
+        body: newPost,
+      }),
+      invalidatesTags: ["Post"],
+    }),
+    deletePost: builder.mutation&lt;void, string&gt;({
+      query: (postId) => ({
+        url: `/posts/${postId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Post"],
+    }),
+  }),
+});
+
+// Auto-generated hooks!
+export const {
+  useGetPostsQuery,
+  useGetPostByIdQuery,
+  useAddPostMutation,
+  useDeletePostMutation,
+} = postsApi;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Adding to the Store</strong></h3>
+<p>RTK Query creates its own reducer and middleware. You add them to your store:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import { postsApi } from "./api/postsApi";
+import { userReducer } from "./slices/userSlice";
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    [postsApi.reducerPath]: postsApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(postsApi.middleware),
+});
+
+export type RootState = ReturnType&lt;typeof store.getState&gt;;
+export type AppDispatch = typeof store.dispatch;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Comparison: createAsyncThunk vs RTK Query</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #f0f0f0;">
+<th>Aspect</th>
+<th>createAsyncThunk approach</th>
+<th>RTK Query approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Files needed per endpoint</td>
+<td>Thunk file + slice (extraReducers) + state type</td>
+<td>Just add an endpoint to createApi</td>
+</tr>
+<tr>
+<td>Loading/error state</td>
+<td>Manual — define status, error in state</td>
+<td>Automatic — isLoading, isError, etc.</td>
+</tr>
+<tr>
+<td>Caching</td>
+<td>Manual — you manage it yourself</td>
+<td>Automatic — tag-based invalidation</td>
+</tr>
+<tr>
+<td>Deduplication</td>
+<td>Not built-in</td>
+<td>Automatic — same query = one request</td>
+</tr>
+<tr>
+<td>Refetching</td>
+<td>Manual dispatch</td>
+<td>Automatic on focus, reconnect, or interval</td>
+</tr>
+<tr>
+<td>Boilerplate per endpoint</td>
+<td>~40-60 lines</td>
+<td>~5-10 lines</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Complex async logic, non-CRUD operations</td>
+<td>Standard CRUD APIs, data fetching</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Endpoint Types</strong></h3>
+<p>RTK Query has two types of endpoints:</p>
+<ul>
+<li><strong><code>builder.query</code></strong> — for <strong>reading</strong> data (GET requests). Generates a <code>useXxxQuery</code> hook.</li>
+<li><strong><code>builder.mutation</code></strong> — for <strong>changing</strong> data (POST, PUT, DELETE). Generates a <code>useXxxMutation</code> hook.</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">endpoints: (builder) => ({
+  // Query — reading data (GET)
+  getUsers: builder.query&lt;User[], void&gt;({
+    query: () => "/users",
+  }),
+
+  // Mutation — changing data (POST/PUT/DELETE)
+  updateUser: builder.mutation&lt;User, { id: string; name: string }&gt;({
+    query: ({ id, ...body }) => ({
+      url: `/users/${id}`,
+      method: "PUT",
+      body,
+    }),
+  }),
+})</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

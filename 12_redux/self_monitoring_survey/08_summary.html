@@ -1,0 +1,106 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Module 12 Review</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What is the correct order of Redux data flow?</h4>
+<form>
+<input type="radio" name="q1" /> Store → Action → Reducer → UI<br/>
+<input type="radio" name="q1" /> Reducer → Action → Store → UI<br/>
+<input type="radio" name="q1" /> (x) UI dispatches Action → Reducer processes it → Store updates → UI re-renders<br/>
+<input type="radio" name="q1" /> UI → Store → Reducer → Action → UI<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. What is wrong with this code?</h4>
+<pre class="prettyprint"><code class="lang-ts">import { useSelector } from "react-redux";
+
+const UserName = () =&gt; {
+  const name = useSelector((state) =&gt; state.user.name);
+  return &lt;span&gt;{name}&lt;/span&gt;;
+};</code></pre>
+<form>
+<input type="radio" name="q2" /> You can't use useSelector inside a functional component<br/>
+<input type="radio" name="q2" /> (x) The <code>state</code> parameter has no type annotation — it will be typed as <code>unknown</code>, losing type safety. Should use <code>useAppSelector</code> or annotate with <code>RootState</code><br/>
+<input type="radio" name="q2" /> useSelector can't return a primitive value like a string<br/>
+<input type="radio" name="q2" /> The component must be wrapped in <code>React.memo</code> to use useSelector<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. Which of the following should NOT be stored in Redux state?</h4>
+<form>
+<input type="radio" name="q3" /> A user's name (string)<br/>
+<input type="radio" name="q3" /> A list of cart items (array of objects)<br/>
+<input type="radio" name="q3" /> (x) A WebSocket connection instance or a callback function<br/>
+<input type="radio" name="q3" /> A notification's read/unread status (boolean)<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. Read this slice and identify what <code>cartSlice.actions</code> contains:</h4>
+<pre class="prettyprint"><code class="lang-ts">const cartSlice = createSlice({
+  name: "cart",
+  initialState: { items: [], total: 0 },
+  reducers: {
+    addItem(state, action: PayloadAction&lt;CartItem&gt;) {
+      state.items.push(action.payload);
+    },
+    removeItem(state, action: PayloadAction&lt;string&gt;) {
+      state.items = state.items.filter((i) =&gt; i.id !== action.payload);
+    },
+    clearCart(state) {
+      state.items = [];
+      state.total = 0;
+    },
+  },
+});</code></pre>
+<form>
+<input type="radio" name="q4" /> <code>{ cart: Function }</code><br/>
+<input type="radio" name="q4" /> <code>{ addItem: string, removeItem: string, clearCart: string }</code><br/>
+<input type="radio" name="q4" /> (x) <code>{ addItem: ActionCreator, removeItem: ActionCreator, clearCart: ActionCreator }</code> — three auto-generated action creator functions<br/>
+<input type="radio" name="q4" /> <code>{ "cart/addItem": Function, "cart/removeItem": Function, "cart/clearCart": Function }</code><br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

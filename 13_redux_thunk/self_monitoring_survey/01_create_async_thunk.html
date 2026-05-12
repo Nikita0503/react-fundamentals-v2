@@ -1,0 +1,94 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: createAsyncThunk</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. What does <code>createAsyncThunk</code> automatically generate?</h4>
+<form>
+<input type="radio" name="q1" /> A single action type that you dispatch manually<br/>
+<input type="radio" name="q1" /> (x) Three lifecycle action types: pending, fulfilled, and rejected<br/>
+<input type="radio" name="q1" /> A reducer function with built-in state management<br/>
+<input type="radio" name="q1" /> A React hook for fetching data in components<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. How do you return structured error data from a failed thunk?</h4>
+<pre class="prettyprint"><code class="lang-ts">const fetchUser = createAsyncThunk&lt;User, string, { rejectValue: MyError }>(
+  "user/fetchUser",
+  async (userId, thunkAPI) => {
+    const response = await fetch(`/api/users/${userId}`);
+    if (!response.ok) {
+      // How to return the error?
+    }
+    return response.json();
+  }
+);</code></pre>
+<form>
+<input type="radio" name="q2" /> <code>throw new Error("User not found")</code><br/>
+<input type="radio" name="q2" /> <code>return { error: "User not found" }</code><br/>
+<input type="radio" name="q2" /> (x) <code>return thunkAPI.rejectWithValue({ message: "User not found", statusCode: 404 })</code><br/>
+<input type="radio" name="q2" /> <code>thunkAPI.dispatch(setError("User not found"))</code><br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What is the first argument passed to <code>createAsyncThunk</code>?</h4>
+<form>
+<input type="radio" name="q3" /> The async payload creator function<br/>
+<input type="radio" name="q3" /> The initial state object<br/>
+<input type="radio" name="q3" /> (x) A string action type prefix (e.g., <code>"user/fetchUser"</code>) used to generate the pending/fulfilled/rejected action types<br/>
+<input type="radio" name="q3" /> The reducer function that handles the result<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. What does dispatching a thunk return?</h4>
+<form>
+<input type="radio" name="q4" /> <code>undefined</code> — thunks are fire-and-forget<br/>
+<input type="radio" name="q4" /> The raw data from the API response<br/>
+<input type="radio" name="q4" /> (x) A Promise that resolves with the dispatched action (fulfilled or rejected)<br/>
+<input type="radio" name="q4" /> A subscription object for listening to state changes<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,222 @@
+<h3 style="color: #76cdd8;"><strong>Where to Handle Async Actions: extraReducers</strong></h3>
+<p>When you create a thunk with <code>createAsyncThunk</code>, it generates 3 action types (pending, fulfilled, rejected). But where do you handle them? In the <code>extraReducers</code> field of <code>createSlice</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why "extra"?</strong></h3>
+<p>The <code>reducers</code> field in <code>createSlice</code> is for actions that the slice <strong>defines itself</strong>. The <code>extraReducers</code> field is for actions defined <strong>elsewhere</strong> — like thunks, or actions from other slices. They're "extra" because they weren't created by this slice's <code>reducers</code> object.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Builder Pattern</strong></h3>
+<p><code>extraReducers</code> uses a builder callback with <code>.addCase()</code> for each action type you want to handle:</p>
+<pre class="prettyprint"><code class="lang-ts">import { createSlice } from "@reduxjs/toolkit";
+import { fetchUser } from "./thunks/fetchUser";
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    // regular synchronous actions here
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message ?? "Unknown error";
+      });
+  },
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>The Standard Loading State Pattern</strong></h3>
+<p>Almost every async slice follows this pattern for its state shape:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+type UserState = {
+  data: User | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+};
+
+const initialState: UserState = {
+  data: null,
+  status: "idle",
+  error: null,
+};</code></pre>
+<p>This gives you everything you need to show loading spinners, error messages, and data — all driven by the store.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Slice Example</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// store/slices/userSlice.ts
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchUser } from "../thunks/fetchUser";
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+};
+
+type UserState = {
+  data: User | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+};
+
+const initialState: UserState = {
+  data: null,
+  status: "idle",
+  error: null,
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    clearUser(state) {
+      state.data = null;
+      state.status = "idle";
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message ?? "Unknown error";
+      });
+  },
+});
+
+export const { clearUser } = userSlice.actions;
+export const userReducer = userSlice.reducer;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Component Example: Using the Thunk</strong></h3>
+<p>Here's how a component dispatches the thunk and reacts to the loading/error/data states:</p>
+<pre class="prettyprint"><code class="lang-tsx">// components/UserProfile.tsx
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchUser } from "../store/thunks/fetchUser";
+import { clearUser } from "../store/slices/userSlice";
+
+type UserProfileProps = {
+  userId: string;
+};
+
+const UserProfile = ({ userId }: UserProfileProps) => {
+  const dispatch = useAppDispatch();
+  const { data: user, status, error } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(fetchUser(userId));
+
+    return () => {
+      dispatch(clearUser());
+    };
+  }, [dispatch, userId]);
+
+  if (status === "loading") {
+    return &lt;p&gt;Loading user...&lt;/p&gt;;
+  }
+
+  if (status === "failed") {
+    return &lt;p style={{ color: "red" }}&gt;Error: {error}&lt;/p&gt;;
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;img src={user.avatar} alt={user.name} /&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;{user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export { UserProfile };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>When to Use createAsyncThunk</strong></h3>
+<p><strong>Use it when:</strong></p>
+<ul>
+<li>You need the fetched data in the Redux store (not just local component state)</li>
+<li>Multiple components consume the same async data</li>
+<li>You need to track loading/error state globally</li>
+<li>Other parts of the app need to react to the fetch lifecycle (e.g., show a global loading bar)</li>
+</ul>
+
+<p><strong>Don't use it when:</strong></p>
+<ul>
+<li>Data is only used by one component — just use <code>useEffect</code> + <code>useState</code></li>
+<li>You don't need caching or global access — consider React Query / TanStack Query</li>
+<li>You have many endpoints with similar patterns — RTK Query (next section) is better</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,84 @@
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Why State Management</strong></h3>
+
+<h4 style="color: #474747; font-weight: 600;">1. When is Redux the most appropriate choice for state management?</h4>
+<form>
+<input type="radio" name="q1" /> When you need to manage a single form's input values<br/>
+<input type="radio" name="q1" /> When you have a theme toggle that rarely changes<br/>
+<input type="radio" name="q1" /> (x) When multiple unrelated components need to read and update the same frequently-changing data<br/>
+<input type="radio" name="q1" /> When you need to fetch data from an API and cache it<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. What problem does "prop drilling" refer to?</h4>
+<form>
+<input type="radio" name="q2" /> Components re-rendering too often due to state changes<br/>
+<input type="radio" name="q2" /> (x) Passing data through many intermediate components that don't use it, just to reach a deeply nested child<br/>
+<input type="radio" name="q2" /> Having too many props on a single component<br/>
+<input type="radio" name="q2" /> Using props instead of state for dynamic values<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What is the direction of data flow in Redux?</h4>
+<form>
+<input type="radio" name="q3" /> Bidirectional — components can read and write state directly<br/>
+<input type="radio" name="q3" /> Bottom-up — child components push state to parents<br/>
+<input type="radio" name="q3" /> (x) Unidirectional — UI dispatches actions → reducer updates state → store notifies UI<br/>
+<input type="radio" name="q3" /> Circular — state flows from store to components and back to store simultaneously<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">4. Which of the following is NOT a valid reason to introduce Redux into a project?</h4>
+<form>
+<input type="radio" name="q4" /> You need time-travel debugging for complex state transitions<br/>
+<input type="radio" name="q4" /> Multiple components across different routes need the same data<br/>
+<input type="radio" name="q4" /> (x) You have a simple app with 3 components and local form state<br/>
+<input type="radio" name="q4" /> You want a predictable, centralized state container with DevTools<br/>
+</form>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

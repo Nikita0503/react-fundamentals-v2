@@ -1,65 +1,118 @@
-<h3 style="color: #76cdd8;"><strong>Actions</strong></h3>
-<p>An <strong>action</strong> by itself is an <strong>object</strong> with 2 fields: <strong>Action Type</strong> and <strong>Payload</strong>.</p>
+<h3 style="color: #76cdd8;"><strong>What is an Action?</strong></h3>
+<p>An <strong>action</strong> is a plain JavaScript object that describes <strong>what happened</strong>. It has two fields:</p>
 <ul>
-<li>Payload - the new value that will <strong>go into the Store</strong></li>
-<li>Action Type - a <strong>unique string</strong> that tells the Reducer <strong>what exactly to do with the Payload</strong></li>
+<li><code>type</code> — a unique string identifying the event (required)</li>
+<li><code>payload</code> — the data associated with the event (optional)</li>
 </ul>
-<p>Example:</p>
-<pre class="prettyprint"><code class="lang-ts">{
-  type: "SET_NAME",
-  payload: "MyName"
+<pre class="prettyprint"><code class="lang-ts">// Example action:
+{
+  type: "user/setName",
+  payload: "Alice"
 }</code></pre>
-<p>Usually, Action Type is built following the principle - <strong>ACTION_FIELDNAME</strong>. This is not an official rule, but it is more convenient and understandable.</p>
-<p>But working with an Action in this form is bad practice, so <strong>Action Creators</strong> are created for this:</p>
-<pre class="prettyprint"><code class="lang-ts">type SetNameAction = {
-  type: typeof SET_NAME;
-  payload: string;
-};
+<p>Actions are the <strong>only way</strong> to trigger state changes in Redux. Think of them as "event messages" that tell the store what happened.</p>
 
-const setName = (name: string): SetNameAction =&gt; ({
-  type: SET_NAME,
-  payload: name
-})</code></pre>
-<p>Action Creator - a <strong>function</strong> that forms and <strong>returns an Action</strong>.</p>
-<p>The string from the Action Type field will be needed in other places in the code, so it is good practice to <strong>extract it into a constant</strong>:</p>
-<pre class="prettyprint"><code class="lang-ts">const SET_NAME = "SET_NAME" as const;
+<h3 style="color: #76cdd8;"><strong>The Classic (Legacy) Approach</strong></h3>
+<p>Before Redux Toolkit, you had to write everything manually. Let's see how verbose it gets:</p>
 
-const setName = (name: string): SetNameAction =&gt; ({
-  type: SET_NAME,
-  payload: name
-})
-</code></pre>
-<p>Now let's create the same pair for surname and make it exportable:</p>
-<pre class="prettyprint"><code class="lang-ts">/** /redux/actions.ts */
+<p><strong>Step 1: Define string constants</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// constants.ts
+export const SET_NAME = "user/setName" as const;
+export const SET_EMAIL = "user/setEmail" as const;
+export const RESET_USER = "user/reset" as const;</code></pre>
 
-export const SET_NAME = "SET_NAME" as const;
-export const SET_SURNAME = "SET_SURNAME" as const;
-
+<p><strong>Step 2: Define TypeScript types for each action</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// types.ts
 type SetNameAction = {
   type: typeof SET_NAME;
   payload: string;
 };
 
-type SetSurnameAction = {
-  type: typeof SET_SURNAME;
+type SetEmailAction = {
+  type: typeof SET_EMAIL;
   payload: string;
 };
 
-export type UserAction = SetNameAction | SetSurnameAction;
+type ResetUserAction = {
+  type: typeof RESET_USER;
+};
+
+// Discriminated union of all actions
+export type UserAction = SetNameAction | SetEmailAction | ResetUserAction;</code></pre>
+
+<p><strong>Step 3: Write action creator functions</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// actions.ts
+import { SET_NAME, SET_EMAIL, RESET_USER } from "./constants";
+import type { SetNameAction, SetEmailAction, ResetUserAction } from "./types";
 
 export const setName = (name: string): SetNameAction =&gt; ({
   type: SET_NAME,
-  payload: name
+  payload: name,
 });
 
-export const setSurname = (surname: string): SetSurnameAction =&gt; ({
-  type: SET_SURNAME,
-  payload: surname
+export const setEmail = (email: string): SetEmailAction =&gt; ({
+  type: SET_EMAIL,
+  payload: email,
+});
+
+export const resetUser = (): ResetUserAction =&gt; ({
+  type: RESET_USER,
 });</code></pre>
-<p>We have formed the <strong>Actions</strong>. Action Types (SET_NAME, SET_SURNAME) will be needed in the Reducer. Action Creators (setName, setSurname) will be needed in the View/UI.</p>
-<p><strong>Note</strong>:</p>
-<p>Payload is an <strong>optional field</strong>. It is needed when we want to <strong>pass some value to the Reducer</strong>. There may be cases where <strong>the Action Type alone is sufficient</strong>. For example, the Action Type "RESET_NAME" makes it clear that name should be made empty.</p>
-<p>Action Types must be unique to prevent collisions with other Reducers.</p>
+
+<p><strong>Problems with this approach:</strong></p>
+<ul>
+<li>Lots of <strong>boilerplate</strong> — 3 files just for actions</li>
+<li><strong>Typos in strings</strong> are easy to make and hard to catch</li>
+<li>No autocomplete for action types</li>
+<li>Every new action requires changes in 3 places (constant, type, creator)</li>
+<li>The discriminated union must be maintained manually</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The RTK Way: createAction()</strong></h3>
+<p>Redux Toolkit's <code>createAction</code> does all of the above in one line:</p>
+<pre class="prettyprint"><code class="lang-ts">import { createAction } from "@reduxjs/toolkit";
+
+// One line = constant + type + action creator
+export const setName = createAction&lt;string&gt;("user/setName");
+export const setEmail = createAction&lt;string&gt;("user/setEmail");
+export const resetUser = createAction("user/reset");</code></pre>
+
+<p><strong>What you get automatically:</strong></p>
+<ul>
+<li>The <code>type</code> constant: <code>setName.type === "user/setName"</code></li>
+<li>Full TypeScript inference: <code>setName("Alice")</code> returns <code>{ type: "user/setName", payload: "Alice" }</code></li>
+<li>Type safety: <code>setName(123)</code> would be a TypeScript error (expects string)</li>
+<li>The <code>.match()</code> method for type narrowing in reducers</li>
+</ul>
+
+<p><strong>Usage:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// Creating actions
+const action = setName("Alice");
+// Result: { type: "user/setName", payload: "Alice" }
+
+// Checking action type
+console.log(setName.type); // "user/setName"
+
+// Type narrowing with .match()
+if (setName.match(someAction)) {
+  // TypeScript knows someAction.payload is string here
+  console.log(someAction.payload.toUpperCase());
+}</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Naming Convention</strong></h3>
+<p>Action types follow the pattern <code>"domain/eventName"</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">// Good — clear domain and intent
+"user/setName"
+"cart/addItem"
+"auth/loginSuccess"
+"filters/reset"
+
+// Bad — no domain, unclear
+"SET_NAME"
+"ADD"
+"UPDATE"</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Coming up: createSlice</strong></h3>
+<p>In practice, you'll rarely use <code>createAction</code> directly. The <code>createSlice</code> function (covered later) generates actions <strong>automatically</strong> from your reducer logic. But understanding actions as a concept is essential — they're the foundation of Redux's predictable data flow.</p>
 <p></p>
 <style><!--
 .row-container {
@@ -111,4 +164,3 @@ export const setSurname = (surname: string): SetSurnameAction =&gt; ({
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>

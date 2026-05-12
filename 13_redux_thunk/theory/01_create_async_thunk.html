@@ -1,0 +1,212 @@
+<h3 style="color: #76cdd8;"><strong>Why Async in Redux?</strong></h3>
+<p>Redux reducers are <strong>pure, synchronous functions</strong>. They take state + action and return new state — no side effects allowed. But real applications need to make API calls, read from databases, or perform other async operations.</p>
+<p>The question is: <strong>where does async logic live?</strong> The answer in Redux Toolkit is <strong>thunks</strong>.</p>
+
+<h3 style="color: #76cdd8;"><strong>What is a Thunk?</strong></h3>
+<p>A <strong>thunk</strong> is a function that returns another function — it's a pattern for delaying execution. In Redux, a thunk is a function that:</p>
+<ul>
+<li>Gets dispatched like a regular action</li>
+<li>Receives <code>dispatch</code> and <code>getState</code> as arguments</li>
+<li>Can contain async logic (API calls, timeouts, etc.)</li>
+<li>Can dispatch other actions based on results</li>
+</ul>
+<p>Redux Toolkit <strong>includes thunk middleware by default</strong> — no extra installation needed. When you use <code>configureStore</code>, thunk support is already there.</p>
+
+<h3 style="color: #76cdd8;"><strong>createAsyncThunk Syntax</strong></h3>
+<p><code>createAsyncThunk</code> is RTK's utility for creating thunks that handle async operations. It takes two arguments:</p>
+<ol>
+<li>A <strong>string action type prefix</strong> (e.g., <code>"user/fetchUser"</code>)</li>
+<li>A <strong>payload creator</strong> — an async function that returns the data</li>
+</ol>
+<pre class="prettyprint"><code class="lang-ts">import { createAsyncThunk } from "@reduxjs/toolkit";
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+const fetchUser = createAsyncThunk(
+  "user/fetchUser",
+  async (userId: string, thunkAPI) => {
+    const response = await fetch(`/api/users/${userId}`);
+    return response.json() as Promise&lt;User&gt;;
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>What It Generates Automatically</strong></h3>
+<p><code>createAsyncThunk</code> automatically generates <strong>3 lifecycle action types</strong> based on the string prefix you provide:</p>
+<ul>
+<li><code>fetchUser.pending</code> → <code>"user/fetchUser/pending"</code> — dispatched when the async function starts</li>
+<li><code>fetchUser.fulfilled</code> → <code>"user/fetchUser/fulfilled"</code> — dispatched when the Promise resolves</li>
+<li><code>fetchUser.rejected</code> → <code>"user/fetchUser/rejected"</code> — dispatched when the Promise rejects or you call <code>rejectWithValue</code></li>
+</ul>
+<p>You don't create these actions manually — they're generated for you. You just handle them in your reducer.</p>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript: Typing createAsyncThunk</strong></h3>
+<p>You can provide generic type parameters for full type safety:</p>
+<pre class="prettyprint"><code class="lang-ts">// createAsyncThunk&lt;ReturnType, ArgType, ThunkApiConfig&gt;
+
+type FetchUserError = {
+  message: string;
+  statusCode: number;
+};
+
+const fetchUser = createAsyncThunk&lt;
+  User,              // Return type of the payload creator
+  string,            // Argument type (what you pass when dispatching)
+  { rejectValue: FetchUserError }  // ThunkAPI config
+&gt;(
+  "user/fetchUser",
+  async (userId, thunkAPI) => {
+    const response = await fetch(`/api/users/${userId}`);
+    if (!response.ok) {
+      return thunkAPI.rejectWithValue({
+        message: "User not found",
+        statusCode: response.status,
+      });
+    }
+    return response.json() as Promise&lt;User&gt;;
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Error Handling: rejectWithValue</strong></h3>
+<p>By default, if your async function throws, the rejected action's payload is the error message. But you often want <strong>structured error data</strong>. Use <code>thunkAPI.rejectWithValue()</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">const fetchUser = createAsyncThunk&lt;
+  User,
+  string,
+  { rejectValue: FetchUserError }
+&gt;(
+  "user/fetchUser",
+  async (userId, thunkAPI) => {
+    try {
+      const response = await fetch(`/api/users/${userId}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        // This becomes action.payload in the rejected case
+        return thunkAPI.rejectWithValue({
+          message: errorData.message,
+          statusCode: response.status,
+        });
+      }
+      return (await response.json()) as User;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({
+        message: "Network error",
+        statusCode: 0,
+      });
+    }
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Dispatching a Thunk</strong></h3>
+<p>You dispatch a thunk just like any other action. It returns a <strong>Promise</strong> that you can await:</p>
+<pre class="prettyprint"><code class="lang-ts">// In a component or another thunk:
+dispatch(fetchUser("123"));
+
+// You can also await the result:
+const result = await dispatch(fetchUser("123"));
+
+if (fetchUser.fulfilled.match(result)) {
+  console.log("User loaded:", result.payload);
+}
+
+if (fetchUser.rejected.match(result)) {
+  console.log("Error:", result.payload); // typed as FetchUserError
+}</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full Example: Fetching a User</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// store/thunks/fetchUser.ts
+import { createAsyncThunk } from "@reduxjs/toolkit";
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+};
+
+type FetchUserError = {
+  message: string;
+  statusCode: number;
+};
+
+export const fetchUser = createAsyncThunk&lt;
+  User,
+  string,
+  { rejectValue: FetchUserError }
+&gt;(
+  "user/fetchUser",
+  async (userId, thunkAPI) => {
+    try {
+      const response = await fetch(`/api/users/${userId}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return thunkAPI.rejectWithValue({
+          message: errorData.message || "Failed to fetch user",
+          statusCode: response.status,
+        });
+      }
+
+      return (await response.json()) as User;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({
+        message: "Network error — please check your connection",
+        statusCode: 0,
+      });
+    }
+  }
+);</code></pre>
+<p>In the next section, we'll see how to handle these lifecycle actions in a slice using <code>extraReducers</code>.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

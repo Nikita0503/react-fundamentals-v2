@@ -1,0 +1,255 @@
+<h3 style="color: #76cdd8;"><strong>Auto-Generated Hooks</strong></h3>
+<p>When you import from <code>"@reduxjs/toolkit/query/react"</code>, RTK Query automatically generates React hooks for every endpoint you define. The naming convention is:</p>
+<ul>
+<li><strong>Queries:</strong> <code>use{EndpointName}Query</code> — e.g., <code>useGetPostsQuery</code></li>
+<li><strong>Mutations:</strong> <code>use{EndpointName}Mutation</code> — e.g., <code>useAddPostMutation</code></li>
+</ul>
+<p>These hooks handle everything: fetching, caching, loading states, error states, and refetching.</p>
+
+<h3 style="color: #76cdd8;"><strong>useQuery Hook Return Value</strong></h3>
+<p>The query hook returns an object with all the state you need:</p>
+<pre class="prettyprint"><code class="lang-ts">const {
+  data,         // The response data (undefined until loaded)
+  error,        // Error object if the request failed
+  isLoading,    // true on first load (no cached data yet)
+  isFetching,   // true whenever a request is in-flight (including refetches)
+  isSuccess,    // true if the last request succeeded
+  isError,      // true if the last request failed
+  refetch,      // Function to manually trigger a refetch
+} = useGetPostsQuery();</code></pre>
+<p><strong>Key difference:</strong> <code>isLoading</code> is only true on the <strong>first</strong> request (no cached data). <code>isFetching</code> is true on <strong>any</strong> request, including background refetches.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Component Example with useQuery</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// components/PostsList.tsx
+import { useGetPostsQuery } from "../store/api/postsApi";
+
+const PostsList = () => {
+  const { data: posts, isLoading, error } = useGetPostsQuery();
+
+  if (isLoading) {
+    return &lt;p&gt;Loading posts...&lt;/p&gt;;
+  }
+
+  if (error) {
+    return &lt;p style={{ color: "red" }}&gt;Error loading posts&lt;/p&gt;;
+  }
+
+  return (
+    &lt;ul&gt;
+      {posts?.map((post) => (
+        &lt;li key={post.id}&gt;
+          &lt;h3&gt;{post.title}&lt;/h3&gt;
+          &lt;p&gt;{post.body}&lt;/p&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};
+
+export { PostsList };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>useMutation Hook</strong></h3>
+<p>Mutations return a tuple: <code>[triggerFunction, resultObject]</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">const [addPost, { isLoading, isSuccess, isError, error }] = useAddPostMutation();</code></pre>
+<p>The trigger function is what you call to fire the mutation. The result object gives you the current state of that mutation.</p>
+
+<h3 style="color: #76cdd8;"><strong>Mutation Example: Form Submission</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// components/AddPostForm.tsx
+import { useState } from "react";
+import { useAddPostMutation } from "../store/api/postsApi";
+
+const AddPostForm = () => {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [addPost, { isLoading }] = useAddPostMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !body.trim()) return;
+
+    try {
+      await addPost({ title, body, authorId: "user-1" }).unwrap();
+      setTitle("");
+      setBody("");
+    } catch (err) {
+      console.error("Failed to add post:", err);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Post title"
+      /&gt;
+      &lt;textarea
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        placeholder="Post body"
+      /&gt;
+      &lt;button type="submit" disabled={isLoading}&gt;
+        {isLoading ? "Adding..." : "Add Post"}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+
+export { AddPostForm };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Query Parameters</strong></h3>
+<p>Pass arguments to query hooks — they become the argument to your <code>query</code> function:</p>
+<pre class="prettyprint"><code class="lang-tsx">// The argument (postId) is passed to the query function
+const { data: post, isLoading } = useGetPostByIdQuery(postId);
+
+// In the API definition:
+// getPostById: builder.query&lt;Post, string&gt;({
+//   query: (postId) => `/posts/${postId}`,
+// })</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Hook Options</strong></h3>
+<p>Query hooks accept an options object as the second argument:</p>
+<pre class="prettyprint"><code class="lang-ts">const { data } = useGetPostsQuery(undefined, {
+  // Skip the query (don't fetch) — useful for conditional fetching
+  skip: !isLoggedIn,
+
+  // Poll every 30 seconds
+  pollingInterval: 30000,
+
+  // Refetch when the component mounts or the arg changes
+  refetchOnMountOrArgChange: true,
+
+  // Refetch when the browser tab regains focus
+  refetchOnFocus: true,
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Cache Invalidation with Tags</strong></h3>
+<p>Tags are RTK Query's mechanism for knowing <strong>when to refetch</strong>. The system works with two pieces:</p>
+<ul>
+<li><strong><code>providesTags</code></strong> — "this query provides data tagged as X"</li>
+<li><strong><code>invalidatesTags</code></strong> — "this mutation invalidates data tagged as X"</li>
+</ul>
+<p>When a mutation invalidates a tag, <strong>all queries providing that tag automatically refetch</strong>.</p>
+<pre class="prettyprint"><code class="lang-ts">endpoints: (builder) => ({
+  // This query PROVIDES data tagged as "Post"
+  getPosts: builder.query&lt;Post[], void&gt;({
+    query: () => "/posts",
+    providesTags: ["Post"],
+  }),
+
+  // This mutation INVALIDATES the "Post" tag
+  // → getPosts will automatically refetch after addPost succeeds!
+  addPost: builder.mutation&lt;Post, Omit&lt;Post, "id"&gt;&gt;({
+    query: (newPost) => ({
+      url: "/posts",
+      method: "POST",
+      body: newPost,
+    }),
+    invalidatesTags: ["Post"],
+  }),
+})</code></pre>
+<p>This means: after you add a post, the posts list <strong>automatically refetches</strong> — no manual dispatch needed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full CRUD Example</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// components/PostsManager.tsx
+import { useGetPostsQuery, useAddPostMutation, useDeletePostMutation } from "../store/api/postsApi";
+import { useState } from "react";
+
+const PostsManager = () => {
+  const { data: posts, isLoading } = useGetPostsQuery();
+  const [addPost, { isLoading: isAdding }] = useAddPostMutation();
+  const [deletePost] = useDeletePostMutation();
+  const [newTitle, setNewTitle] = useState("");
+
+  const handleAdd = async () => {
+    if (!newTitle.trim()) return;
+    await addPost({ title: newTitle, body: "New post body", authorId: "user-1" });
+    setNewTitle("");
+    // No need to refetch — tags handle it automatically!
+  };
+
+  const handleDelete = async (postId: string) => {
+    await deletePost(postId);
+    // Posts list refetches automatically because deletePost invalidates "Post" tag
+  };
+
+  if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;input
+          value={newTitle}
+          onChange={(e) => setNewTitle(e.target.value)}
+          placeholder="New post title"
+        /&gt;
+        &lt;button onClick={handleAdd} disabled={isAdding}&gt;
+          {isAdding ? "Adding..." : "Add Post"}
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;ul&gt;
+        {posts?.map((post) => (
+          &lt;li key={post.id}&gt;
+            &lt;span&gt;{post.title}&lt;/span&gt;
+            &lt;button onClick={() => handleDelete(post.id)}&gt;Delete&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+
+export { PostsManager };</code></pre>
+<p>Notice how the component never manually refetches the list. The tag system ensures the list stays in sync with mutations automatically.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
