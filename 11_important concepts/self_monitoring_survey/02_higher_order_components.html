@@ -7,8 +7,15 @@
 (x) HOCs can be used to extend the functionality of React components without changing their implementation.
 ( ) HOCs are used to create exact copies of components in React applications.
 <h4 style="color: #474747; font-weight: 600;">What will be the result of executing this code?</h4><br/>
-<pre>// Declare the main component that will be wrapped by the HOC
-const MyComponent = ({ username }) => {
+<pre>// withLogging.tsx
+import React, { ComponentType } from 'react';
+
+// Declare the main component that will be wrapped by the HOC
+type MyComponentProps = {
+  username: string;
+};
+
+const MyComponent = ({ username }: MyComponentProps) => {
   return (
     &lt;div&gt;
       &lt;h1>Hello, {username}&lt;/h1&gt;
@@ -17,8 +24,8 @@ const MyComponent = ({ username }) => {
 };
 
 // Declare the HOC named withLogging
-const withLogging = (WrappedComponent) => {
-  return (props) => {
+const withLogging = &lt;P extends { username: string }&gt;(WrappedComponent: ComponentType&lt;P&gt;) => {
+  return (props: P) => {
     // Add logging before rendering the component
     console.log(`Component is rendering with username:`, props.username);
 
@@ -39,3 +46,4 @@ const App = () => {
 (x) The console will show: "Component is rendering with username: User123", and the App component will show "Hello, User123".
 (x) The console will show: "Component is rendering with username: User123", and the App component will show "Hello, undefined".
 ( ) Nothing will be logged to the console, and the App component will show "Hello, undefined".
+

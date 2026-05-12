@@ -12,10 +12,15 @@
 (x) A re-render will occur only if setCount is called with a new object, not the same object reference.
 <h4 style="color: #474747; font-weight: 600;">In the Counter component, the state is an object. In which code variant will a re-render occur?</h4><br/>
 <span>Option 1:</span><br/>
-<pre>import React, { useState } from 'react';
+<pre>// Counter.tsx
+import React, { useState } from 'react';
+
+interface CountState {
+  value: number;
+}
 
 const Counter = () => {
-  const [count, setCount] = useState({ value: 0 });
+  const [count, setCount] = useState&lt;CountState&gt;({ value: 0 });
 
   const increment = () => {
     count.value = count.value + 1;
@@ -33,10 +38,15 @@ const Counter = () => {
 export default Counter;</pre>
 <br/>
 <span>Option 2:</span>
-<pre>import React, { useState } from 'react';
+<pre>// Counter.tsx
+import React, { useState } from 'react';
+
+interface CountState {
+  value: number;
+}
 
 const Counter = () => {
-  const [count, setCount] = useState({ value: 0 });
+  const [count, setCount] = useState&lt;CountState&gt;({ value: 0 });
 
   const increment = () => {
     setCount({ value: count.value + 1 });
@@ -54,3 +64,4 @@ export default Counter;</pre>
 <br/>
 ( ) Option 1
 (x) Option 2
+

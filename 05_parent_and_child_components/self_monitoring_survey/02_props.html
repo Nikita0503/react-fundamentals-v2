@@ -11,12 +11,12 @@
 ( ) You always need to use destructuring on the props object, otherwise there will be an error.<br/>
 ( ) Only with destructuring of the props object, direct access is prohibited.<br/>
 <h4 style="color: #474747; font-weight: 600;">What happens in the code?</h4><br/>
-<pre>// Parent component
+<pre>// ParentComponent.tsx
 import React from 'react';
 import ChildComponent from './ChildComponent';
 
 const ParentComponent = () => {
-  const data = 'This is data from the parent component';
+  const data: string = 'This is data from the parent component';
 
   return (
     &lt;div&gt;
@@ -28,15 +28,19 @@ const ParentComponent = () => {
 
 export default ParentComponent;</pre>
 <br/>
-<pre>// Child component
+<pre>// ChildComponent.tsx
 import React from 'react';
 
-const ChildComponent = (props) => {
+type ChildComponentProps = {
+  data: string;
+};
+
+const ChildComponent = ({ data }: ChildComponentProps) => {
 
   return (
     &lt;div&gt;
       &lt;h2&gt;Child Component&lt;/h2&gt;
-      &lt;p&gt;Data from parent component: {props.data}&lt;/p&gt;
+      &lt;p&gt;Data from parent component: {data}&lt;/p&gt;
     &lt;/div&gt;
   );
 };
@@ -46,12 +50,12 @@ export default ChildComponent;</pre><br/>
 ( ) The child component generates and passes data to the parent component through props, ensuring a directed flow of information from child to parent component.
 ( ) In this case, the parent component uses data received from the child component for further use or processing.
 <h4 style="color: #474747; font-weight: 600;">What will the line &lt;p&gt;Data from parent component: {props.data}&lt;/p&gt; of the ChildComponent show to the user?</h4><br/>
-<pre>// Parent component
+<pre>// ParentComponent.tsx
 import React from 'react';
 import ChildComponent from './ChildComponent';
 
 const ParentComponent = () => {
-  const data = 'This is data from the parent component';
+  const data: string = 'This is data from the parent component';
 
   return (
     &lt;div&gt;
@@ -63,15 +67,19 @@ const ParentComponent = () => {
 
 export default ParentComponent;</pre>
 <br/>
-<pre>// Child component
+<pre>// ChildComponent.tsx
 import React from 'react';
 
-const ChildComponent = (props) => {
+type ChildComponentProps = {
+  data: string;
+};
+
+const ChildComponent = ({ data }: ChildComponentProps) => {
 
   return (
     &lt;div&gt;
       &lt;h2&gt;Child Component&lt;/h2&gt;
-      &lt;p&gt;Data from parent component: {props.data}&lt;/p&gt;
+      &lt;p&gt;Data from parent component: {data}&lt;/p&gt;
     &lt;/div&gt;
   );
 };
@@ -80,3 +88,4 @@ export default ChildComponent;</pre><br/>
 ( ) Data from parent component: {props.data}
 (x) Data from parent component: This is data from the parent component
 ( ) Data from parent component: undefined
+

@@ -11,13 +11,12 @@
 ( ) By using a global object for data exchange between components.<br/>
 ( ) By using internal component state for automatic notification of the parent component.<br/>
 <h4 style="color: #474747; font-weight: 600;">What happens in the code?</h4><br/>
-<pre>// Parent component
-
+<pre>// ParentComponent.tsx
 import React, { useState } from "react";
 import ChildComponent from "./ChildComponent";
 
 const ParentComponent = () => {
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState&lt;number&gt;(0);
 
   // Callback function that changes state in the parent component
   const incrementCounter = () => {
@@ -35,15 +34,18 @@ const ParentComponent = () => {
 
 export default ParentComponent;</pre>
 <br/>
-<pre>// Child component
-
+<pre>// ChildComponent.tsx
 import React from "react";
 
-const ChildComponent = (props) => {
+type ChildComponentProps = {
+  onButtonClick: () => void;
+};
+
+const ChildComponent = ({ onButtonClick }: ChildComponentProps) => {
   return (
     &lt;div&gt;
       &lt;h2>Child Component&lt;/h2&gt;
-      &lt;button onClick={props.onButtonClick}&gt;Increment counter&lt;/button&gt;
+      &lt;button onClick={onButtonClick}&gt;Increment counter&lt;/button&gt;
     &lt;/div&gt;
   );
 };
@@ -52,3 +54,4 @@ export default ChildComponent;</pre><br/>
 ( ) The parent component calls the incrementCounter function, which changes the counter state in the parent component, and this directly updates the counter in the child component.
 (x) The parent component ParentComponent has a counter state and an incrementCounter function that changes the counter state on each call. The child component ChildComponent accepts onButtonClick as a prop and uses it as a callback when the button is clicked. The incrementCounter function changes the counter state in ParentComponent, sending the new value from the child component to the parent component through the callback. When the counter value changes, the parent component ParentComponent will re-render, and ChildComponent will re-render along with it.
 ( ) The child component has an internal counter state that it directly changes on each button click. This will lead to automatic re-rendering and updating of the parent component ParentComponent.
+

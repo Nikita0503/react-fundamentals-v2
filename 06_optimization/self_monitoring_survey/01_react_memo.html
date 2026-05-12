@@ -10,13 +10,25 @@
 <span>Option 1:</span>
 <pre>import MyComponent from 'react';</pre><br/>
 <span>Option 2:</span>
-<pre>import React from 'react'; 
-const MyComponent = (props) => { /* component code */ }; 
+<pre>// MyComponent.tsx
+import React from 'react';
+
+type MyComponentProps = {
+  title: string;
+};
+
+const MyComponent = ({ title }: MyComponentProps) => { /* component code */ };
 export default React.memo(MyComponent);</pre>
 <br/>
 <span>Option 3:</span>
-<pre>import React from 'react';
-const MyComponent = (props) => { /* component code */ };
+<pre>// MyComponent.tsx
+import React from 'react';
+
+type MyComponentProps = {
+  title: string;
+};
+
+const MyComponent = ({ title }: MyComponentProps) => { /* component code */ };
 export MyComponent;</pre>
 <br/>
 ( ) Option 1
@@ -27,3 +39,4 @@ export MyComponent;</pre>
 (x) Using the comparison function is important when you want to precisely control which properties should trigger a component re-render.
 ( ) The comparison function should always be used because it allows making component rendering as optimized as possible.
 ( ) The importance of using the comparison function depends on the component type: for functional components it is mandatory, and for class components it is not.
+

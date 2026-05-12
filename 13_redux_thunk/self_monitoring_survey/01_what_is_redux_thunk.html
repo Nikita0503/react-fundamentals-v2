@@ -16,11 +16,24 @@
 ( ) ClearStore and AsyncStorage
 <h4 style="color: #474747; font-weight: 600;">Which example represents a thunk?</h4><br/>
 <span>Option 1:</span>
-<pre>const fetchData = () => {
+<pre>// actions.ts
+import { Dispatch } from 'redux';
+import { RootState } from './store';
+
+type DataAction = { type: 'UPDATE_DATA'; payload: { name: string; age: number } };
+
+const fetchData = (): DataAction => {
   return { type: 'UPDATE_DATA', payload: { name: 'John', age: 25 } };
 };</pre><br/>
 <span>Option 2:</span>
-<pre>const fetchData = () => async (dispatch, getState) => {
+<pre>// actions.ts
+import { Dispatch } from 'redux';
+import { RootState } from './store';
+
+type SetDataAction = { type: 'SET_DATA'; payload: unknown };
+type SetErrorAction = { type: 'SET_ERROR'; payload: unknown };
+
+const fetchData = () => async (dispatch: Dispatch, getState: () => RootState) => {
   try {
     const data = await fetch('https://api.example.com/data');
     const result = await data.json();
@@ -30,7 +43,11 @@
   }
 };</pre><br/>
 <span>Option 3:</span>
-<pre>const fetchData = async (dispatch, getState) => {
+<pre>// actions.ts
+import { Dispatch } from 'redux';
+import { RootState } from './store';
+
+const fetchData = async (dispatch: Dispatch, getState: () => RootState) => {
   try {
     const data = await fetch('https://api.example.com/data');
     const result = await data.json();
@@ -54,4 +71,5 @@
 (x) By specifying it as a parameter when calling the thunk from the component.
 ( ) By specifying it in the parameters of the dispatch() function in the component.
 ( ) By writing it in the main application file.
+
 

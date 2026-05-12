@@ -17,10 +17,11 @@
 
 <h4 style="color: #474747; font-weight: 600;">Which of the following components is dumb and which is smart?</h4><br/>
 <p>Component A:</p>
-<pre>import React, { useState } from 'react';
+<pre>// ComponentA.tsx
+import React, { useState } from 'react';
 
 const ComponentA = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState&lt;number&gt;(0);
 
   const handleClick = () => {
     setCount(count + 1);
@@ -37,7 +38,8 @@ const ComponentA = () => {
 export default ComponentA;
 </pre>
 <p>Component B:</p>
-<pre>import React from 'react';
+<pre>// ComponentB.tsx
+import React from 'react';
 
 const ComponentB = () => {
   return &lt;div&gt;Hello, React!&lt;/div&gt;;
@@ -48,4 +50,5 @@ export default ComponentB;</pre>
 ( ) Both components are smart
 (x) Component A is smart, Component B is dumb
 ( ) Component B is smart, Component A is dumb
+
 

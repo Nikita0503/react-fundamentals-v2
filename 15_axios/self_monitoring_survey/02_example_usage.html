@@ -8,29 +8,50 @@
 ( ) Use the body parameter when defining the request configuration in the third parameter
 <h4 style="color: #474747; font-weight: 600;">How to specify headers in a request with Axios?</h4><br/> 
 <span>Option 1:</span>
-<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+<pre>// api.ts
+import axios, { AxiosResponse } from 'axios';
+
+interface Post {
+  id: number;
+}
+
+axios.put&lt;Post&gt;('https://jsonplaceholder.typicode.com/posts/1', 
     {
       id: 1,
     },
     {
       'Content-type': 'application/json; charset=UTF-8',
     })
-    .then((response) => console.log(response.data))
-    .catch((error) => console.log("error: ", error))
+    .then((response: AxiosResponse&lt;Post&gt;) => console.log(response.data))
+    .catch((error: unknown) => console.log("error: ", error))
 </pre><br/>
 <span>Option 2:</span><br/>
-<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+<pre>// api.ts
+import axios, { AxiosResponse } from 'axios';
+
+interface Post {
+  id: number;
+}
+
+axios.put&lt;Post&gt;('https://jsonplaceholder.typicode.com/posts/1', 
     {
       id: 1,
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
-    .then((response) => console.log(response.data))
-    .catch((error) => console.log("error: ", error))
+    .then((response: AxiosResponse&lt;Post&gt;) => console.log(response.data))
+    .catch((error: unknown) => console.log("error: ", error))
 </pre><br/>
 <span>Option 3:</span>
-<pre>axios.put('https://jsonplaceholder.typicode.com/posts/1', 
+<pre>// api.ts
+import axios, { AxiosResponse } from 'axios';
+
+interface Post {
+  id: number;
+}
+
+axios.put&lt;Post&gt;('https://jsonplaceholder.typicode.com/posts/1', 
     {
       id: 1,
     },
@@ -39,9 +60,10 @@
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
-    .then((response) => console.log(response.data))
-    .catch((error) => console.log("error: ", error))
+    .then((response: AxiosResponse&lt;Post&gt;) => console.log(response.data))
+    .catch((error: unknown) => console.log("error: ", error))
 </pre><br/>
 ( ) Option 1
 ( ) Option 2
 (x) Option 3
+

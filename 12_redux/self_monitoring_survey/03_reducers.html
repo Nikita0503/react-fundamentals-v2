@@ -13,7 +13,18 @@
 ( ) To reduce the chances of collisions with other Reducers
 <h4 style="color: #474747; font-weight: 600;">What does a correct Reducer example for updating the Store in Redux look like?</h4><br/>
 <span>Option 1:</span>
-<pre>const userReducer = (state = initialState, action) => {
+<pre>// userReducer.ts
+interface UserState {
+  name: string;
+  surname: string;
+}
+
+type UserAction = {
+  type: string;
+  payload: string;
+};
+
+const userReducer = (state: UserState = initialState, action: UserAction): UserState => {
   switch(action.type){   
     case SET_NAME:
       state.name = action.payload
@@ -25,7 +36,18 @@
 }</pre>
 <br/>
 <span>Option 2:</span>
-<pre>const userReducer = (state = initialState, action) => {
+<pre>// userReducer.ts
+interface UserState {
+  name: string;
+  surname: string;
+}
+
+type UserAction = {
+  type: string;
+  payload: string;
+};
+
+const userReducer = (state: UserState = initialState, action: UserAction): UserState => {
   switch(action.type){   
     case SET_NAME:
       return {
@@ -43,7 +65,18 @@
 }</pre>
 <br/>
 <span>Option 3:</span>
-<pre>const userReducer = (state, action) => {
+<pre>// userReducer.ts
+interface UserState {
+  name: string;
+  surname: string;
+}
+
+type UserAction = {
+  type: string;
+  payload: string;
+};
+
+const userReducer = (state: UserState, action: UserAction): UserState => {
   switch(action.type){   
     case SET_NAME:
       return {
@@ -65,3 +98,4 @@
 ( ) The Store should be mutable and contain all the business logic of the application.
 ( ) The Reducer should modify the Store directly, without using Actions.
 (x) A Reducer is a pure function that accepts the current Store state and an Action, and returns a new state.
+

@@ -16,33 +16,51 @@
 (x) useEffect can emulate componentWillUnmount if the function it returns contains cleanup logic, for example, unsubscribing from events or cleaning up resources.<br/>
 <h4 style="color: #474747; font-weight: 600;">In which code variant does the useEffect usage correctly emulate the componentDidUpdate method for updating userData when userId changes?</h4><br/>
 <span>Option 1:</span>
-<pre>useEffect(() => {
-  // Logic for fetching data by userId
+<pre>// UserProfile.tsx
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+}
+
+useEffect(() => {
   const fetchData = async () => {
     const result = await fetch(`https://api.example.com/users/${userId}`);
-    const data = await result.json();
+    const data: UserData = await result.json();
     setUserData(data);
   };
 
   fetchData();
 }, []);</pre><br/>
 <span>Option 2:</span>
-<pre>useEffect(() => {
-  // Logic for fetching data by userId
+<pre>// UserProfile.tsx
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+}
+
+useEffect(() => {
   const fetchData = async () => {
     const result = await fetch(`https://api.example.com/users/${userId}`);
-    const data = await result.json();
+    const data: UserData = await result.json();
     setUserData(data);
   };
 
   fetchData();
 }, [userId]);</pre><br/>
 <span>Option 3:</span>
-<pre>useEffect(() => {
-  // Logic for fetching data by userId
+<pre>// UserProfile.tsx
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+}
+
+useEffect(() => {
   const fetchData = async () => {
     const result = await fetch(`https://api.example.com/users/${userId}`);
-    const data = await result.json();
+    const data: UserData = await result.json();
     setUserData(data);
   };
 
@@ -66,3 +84,4 @@
 ( ) The event subscription (button click) occurs on every component render, and unsubscription occurs when it is destroyed. Each new render creates a new event listener.
 (x) The event subscription (button click) occurs when the component mounts, and unsubscription occurs when it is destroyed. The subscription logic is called only once, after which the listener remains active throughout the entire component lifecycle.
 ( ) The event subscription (button click) occurs on every count value update, and unsubscription occurs when it is destroyed. The subscription logic will be called on every component update due to count changes.
+

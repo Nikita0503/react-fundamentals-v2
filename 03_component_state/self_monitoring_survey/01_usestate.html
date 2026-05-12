@@ -8,13 +8,14 @@
 ( ) The useState hook automatically determines and updates state without setting an initial value.
 <h4 style="color: #474747; font-weight: 600;">What does an example of using the useState hook to create a Counter in a React functional component look like?</h4><br/>
 <span>Option 1:</span>
-<pre>import React, { useState } from 'react';
+<pre>// Counter.tsx
+import React, { useState } from 'react';
 
 const Counter = () => {
 
   const count = 0;
 
-  const setCount = (newCount) => {
+  const setCount = (newCount: number) => {
     count = newCount;
   };
 
@@ -32,10 +33,11 @@ const Counter = () => {
 export default Counter;</pre>
 <br/>
 <span>Option 2:</span><br/>
-<pre>import React, { useState } from 'react';
+<pre>// Counter.tsx
+import React, { useState } from 'react';
 
 const Counter = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState&lt;number&gt;(0);
 
   const increment = () => {
     setCount(count + 1);
@@ -52,7 +54,8 @@ const Counter = () => {
 export default Counter;</pre>
 <br/>
 <span>Option 3:</span>
-<pre>import React, { useState } from 'react';
+<pre>// Counter.tsx
+import React, { useState } from 'react';
 
 const Counter = () => {
   let count = 0;
@@ -74,3 +77,4 @@ export default Counter;</pre>
 ( ) Option 1
 (x) Option 2
 ( ) Option 3
+
