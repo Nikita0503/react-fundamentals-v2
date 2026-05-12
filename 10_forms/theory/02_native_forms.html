@@ -1,6 +1,6 @@
 <h3 style="color: #76cdd8;"><strong>Forms Without Additional Libraries</strong></h3>
 <p>However, if there is no desire to use third-party libraries, in React you can work with forms like this:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useState } from 'react';
 
 const MyForm = () =&gt; {
   // Setting state for form fields
@@ -9,22 +9,22 @@ const MyForm = () =&gt; {
   const [password, setPassword] = useState('');
 
   // Handler for "Username" field value change
-  const handleUsernameChange = (e) =&gt; {
+  const handleUsernameChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
     setUsername(e.target.value);
   };
 
   // Handler for "Email" field value change
-  const handleEmailChange = (e) =&gt; {
+  const handleEmailChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
     setEmail(e.target.value);
   };
 
   // Handler for "Password" field value change
-  const handlePasswordChange = (e) =&gt; {
+  const handlePasswordChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
     setPassword(e.target.value);
   };
 
   // Form submission handler
-  const handleSubmit = (e) =&gt; {
+  const handleSubmit = (e: React.FormEvent&lt;HTMLFormElement&gt;) =&gt; {
     e.preventDefault();
     // Execute form submission logic, for example, to the server
     console.log('Form data:', { username, email, password });

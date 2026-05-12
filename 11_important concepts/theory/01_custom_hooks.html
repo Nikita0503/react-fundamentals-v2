@@ -1,21 +1,29 @@
 <h3 style="color: #76cdd8;"><strong>Custom Hooks</strong></h3>
 <p>React itself and various libraries provide developers with many hooks, but <strong>usually this is not enough</strong>. Therefore, developers write <strong>custom</strong> (self-created) <strong>hooks</strong> that help isolate certain logic and use them in different components.</p>
 <p>As an example, let's implement a custom hook that accepts a REST API endpoint URL and returns the response (data), an error (error, if one occurs), and the execution status (loading):</p>
-<pre class="prettyprint"><code class="lang-js">import { useState, useEffect } from 'react';
+<pre class="prettyprint"><code class="lang-ts">// useAdvancedFetch.ts
 
-const useAdvancedFetch = (url) =&gt; {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
+import { useState, useEffect } from 'react';
+
+type UseFetchResult&lt;T&gt; = {
+    data: T | null;
+    error: Error | null;
+    loading: boolean;
+};
+
+const useAdvancedFetch = &lt;T = unknown&gt;(url: string): UseFetchResult&lt;T&gt; =&gt; {
+    const [data, setData] = useState&lt;T | null&gt;(null);
+    const [error, setError] = useState&lt;Error | null&gt;(null);
     const [loading, setLoading] = useState(true);
     
     useEffect(() =&gt; {
       setLoading(true);
       fetch(url)
         .then((response) =&gt; response.json())
-        .then((jsonData) =&gt; {
+        .then((jsonData: T) =&gt; {
           setData(jsonData);
         })
-        .catch((err) =&gt; {
+        .catch((err: Error) =&gt; {
           setError(err);
         })
         .finally(() =&gt; {
@@ -31,12 +39,13 @@ export default useAdvancedFetch;
 <p>This hook <strong>accepts a URL</strong> as an argument and uses the useState and useEffect hooks to make an API request, storing the data, error, and loading status.</p>
 <p>It then returns an <strong>object with this data</strong>, which can be used in components to display content, handle errors, or show the loading state based on the values of <strong>data, error, and loading</strong>.</p>
 <p>And now it can be used in different components <strong>to isolate the request logic</strong>, providing only the request URL. Based on the execution results returned by the hook, you can configure the component's behavior.</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// MyComponent.tsx
+
 import useAdvancedFetch from './hooks/useAdvancedFetch';
 
 const MyComponent = () =&gt; {
 
-  const { data, error, loading } = useAdvancedFetch('https://random.api/v1/posts');
+  const { data, error, loading } = useAdvancedFetch&lt;string[]&gt;('https://random.api/v1/posts');
 
   return (
     &lt;div&gt;
@@ -46,7 +55,7 @@ const MyComponent = () =&gt; {
       ) : (
         &lt;&gt;
           {data &amp;&amp; &lt;p&gt;{JSON.stringify(data)}&lt;/p&gt;}
-          {error &amp;&amp; &lt;p&gt;{error}&lt;/p&gt;}
+          {error &amp;&amp; &lt;p&gt;{error.message}&lt;/p&gt;}
         &lt;/&gt;
       )}
     &lt;/div&gt;

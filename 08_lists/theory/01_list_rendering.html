@@ -1,10 +1,15 @@
 <h3 style="color: #76cdd8;"><strong>Rendering Lists</strong></h3>
 <p>React provides the ability to work with lists using <strong>internal optimized mechanisms</strong>.</p>
 <p>Here is an example of using a functional component ListComponent with useState to store an initial data list:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useState } from 'react';
+
+type Item = {
+  id: number;
+  text: string;
+};
 
 const ListComponent = () =&gt; {
-  const [items, setItems] = useState([
+  const [items, setItems] = useState&lt;Item[]&gt;([
     { id: 1, text: 'Item 1' },
     { id: 2, text: 'Item 2' },
     { id: 3, text: 'Item 3' }
@@ -25,16 +30,22 @@ export default ListComponent;</code></pre>
 <p>It is important to note that we also use the key attribute in the &lt;li&gt; element. The key attribute is needed by React for unique identification of each list element. This helps React <strong>optimize the re-rendering process</strong> of list elements and <strong>ensures correct behavior of React components</strong> that have internal state or use certain performance optimizations.</p>
 <p>A very popular exercise is creating a task list (todo list), where each task has fields: <strong>id</strong>, <strong>title</strong> (task name), <strong>completed</strong> (task status, done / not done). Additionally — providing the ability to change the task status, i.e., the completed field to true or false. This exercise teaches working with lists where data changes when interacting with the same list.</p>
 <p>Here is an example of a simple todo list using functional components, useState hooks, and map for rendering the list and changing the completed state:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useState } from 'react';
+
+type Todo = {
+  id: number;
+  title: string;
+  completed: boolean;
+};
 
 const TodoList = () =&gt; {
-  const [todos, setTodos] = useState([
+  const [todos, setTodos] = useState&lt;Todo[]&gt;([
     { id: 1, title: 'Task 1', completed: false },
     { id: 2, title: 'Task 2', completed: true },
     { id: 3, title: 'Task 3', completed: false }
   ]);
 
-  const handleToggle = (id) =&gt; {
+  const handleToggle = (id: number) =&gt; {
     setTodos(todos.map(todo =&gt; {
       if (todo.id === id) {
         return { ...todo, completed: !todo.completed };
@@ -45,7 +56,7 @@ const TodoList = () =&gt; {
 
   return (
     &lt;ul&gt;
-      {todos.map((todo, index) =&gt; (
+      {todos.map((todo) =&gt; (
         &lt;li key={todo.id}&gt;
           &lt;input
             type="checkbox"

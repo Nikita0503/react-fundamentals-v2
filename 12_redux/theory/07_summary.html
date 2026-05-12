@@ -3,18 +3,21 @@
 <p>Questions arise:</p>
 <p><strong>"How to understand when to create new Reducers?"</strong></p>
 <p>Answer - there is no strict rule, but you can use the principle "One page - one Reducer". If we add a page with a task list and a login form to our example, it would be quite appropriate to create tasksReducer and loginReducer, then the RootReducer would look approximately like this:</p>
-<pre class="prettyprint"><code class="lang-js">/** /redux/store */
+<pre class="prettyprint"><code class="lang-ts">/** /redux/store.ts */
 
 import { combineReducers, createStore } from 'redux';
 import userReducer from './reducers/userReducer';
-import userReducer from './reducers/tasksReducer';
-import userReducer from './reducers/loginReducer';
+import tasksReducer from './reducers/tasksReducer';
+import loginReducer from './reducers/loginReducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     tasks: tasksReducer,
     login: loginReducer,
 });
+
+export type RootState = ReturnType&lt;typeof rootReducer&gt;;
+export type AppDispatch = typeof store.dispatch;
 
 export const store = createStore(rootReducer);</code></pre>
 <p><strong>"Should all data be moved to the Store?"</strong></p>

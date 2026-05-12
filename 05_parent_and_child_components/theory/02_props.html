@@ -1,12 +1,12 @@
 <h3 style="color: #76cdd8;"><strong>Props</strong></h3>
 <p>React provides the ability to pass data from a parent component to a child component. When parent components pass data to child components, they can use <strong>props</strong> (properties) to pass this data. Props are properties that are passed to a child component from the outside, from its parent, and are used in the child component to configure the display or behavior of the component.</p>
 <p>Props are passed from the parent component to the child component through <strong>attributes in JSX</strong> (extended JavaScript syntax) when components are rendered. For example, in the parent component we can pass data to the child component using attributes:</p>
-<pre class="prettyprint"><code class="lang-js">// Parent component
+<pre class="prettyprint"><code class="lang-tsx">// ParentComponent.tsx
 import React from 'react';
 import ChildComponent from './ChildComponent';
 
 const ParentComponent = () =&gt; {
-  const data = 'This is data from the parent component';
+  const data: string = 'This is data from the parent component';
 
   return (
     &lt;div&gt;
@@ -17,12 +17,14 @@ const ParentComponent = () =&gt; {
 };
 
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// Child component
+<pre class="prettyprint"><code class="lang-tsx">// ChildComponent.tsx
 import React from 'react';
 
-const ChildComponent = (props) =&gt; {
-  const { data } = props;
+type ChildComponentProps = {
+  data: string;
+};
 
+const ChildComponent = ({ data }: ChildComponentProps) =&gt; {
   return (
     &lt;div&gt;
       &lt;h2&gt;Child Component&lt;/h2&gt;
@@ -33,10 +35,14 @@ const ChildComponent = (props) =&gt; {
 
 export default ChildComponent;</code></pre>
 <p>Props is an <strong>object</strong>, we applied destructuring for convenient use of its fields (data). But if you don't do this and access the object's fields directly <strong>(props.data)</strong>, it <strong>will not be an error</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">// Child component
+<pre class="prettyprint"><code class="lang-tsx">// ChildComponent.tsx
 import React from 'react';
 
-const ChildComponent = (props) =&gt; {
+type ChildComponentProps = {
+  data: string;
+};
+
+const ChildComponent = (props: ChildComponentProps) =&gt; {
 
   return (
     &lt;div&gt;

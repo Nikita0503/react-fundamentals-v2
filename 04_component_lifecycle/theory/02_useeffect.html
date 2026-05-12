@@ -3,7 +3,7 @@
 <p>useEffect is one of the hooks in React that allows you to perform <strong>effects</strong>, that is, to perform actions that should happen after the component renders.</p>
 <p>It can be used to interact with external resources, such as REST API requests, event subscriptions, DOM manipulations, timers, and much more.</p>
 <p>The syntax for using <strong>useEffect</strong> looks as follows:</p>
-<pre class="prettyprint"><code class="lang-js">useEffect(() =&gt; {
+<pre class="prettyprint"><code class="lang-ts">useEffect(() =&gt; {
   // Effect logic
 }, []); // dependency array</code></pre>
 <p>useEffect accepts 2 parameters:</p>
@@ -13,16 +13,17 @@
 </ul>
 <p>In the example above, the dependency array is <strong>empty</strong>. This means that the effect (i.e., the function provided as the first parameter) <strong>will be called 1 time - after the first render</strong> (first drawing of the component).</p>
 <p>This approach is used precisely for REST API requests, setting timers, event subscriptions, and so on. Example:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+<pre class="prettyprint"><code class="lang-tsx">// ExampleComponent.tsx
+import React, { useState, useEffect } from "react";
 
 const ExampleComponent = () =&gt; {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState&lt;string | null&gt;(null);
 
   useEffect(() =&gt; {
     // Making a request to the API
     fetch("https://api.example.com/data")
       .then(response =&gt; response.json())
-      .then(result =&gt; setData(result))
+      .then((result: string) =&gt; setData(result))
       .catch(error =&gt; console.error("Error while fetching data:", error));
   }, []); // Empty dependency array - effect runs 1 time, only after component mounts
 
@@ -56,7 +57,8 @@ export default ExampleComponent;</code></pre>
 <p>Let's implement the <strong>componentDidUpdate</strong> method of a class component in a functional component using <strong>useEffect</strong>.</p>
 <p><strong>componentDidUpdate</strong> is one of the lifecycle methods of a component in React class components, which is called after the component updates.</p>
 <p>In functional components, the equivalent of componentDidUpdate is using <strong>useEffect with corresponding dependencies</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState, useEffect } from "react";
 
 const Counter = () =&gt; {
   // Using the useState hook to create state with value 0
@@ -85,7 +87,8 @@ export default Counter;</code></pre>
 <p>In this example, useEffect <strong>executes after every change to count</strong>.</p>
 <p>In projects, this implementation of useEffect is used as a <strong>reaction to data changes</strong> to call other functions or update the component's display logic.</p>
 <p>The last lifecycle method that <strong>useEffect</strong> can work with, in a class component is called <strong>componentWillUnmount</strong>. It is called <strong>when the component is unmounted</strong> from the DOM (destroyed):</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from "react";
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState, useEffect } from "react";
 
 const Counter = () =&gt; {
   // Using the useState hook to create state
@@ -121,7 +124,8 @@ const Counter = () =&gt; {
 export default Counter;</code></pre>
 <p>In this example, the cleanup function will be executed <strong>when the component is destroyed</strong>, it will set the count value to 0. The cleanup function must be returned (in return) from the function that was passed to useEffect as the first parameter.</p>
 <p>In projects, this implementation of <strong>useEffect</strong> is very often used for working with <strong>event subscriptions</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState, useEffect } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState, useEffect } from 'react';
 
 const Counter = () =&gt; {
   const [count, setCount] = useState(0);

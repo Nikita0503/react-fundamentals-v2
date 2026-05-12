@@ -5,14 +5,14 @@
 <h1><img src="blob:https://studio.elearn.epam.com/f7dcd6ed-6bea-4eb2-bf5a-67b07f30fa3a" alt="" width="377" height="243" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
 <p>Some solutions to avoid the props drilling problem include using <strong>context</strong> in React to pass data to several levels of nested components without the need to pass props through the entire component hierarchy, as well as using <strong>state management</strong> libraries such as <strong>Redux</strong> for centralized storage and management of data used in multiple components.</p>
 <p>Example of how props drilling looks in code:</p>
-<pre class="prettyprint"><code class="lang-js">// App component (highest level)
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx (highest level)
 import React, { useState } from 'react';
 import ParentComponent from './ParentComponent';
   
 const App = () =&gt; {
   const [data, setData] = useState('Data from App component');
   
-  const handleDataChange = (newData) =&gt; {
+  const handleDataChange = (newData: string) =&gt; {
     setData(newData);
   }
   
@@ -26,11 +26,16 @@ const App = () =&gt; {
 };
   
 export default App;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// ParentComponent (parent level)
+<pre class="prettyprint"><code class="lang-tsx">// ParentComponent.tsx (parent level)
 import React from 'react';
 import ChildComponent from './ChildComponent';
 
-const ParentComponent = ({ data, onDataChange }) =&gt; {
+type ParentComponentProps = {
+  data: string;
+  onDataChange: (newData: string) =&gt; void;
+};
+
+const ParentComponent = ({ data, onDataChange }: ParentComponentProps) =&gt; {
   return (
     &lt;div&gt;
       &lt;h2&gt;Parent Component&lt;/h2&gt;
@@ -41,10 +46,15 @@ const ParentComponent = ({ data, onDataChange }) =&gt; {
 };
 
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// ChildComponent (child level)
+<pre class="prettyprint"><code class="lang-tsx">// ChildComponent.tsx (child level)
 import React from 'react';
 
-const ChildComponent = ({ data, onDataChange }) =&gt; {
+type ChildComponentProps = {
+  data: string;
+  onDataChange: (newData: string) =&gt; void;
+};
+
+const ChildComponent = ({ data, onDataChange }: ChildComponentProps) =&gt; {
   const handleButtonClick = () =&gt; {
     const newData = 'Data changed in child component';
     onDataChange(newData);

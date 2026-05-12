@@ -2,8 +2,7 @@
 <p>Props are read-only, meaning they cannot be changed by the child component. This helps ensure <strong>unidirectional data flow</strong> in React, where data is passed from top to bottom through the component hierarchy. A child component can use the props passed to it to display data or call functions passed in props, but it cannot change this data directly. Instead, the child component can notify the parent component about changes by calling <strong>functions from props</strong> passed to it from the parent component.</p>
 <h1><img src="blob:https://studio.elearn.epam.com/d6252c42-5006-4ebf-a063-71f7b998b8c9" alt="" width="404" height="170" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
 <p>Props allow passing <strong>callback functions</strong> to child components, which allows child components to <strong>interact</strong> with their parents. When a child component calls a function passed in props from the parent component, it can notify the parent component about changes or invoke certain functionality that exists at the parent level:</p>
-<pre class="prettyprint"><code class="lang-js">// Parent component
-
+<pre class="prettyprint"><code class="lang-tsx">// ParentComponent.tsx
 import React, { useState } from "react";
 import ChildComponent from "./ChildComponent";
 
@@ -25,15 +24,18 @@ const ParentComponent = () =&gt; {
 };
 
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// Child component
-
+<pre class="prettyprint"><code class="lang-tsx">// ChildComponent.tsx
 import React from "react";
 
-const ChildComponent = (props) =&gt; {
+type ChildComponentProps = {
+  onButtonClick: () =&gt; void;
+};
+
+const ChildComponent = ({ onButtonClick }: ChildComponentProps) =&gt; {
   return (
     &lt;div&gt;
       &lt;h2&gt;Child Component&lt;/h2&gt;
-      &lt;button onClick={props.onButtonClick}&gt;Increment counter&lt;/button&gt;
+      &lt;button onClick={onButtonClick}&gt;Increment counter&lt;/button&gt;
     &lt;/div&gt;
   );
 };

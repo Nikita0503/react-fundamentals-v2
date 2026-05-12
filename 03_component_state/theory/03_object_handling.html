@@ -2,8 +2,8 @@
 <p>Object comparison in JavaScript is based on <strong>comparing references</strong> to objects, not their content.</p>
 <p>When we compare two objects using the comparison operator == or the strict comparison operator ===, JavaScript checks whether both operands refer to the same memory area, that is, whether they have the <strong>same reference</strong>. If the objects have different references, the comparison will return false, even if the content of the objects is the same.</p>
 <p>Here is an example of object comparison in JavaScript:</p>
-<pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
-const obj2 = { name: 'John', age: 25 };
+<pre class="prettyprint"><code class="lang-ts">const obj1: { name: string; age: number } = { name: 'John', age: 25 };
+const obj2: { name: string; age: number } = { name: 'John', age: 25 };
 const obj3 = obj1;
 
 console.log(obj1 == obj2); // false, because obj1 and obj2 have different references
@@ -13,8 +13,8 @@ console.log(obj1 == obj3); // true, because obj1 and obj3 have the same referenc
 console.log(obj1 === obj3); // true, because obj1 and obj3 have the same reference</code></pre>
 <p>To compare the content of two objects, you need to <strong>compare each field separately</strong>. However, you can use object comparison libraries, such as <strong>Lodash</strong>, for convenient <strong>comparison of object content</strong>.</p>
 <p>By changing values in objects and logging them to the console, we can observe how the content of objects changes and how this affects object comparison:</p>
-<pre class="prettyprint"><code class="lang-js">const obj1 = { name: 'John', age: 25 };
-const obj2 = { name: 'John', age: 25 };
+<pre class="prettyprint"><code class="lang-ts">const obj1: { name: string; age: number } = { name: 'John', age: 25 };
+const obj2: { name: string; age: number } = { name: 'John', age: 25 };
 const obj3 = obj1;
 
 console.log('obj1:', obj1);

@@ -1,8 +1,7 @@
 <h3 style="color: #76cdd8;"><strong>useNavigate</strong></h3>
 <p>Another way is the <strong>useNavigate()</strong> hook. It returns a <strong>navigate</strong> function that accepts the <strong>path to navigate to</strong> as the first parameter:</p>
-<pre class="prettyprint"><code class="lang-js">/** /pages/HomePage.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/HomePage.tsx */
 
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () =&gt; {
@@ -19,9 +18,8 @@ const HomePage = () =&gt; {
 
 export default HomePage; 
 </code></pre>
-<pre class="prettyprint"><code class="lang-js">/** /pages/ProfilePage.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/ProfilePage.tsx */
 
-import React from 'react';
 import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () =&gt; {

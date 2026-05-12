@@ -4,18 +4,25 @@
 <p>props.children allows creating components with more flexible rendering and functionality, since they can accept and display child elements without the need to hardcode them in the component's properties. This is especially useful when a component needs to be used in <strong>different contexts with different content</strong>.</p>
 <h2><img src="blob:https://studio.elearn.epam.com/05198bc5-cbe3-48c7-932c-3ed89056854b" alt="" /></h2>
 <p>Here is an example of using props.children in a component that provides additional styles:</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Container.tsx
 
-const Container = (props) =&gt; {
+import { ReactNode } from 'react';
+
+type ContainerProps = {
+  children: ReactNode;
+};
+
+const Container = ({ children }: ContainerProps) =&gt; {
   return (
     &lt;div className="container"&gt;
-      {props.children}
+      {children}
     &lt;/div&gt;
   );
 };
   
 export default Container;</code></pre>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+
 import Container from './Container';
   
 const App = () =&gt; {
@@ -32,9 +39,16 @@ const App = () =&gt; {
 export default App;</code></pre>
 <p>The container style can contain any settings. These can be margins, background color, and much more. All components placed between the opening and closing Container tags will be wrapped in a block that has the container class styles.</p>
 <p>We looked at an example of a wrapper component using styles, but it can be a more complex implementation:</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Card.tsx
 
-const Card = ({ title, children }) =&gt; {
+import { ReactNode } from 'react';
+
+type CardProps = {
+  title: string;
+  children: ReactNode;
+};
+
+const Card = ({ title, children }: CardProps) =&gt; {
   return (
     &lt;div className="card"&gt;
       &lt;h2&gt;{title}&lt;/h2&gt;
@@ -46,7 +60,8 @@ const Card = ({ title, children }) =&gt; {
 };
 
 export default Card;</code></pre>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+
 import Card from './Card';
   
 const App = () =&gt; {

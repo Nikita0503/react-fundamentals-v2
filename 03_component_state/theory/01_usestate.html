@@ -1,11 +1,12 @@
 <h3 style="color: #76cdd8;"><strong>useState</strong></h3>
 <p>Programming in React does not involve using regular variables:</p>
-<pre class="prettyprint"><code class="lang-js">let count = 0;
+<pre class="prettyprint"><code class="lang-ts">let count: number = 0;
 count = count + 1;</code></pre>
 <p>This approach is used in imperative programming (in regular programming, for example using Java). In React components, <strong>"reactive" variables</strong> are used. They are created using hooks. You can create a variable in a functional component using the <strong>useState</strong> hook.</p>
 <p>The <strong>useState</strong> hook is one of the built-in hooks in React that is used to add state (variables) to functional components. It allows storing and updating state values in functional components, which was previously only possible using class components.</p>
 <p>Here is an example of using the useState hook in a functional component:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState } from 'react';
 
 const Counter = () =&gt; {
   // Using the useState hook to create state with a default value of 0

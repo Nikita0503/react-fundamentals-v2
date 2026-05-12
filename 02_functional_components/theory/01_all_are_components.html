@@ -1,7 +1,8 @@
 <h3 style="color: #76cdd8;"><strong>In React Everything is Components</strong></h3>
 <p><strong>Components</strong> in React are isolated, <strong>reusable blocks of code</strong> that contain logic and interface rendering. They can be used to create various interface elements, such as buttons, forms, lists, headers, cards, etc.</p>
 <p>Each component can have its own <strong>state</strong>, <strong>properties</strong> (props), and methods that allow it to interact with other components and change what is displayed on the screen.</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// SomeComponent.tsx
+import React from 'react';
 
 const SomeComponent = () =&gt; {
   const [count, setCount] = React.useState(0);
@@ -19,7 +20,8 @@ const SomeComponent = () =&gt; {
 };
   
 export default SomeComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import React from 'react';
 import SomeComponent from './components/SomeComponent';
 
 const App = () =&gt; {
@@ -39,7 +41,8 @@ export default App;</code></pre>
 <p><img src="blob:https://studio.elearn.epam.com/fcddfd2f-fd61-4c6c-ba5a-2c37f7f61e23" alt="" style="display: block; margin-left: auto; margin-right: auto;" /></p>
 <p>Creating and using components is the main approach to interface development in React, which allows building scalable, maintainable, and efficient web applications.</p>
 <p>One of the advantages of using components in React is their <strong>reusability</strong>. Components can be used on different pages, in different projects, or even in different applications, simplifying development and code maintenance.</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import React from 'react';
 import SomeComponent from './components/SomeComponent';
 
 const App = () =&gt; {

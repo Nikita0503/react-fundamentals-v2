@@ -1,6 +1,6 @@
 <h3 style="color: #76cdd8;"><strong>Connecting Redux to the Project</strong></h3>
-<p>Currently the App.js file looks like this:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */
+<p>Currently the App.tsx file looks like this:</p>
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
 
 const App = () =&gt; {
   return (
@@ -10,7 +10,7 @@ const App = () =&gt; {
 
 export default App;</code></pre>
 <p>To give all components <strong>access to the Store</strong>, you need to wrap them in a <strong>Provider</strong> from the 'react-redux' package and provide it with the <strong>Store</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
 
 import { Provider } from 'react-redux';
 import { store } from './redux/store';

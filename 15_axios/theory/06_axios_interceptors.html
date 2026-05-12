@@ -4,26 +4,29 @@
 <p><span><strong>Interceptor response</strong> - executes immediately <strong>after</strong> receiving the response (even before you process the response).</span></p>
 <h4 style="color: #76cdd8;"><strong>Request Interceptor</strong></h4>
 <p><strong>Interceptor request</strong> is usually used to add a token to the Authorization header:</p>
-<pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
-import axios from 'axios';
+<pre class="prettyprint"><code class="lang-ts">/** api/axios.ts */
+
+import axios, { InternalAxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com',
     timeout: 10000
 });
 
-axiosInstance.interceptors.request.use(async (config) =&gt; {
+axiosInstance.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig) =&gt; {
     const token = localStorage.getItem('accessToken');
 
-    if(token){
-        config.headers['Authorization'] = 'Bearer ' + token
+    if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token;
     }
 
     return config;
-},
-(error) =&gt; {
-    Promise.reject(error);
-})
+  },
+  (error) =&gt; {
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance; 
 </code></pre>
@@ -32,15 +35,21 @@ export default axiosInstance;
 <p>Now <strong>with every call</strong> to any axiosInstance method, the interceptor request will execute and add the Authorization header to the request.</p>
 <h4 style="color: #76cdd8;"><strong>Response Interceptor</strong></h4>
 <p>The access token refresh process occurs in the <strong>interceptor response</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">axiosInstance.interceptors.response.use(
-  (response) =&gt; {
+<pre class="prettyprint"><code class="lang-ts">import { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
+
+interface RetryConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) =&gt; {
     return response; // this callback executes when the response is successful. The response goes further to then (where response.data contains server data)
   },
-  async (error) =&gt; { // this callback executes when the response contains an error
-    const originalRequest = error.config;
+  async (error: AxiosError) =&gt; { // this callback executes when the response contains an error
+    const originalRequest = error.config as RetryConfig;
 
     // Check if the error occurred due to an expired access token, try to refresh it
-    if (error.response.status === 401 &amp;&amp; !originalRequest._retry) { // code 401 indicates token invalidity, also considered as "unauthorized", meaning the user is not authorized
+    if (error.response?.status === 401 &amp;&amp; !originalRequest._retry) { // code 401 indicates token invalidity, also considered as "unauthorized", meaning the user is not authorized
       originalRequest._retry = true; // Set the _retry flag to prevent an infinite loop
 
       const refreshToken = localStorage.getItem('refreshToken');
@@ -48,7 +57,7 @@ export default axiosInstance;
         if (!refreshToken) { // If there is no refresh token, reject the attempt and redirect to the login page (log out the user) or show an error message
           return Promise.reject(error); 
         }
-        const response = await axios.post('https://yourserver/auth/refresh', { refreshToken }); // Send a request to the server to refresh the accessToken
+        const response = await axios.post&lt;{ accessToken: string }&gt;('https://yourserver/auth/refresh', { refreshToken }); // Send a request to the server to refresh the accessToken
        
         // update the accessToken in storage
         const accessToken = response.data.accessToken;
@@ -72,35 +81,44 @@ export default axiosInstance;
 <p>Every project is a separate Universe where something may work slightly differently. But the vast majority of this part of the code will still match the example.</p>
 <h4 style="color: #76cdd8;"><strong>Creation and configuration example</strong></h4>
 <p>The complete code example for creating and configuring <strong>axiosInstance</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">/** api/axios.js */<br />
-import axios from "axios";
+<pre class="prettyprint"><code class="lang-ts">/** api/axios.ts */
+
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+
+interface RetryConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const axiosInstance = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com',
     timeout: 10000
 });
 
-axiosInstance.interceptors.request.use(async (config) =&gt; {
-    const token = 'qwerty';
-    if(token){
-        config.headers['Authorization'] = 'Bearer ' + token
+axiosInstance.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig) =&gt; {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token;
     }
     return config;
-},
-(error) =&gt; {
-    Promise.reject(error);
-});
+  },
+  (error) =&gt; {
+    return Promise.reject(error);
+  }
+);
 
-axiosInstance.interceptors.response.use((response) =&gt; {return response}, async (error) =&gt; {
-    const originalRequest = error.config;
-    if (error.response.status === 401 &amp;&amp; !originalRequest._retry) {
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) =&gt; { return response },
+  async (error: AxiosError) =&gt; {
+    const originalRequest = error.config as RetryConfig;
+    if (error.response?.status === 401 &amp;&amp; !originalRequest._retry) {
         originalRequest._retry = true;
         const refreshToken = localStorage.getItem('refreshToken');
         try {
             if (!refreshToken) {
                 return Promise.reject(error); 
             }
-            const response = await axios.post('https://yourserver/auth/refresh', { refreshToken });
+            const response = await axios.post&lt;{ accessToken: string }&gt;('https://yourserver/auth/refresh', { refreshToken });
             const accessToken = response.data.accessToken;
             localStorage.setItem('accessToken', accessToken);
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -110,7 +128,8 @@ axiosInstance.interceptors.response.use((response) =&gt; {return response}, asyn
         }
     }
     return Promise.reject(error);
-});
+  }
+);
 
 export default axiosInstance;
 </code></pre>

@@ -1,19 +1,24 @@
 <h3 style="color: #76cdd8;"><strong>Usage Example</strong></h3>
 <p>Functions that extract REST API interaction code in Redux Thunk are called "Thunks". A "Thunk" is an asynchronous Action.</p>
 <p>The difference between them is that a regular Action Creator returns an object with Action Type and Payload (the Action itself), while a Thunk returns an asynchronous function:</p>
-<pre class="prettyprint"><code class="lang-js">const sendUserData = () =&gt; async (dispatch, getState) =&gt; { 	<br />  // REST API interaction logic
+<pre class="prettyprint"><code class="lang-ts">import { AppDispatch, RootState } from './store';
+
+const sendUserData = () =&gt; async (dispatch: AppDispatch, getState: () =&gt; RootState) =&gt; {
+  // REST API interaction logic
 };</code></pre>
 <p>Inside the Thunk, there is access to Dispatch and the getState function, which returns the entire Store.</p>
 <p>It will become clearer with an example. Let's add a "Send" button to the previous component:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
+
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname } from '../redux/actions';
+import { RootState, AppDispatch } from '../redux/store';
 
 const UserData = () =&gt; {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch&lt;AppDispatch&gt;();
 
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.login.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   return (
     &lt;div&gt;
@@ -28,26 +33,34 @@ export default UserData;</code></pre>
 <p>For now, the "Send" button does nothing. Our task is to make it so that when "Send" is clicked, name and surname are sent to a REST API endpoint.</p>
 <p></p>
 <p>Since a <strong>Thunk is an asynchronous Action</strong>, we add it to the <strong>Actions file</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */<br />
-export const SET_NAME = "SET_NAME";
-export const SET_SURNAME = "SET_SURNAME";
+<pre class="prettyprint"><code class="lang-ts">/** /redux/actions.ts */
 
-export const setName = (name) =&gt; ({
+import { AppDispatch, RootState } from './store';
+
+export const SET_NAME = "SET_NAME" as const;
+export const SET_SURNAME = "SET_SURNAME" as const;
+
+type SetNameAction = { type: typeof SET_NAME; payload: string };
+type SetSurnameAction = { type: typeof SET_SURNAME; payload: string };
+export type UserAction = SetNameAction | SetSurnameAction;
+
+export const setName = (name: string): SetNameAction =&gt; ({
   type: SET_NAME,
   payload: name
 });
 
-export const setSurname = (surname) =&gt; ({
+export const setSurname = (surname: string): SetSurnameAction =&gt; ({
   type: SET_SURNAME,
   payload: surname
 });
 
 // Thunk
-export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+export const sendUserData = () =&gt; async (dispatch: AppDispatch, getState: () =&gt; RootState) =&gt; {
+    try {
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
-	const response = await fetch('https://yourapi/user', {
+        const response = await fetch('https://yourapi/user', {
             method: 'POST',
             body: JSON.stringify({
                 name: userName,
@@ -57,7 +70,7 @@ export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
 
         const result = await response.json();
         console.log("Result:", result);
-    }catch(e){
+    } catch(e) {
         console.log('sendUserData error', e)
     }
 };</code></pre>
@@ -67,37 +80,40 @@ export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
 <p>'const userName = getState().user.name' - userName contains the value of the name field inside userReducer.</p>
 <p>Next - simulating sending this data to a fictional REST API and processing the server response with output of the result to the screen.</p>
 <p>Let's assume that after processing the server response, we need to clear the name and surname fields in the Store:</p>
-<pre class="prettyprint"><code class="lang-js">export const sendUserData = () =&gt; async (dispatch, getState) =&gt; {     try{
+<pre class="prettyprint"><code class="lang-ts">export const sendUserData = () =&gt; async (dispatch: AppDispatch, getState: () =&gt; RootState) =&gt; {
+    try {
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
-	const response = await fetch('https://yourapi/user', {
+        const response = await fetch('https://yourapi/user', {
             method: 'POST',
             body: JSON.stringify({
                 name: userName,
-                surname; userSurname,
+                surname: userSurname,
             })
         });
 
         const result = await response.json();
         console.log("Result:", result);
-	dispatch(setName(''));
+        dispatch(setName(''));
         dispatch(setSurname(''));
-    }catch(e){
+    } catch(e) {
         console.log('sendUserData error', e)
     }
 };</code></pre>
 <p>To clear the fields, we use the <strong>Dispatch provided by the Thunk</strong>.</p>
 <p>All that remains is to use the Thunk from the component. To call a Thunk, Dispatch is called just like for a regular Action:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
+
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions';
+import { RootState, AppDispatch } from '../redux/store';
 
 const UserData = () =&gt; {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch&lt;AppDispatch&gt;();
 
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.login.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   return (
     &lt;div&gt;

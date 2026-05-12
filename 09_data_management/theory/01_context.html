@@ -1,10 +1,10 @@
 <h3 style="color: #76cdd8;"><strong>Context</strong></h3>
 <p>Passing data down to child components through multiple levels of nesting can cause problems, especially regarding <strong>props drilling</strong>. To prevent these problems, React has a built-in mechanism that allows passing data without using props. This mechanism is called <strong>Context</strong>:</p>
 <h2><img src="blob:https://studio.elearn.epam.com/27da18ed-8a04-49f9-948f-691d748879e8" alt="" width="397" height="437" style="display: block; margin-left: auto; margin-right: auto;" /></h2>
-<pre class="prettyprint"><code class="lang-js">import React, { createContext } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { createContext } from 'react';
 
-// Creating a context
-const MyContext = createContext();
+// Creating a context with a type
+const MyContext = createContext&lt;string&gt;('');
 
 // Parent component that provides the context
 const ParentComponent = () =&gt; {
@@ -21,7 +21,7 @@ export default ParentComponent;
 export { MyContext }; // export the context so it can be used in other components
 </code></pre>
 <p>In order for child components to have access to the context data, they need to be <strong>wrapped in the Provider component</strong> contained in <strong>MyContext</strong>, which was returned to us by the <strong>createContext</strong> function;</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React from 'react';
 import GrandchildComponent from './GrandchildComponent';
 
 const ChildComponent = () =&gt; {
@@ -34,7 +34,7 @@ const ChildComponent = () =&gt; {
 
 export default ChildComponent;</code></pre>
 <p>ChildComponent — a child component that also has the ability to receive data from the context, but it simply contains the GrandchildComponent, which will need the context data further down.</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useContext } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useContext } from 'react';
 import { MyContext } from './ParentComponent';
 
 // "Grandchild" component that receives data from the context

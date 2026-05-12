@@ -1,15 +1,20 @@
 <h3 style="color: #76cdd8;"><strong>Reducers</strong></h3>
 <p>A Reducer is a <strong>pure function</strong> that must <strong>return an updated instance of the Store</strong>. The Reducer accepts the current Store as the 1st parameter and an Action as the 2nd parameter. Since the <strong>Store in Redux is immutable</strong>, the Reducer must not modify the Store. It must <strong>return a new Store based on the previous one</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">/** /redux/reducer.js */
+<pre class="prettyprint"><code class="lang-ts">/** /redux/reducer.ts */
 
-import {SET_NAME, SET_SURNAME} from './actions';
+import { SET_NAME, SET_SURNAME, UserAction } from './actions';
 
-const initialState = {
+type UserState = {
+  name: string;
+  surname: string;
+};
+
+const initialState: UserState = {
   name: '',
   surname: '',
-}
+};
 
-const userReducer = (state = initialState, action) =&gt; {
+const userReducer = (state = initialState, action: UserAction): UserState =&gt; {
   switch(action.type){   
     case SET_NAME:
       return {

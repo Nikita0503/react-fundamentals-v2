@@ -3,10 +3,15 @@
 <p>Functional components became increasingly popular in the React community with updates in React 16.8, when the ability to use hooks in functional components was introduced.</p>
 <p>This allowed developers to use functional components instead of class components, especially in simple cases where class components were unnecessary.</p>
 <p>Implementation of the same SmartComponent but as a class component:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { Component } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// SmartComponent.tsx (class component - legacy approach)
+import React, { Component } from 'react';
 
-class SmartComponent extends Components {
-  constructor(props) {
+interface SmartComponentState {
+  count: number;
+}
+
+class SmartComponent extends Component&lt;{}, SmartComponentState&gt; {
+  constructor(props: {}) {
     super(props);
     this.state = {
       count: 0

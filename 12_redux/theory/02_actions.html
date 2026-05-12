@@ -5,36 +5,54 @@
 <li>Action Type - a <strong>unique string</strong> that tells the Reducer <strong>what exactly to do with the Payload</strong></li>
 </ul>
 <p>Example:</p>
-<pre class="prettyprint"><code class="lang-js">{
+<pre class="prettyprint"><code class="lang-ts">{
   type: "SET_NAME",
   payload: "MyName"
 }</code></pre>
 <p>Usually, Action Type is built following the principle - <strong>ACTION_FIELDNAME</strong>. This is not an official rule, but it is more convenient and understandable.</p>
 <p>But working with an Action in this form is bad practice, so <strong>Action Creators</strong> are created for this:</p>
-<pre class="prettyprint"><code class="lang-js">const setName = (name) =&gt; ({
-  type: "SET_NAME",
+<pre class="prettyprint"><code class="lang-ts">type SetNameAction = {
+  type: typeof SET_NAME;
+  payload: string;
+};
+
+const setName = (name: string): SetNameAction =&gt; ({
+  type: SET_NAME,
   payload: name
 })</code></pre>
 <p>Action Creator - a <strong>function</strong> that forms and <strong>returns an Action</strong>.</p>
 <p>The string from the Action Type field will be needed in other places in the code, so it is good practice to <strong>extract it into a constant</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">const SET_NAME = "SET_NAME";
+<pre class="prettyprint"><code class="lang-ts">const SET_NAME = "SET_NAME" as const;
 
-const setName = (name) =&gt; ({
+const setName = (name: string): SetNameAction =&gt; ({
   type: SET_NAME,
   payload: name
 })
 </code></pre>
 <p>Now let's create the same pair for surname and make it exportable:</p>
-<pre class="prettyprint"><code class="lang-js">/** /redux/actions.js */
-export const SET_NAME = "SET_NAME";
-export const SET_SURNAME = "SET_SURNAME";
+<pre class="prettyprint"><code class="lang-ts">/** /redux/actions.ts */
 
-export const setName = (name) =&gt; ({
+export const SET_NAME = "SET_NAME" as const;
+export const SET_SURNAME = "SET_SURNAME" as const;
+
+type SetNameAction = {
+  type: typeof SET_NAME;
+  payload: string;
+};
+
+type SetSurnameAction = {
+  type: typeof SET_SURNAME;
+  payload: string;
+};
+
+export type UserAction = SetNameAction | SetSurnameAction;
+
+export const setName = (name: string): SetNameAction =&gt; ({
   type: SET_NAME,
   payload: name
 });
 
-export const setSurname = (surname) =&gt; ({
+export const setSurname = (surname: string): SetSurnameAction =&gt; ({
   type: SET_SURNAME,
   payload: surname
 });</code></pre>

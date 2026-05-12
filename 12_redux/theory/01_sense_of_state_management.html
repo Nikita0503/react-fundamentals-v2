@@ -25,7 +25,8 @@
 </ul>
 <p>At first glance, the architecture seems overly complex. But its advantages are felt as the project grows. This approach ensures stable and comfortable data control with large volumes and complex structures.</p>
 <p>Let's look at a component with 2 reactive variables:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
+
 import React from 'react';
 
 const UserData = () =&gt; {
@@ -44,7 +45,7 @@ export default UserData;</code></pre>
 <p>Our task is to move name and surname to the Store.</p>
 <p>First step - create a redux folder in the project root.</p>
 <p>Second - install Redux:</p>
-<pre class="prettyprint"><code class="lang-js">npm install redux react-redux</code></pre>
+<pre class="prettyprint"><code class="lang-ts">npm install redux react-redux @types/react-redux</code></pre>
 <p></p>
 <p></p>
 <p></p>

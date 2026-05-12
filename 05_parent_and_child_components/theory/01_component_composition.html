@@ -1,7 +1,7 @@
 <h3 style="color: #76cdd8;"><strong>Component Composition</strong></h3>
 <p>In React, components can contain other components within them. Components are used to build a <strong>display hierarchy</strong>, where each component can be a <strong>parent</strong> component for one or many <strong>child</strong> components, and vice versa, each component can be a child component for one or many parent components. This is called the <strong>component model</strong>, or <strong>"component composition"</strong>:</p>
 <h1><img src="blob:https://studio.elearn.epam.com/595981b3-8a3d-4486-9806-b90807ee80d5" alt="" style="display: block; margin-left: auto; margin-right: auto;" width="347" height="336" /></h1>
-<pre class="prettyprint"><code class="lang-js">// Parent component
+<pre class="prettyprint"><code class="lang-tsx">// ParentComponent.tsx
 import React from 'react';
 import ChildComponent from './ChildComponent';
     
@@ -16,7 +16,7 @@ const ParentComponent = () =&gt; {
 };
     
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">// Child component
+<pre class="prettyprint"><code class="lang-tsx">// ChildComponent.tsx
 import React from 'react';
 
 const ChildComponent = () =&gt; {

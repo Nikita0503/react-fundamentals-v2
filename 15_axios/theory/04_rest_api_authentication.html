@@ -1,19 +1,23 @@
 <h3 style="color: #76cdd8;"><strong>Security when working with REST API</strong></h3>
 <p>There is a concept of a <strong>protected endpoint</strong>. To access a resource on the server, the client must provide additional data that will indicate to the server that this client is <strong>authorized</strong>. In most cases, this is the <strong>Authorization header</strong>, which looks approximately like this:</p>
-<pre class="prettyprint"><code class="lang-js">headers: {
+<pre class="prettyprint"><code class="lang-ts">headers: {
     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
    },</code></pre>
 <p>The huge string of characters is an <strong>access token</strong>. It contains data about the client making the request to the endpoint. The server decrypts the token and decides whether this client has access to the resource.</p>
 <p>There is a similar token - the <strong>refresh token</strong>. The access token has an <strong>expiration period</strong>, after which it is considered <strong>invalid</strong> and the server will not allow the client to access the resource with it. Therefore, there are additional endpoints on the server that help create a <strong>new access token by providing the refresh token</strong>.</p>
 <p>It looks approximately like this:</p>
-<pre class="prettyprint"><code class="lang-js">axios.post('https://myserver.com/generate_access_token', {
+<pre class="prettyprint"><code class="lang-ts">type TokenResponse = {
+  new_access_token: string;
+};
+
+axios.post&lt;TokenResponse&gt;('https://myserver.com/generate_access_token', {
     'access_token': '…',
     'refresh_token': '…',
-}).
-then((reponse) =&gt; {
-    //response: {new_access_token: '….'}
 })
-.catch((e) =&gt; {console.log("error: ", e)})</code></pre>
+.then((response) =&gt; {
+    // response.data: { new_access_token: '….' }
+})
+.catch((e) =&gt; { console.log("error: ", e) })</code></pre>
 <p>After receiving the new access_token, the client again has access to protected endpoints. Without going into details - <strong>the token pair is needed to increase security</strong>.</p>
 <p>Usually, token refresh occurs when one of the protected endpoints returns an error indicating that the access token is no longer valid (expired). On the client side, in catch, we intercept this error and make a request to refresh the access token. After receiving the new token, we retry the failed request with the new access token.</p>
 <p>This happens in such a way that the <strong>user does not notice this process</strong>. But the project developer can clearly see it, because with a large number of requests to different endpoints, they must apply this mechanism to each protected endpoint, which generates a large amount of boilerplate code.</p>

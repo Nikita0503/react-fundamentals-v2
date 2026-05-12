@@ -1,6 +1,7 @@
 <h3 style="color: #76cdd8;"><strong>Important Re-render Details</strong></h3>
 <p>React is a fairly smart library and it has its own algorithms for deciding whether a component needs to be re-rendered.</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState } from 'react';
 
 const Counter = () =&gt; {
   // Using the useState hook to create state with a default value of 0
@@ -29,11 +30,16 @@ export default Counter;</code></pre>
 <p>If the reference to the object in the component's state does not change, then React does not detect a difference in state and does not perform a re-render. However, if the reference to the object changes, React considers that the component's state has changed and performs a re-render of the component, even if the values inside the object remain unchanged.</p>
 <p>That is, if you pass the same "{value: 0}" to setCount, React will see that this is a new object (a <strong>new reference</strong> to an object in memory), and will re-render the component, despite the fact that the values inside the object have not changed.</p>
 <p>Here is an example of a functional Counter component using an object in state with an explanation of how the re-render rule works:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState } from 'react';
+
+interface CountState {
+  value: number;
+}
 
 const Counter = () =&gt; {
   // Using the useState hook to create state with an object {value: 0}
-  const [count, setCount] = useState({ value: 0 });
+  const [count, setCount] = useState&lt;CountState&gt;({ value: 0 });
 
   // Function to increment the counter value
   const increment = () =&gt; {
@@ -52,11 +58,16 @@ const Counter = () =&gt; {
 export default Counter;</code></pre>
 <p>In this example, we use an <strong>object</strong> { value: 0 } as the initial state value. On each button click, we use the setCount function to update the component's state, passing a <strong>new state object</strong> with an incremented value. This will cause a <strong>re-render</strong> of the component, even if the value itself in the object remains unchanged, because the <strong>reference to the object has changed</strong>, and React considers that the <strong>component's state has changed</strong>.</p>
 <p>However, if you change the data inside the count object and <strong>pass it</strong> to setCount, React <strong>will not understand</strong> that a re-render is needed. Because the reference to the <strong>object in memory has not changed</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
+import React, { useState } from 'react';
+
+interface CountState {
+  value: number;
+}
 
 const Counter = () =&gt; {
   // Using the useState hook to create state with an object {value: 0}
-  const [count, setCount] = useState({ value: 0 });
+  const [count, setCount] = useState&lt;CountState&gt;({ value: 0 });
 
   // Function to increment the counter value
   const increment = () =&gt; {

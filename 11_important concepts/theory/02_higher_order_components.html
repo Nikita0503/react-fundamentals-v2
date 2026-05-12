@@ -3,7 +3,9 @@
 <p>One of the main uses of HOC is <strong>extending the functionality</strong> of React components <strong>without changing their implementation</strong>. HOCs can be used to add shared logic to different components, such as logging, authorization, caching, network operations, translation, and much more.</p>
 <p><img src="blob:https://studio.elearn.epam.com/23335eec-79f3-4885-86ee-5e8514689638" alt="" /></p>
 <p>As an example, let's look at a HOC where if the user is <strong>authorized</strong>, we return the <strong>provided component</strong>, if <strong>not</strong> — we return the <strong>message "Access denied"</strong>:</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// withAuthorization.tsx
+
+import React, { ComponentType } from 'react';
 
 // Declare the main component that will be wrapped by the HOC
 const MyComponent = () =&gt; {
@@ -15,8 +17,8 @@ const MyComponent = () =&gt; {
 };
 
 // Declare the HOC named withAuthorization
-const withAuthorization = (WrappedComponent) =&gt; {
-  return (props) =&gt; {
+const withAuthorization = &lt;P extends object&gt;(WrappedComponent: ComponentType&lt;P&gt;) =&gt; {
+  return (props: P) =&gt; {
     // Here should be your own authorization check logic
     const isAuthorized = true; // In this example it always returns true
 

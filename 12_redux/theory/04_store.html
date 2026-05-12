@@ -1,8 +1,18 @@
 <h3 style="color: #76cdd8;"><strong>Store</strong></h3>
 <p>Store - a <strong>single data storage</strong>. To initialize it, we need to create a <strong>rootReducer</strong> - a collection of all the application's Reducers.</p>
-<pre class="prettyprint"><code class="lang-js">/** /redux/store */
+<pre class="prettyprint"><code class="lang-ts">/** /redux/store.ts */
 
-import { combineReducers, </code>createStore } from 'redux'; import userReducer from './reducer'; const rootReducer = combineReducers({ user: userReducer, }); export const store = createStore(rootReducer);</pre>
+import { combineReducers, createStore } from 'redux';
+import userReducer from './reducer';
+
+const rootReducer = combineReducers({
+  user: userReducer,
+});
+
+export type RootState = ReturnType&lt;typeof rootReducer&gt;;
+export type AppDispatch = typeof store.dispatch;
+
+export const store = createStore(rootReducer);</code></pre>
 <p>Using the <strong>combineReducers</strong> function, we create the <strong>rootReducer</strong>.</p>
 <p>RootReducer accepts an object where <strong>keys are the names by which you can access the Reducers</strong>, and values are the Reducers themselves.</p>
 <p>For example, name, which is in userReducer, will be located at the address: <strong>state.user.name</strong>.</p>

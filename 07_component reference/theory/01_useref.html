@@ -1,13 +1,13 @@
 <h3 style="color: #76cdd8;"><strong>useRef</strong></h3>
 <p>In React, there is the ability to reference components and call their methods directly using the <strong>useRef</strong> hook. useRef is a hook in React that allows you to get a <strong>reference to a DOM element</strong> or <strong>store values between renders</strong> without causing a component re-render. It allows working with DOM elements directly in functional components.</p>
 <p>Here is an example of using useRef:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useRef } from 'react';
 
 const MyComponent = () =&gt; {
-  const inputRef = useRef(null); // Creating a reference to a DOM element
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null); // Creating a reference to a DOM element
 
   const handleClick = () =&gt; {
-    inputRef.current.focus(); // Calling the focus() method on the DOM element using useRef
+    inputRef.current?.focus(); // Calling the focus() method on the DOM element using useRef
   };
 
   return (
@@ -20,10 +20,10 @@ const MyComponent = () =&gt; {
 export default MyComponent;</code></pre>
 <p>In this example, we use useRef to <strong>create a reference to the DOM element</strong> input using the <strong>ref</strong> attribute. Then we can call methods of this DOM element, such as focus(), without the need to call setState or cause a component re-render.</p>
 <p>useRef can also be used to <strong>store values</strong> that <strong>do not affect the render</strong> of the component between updates:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useRef } from 'react';
 
 const MyComponent = () =&gt; {
-  const countRef = useRef(0); // Creating a reference to a value
+  const countRef = useRef&lt;number&gt;(0); // Creating a reference to a value
 
   const handleClick = () =&gt; {
     countRef.current++; // Changing the value through the reference
@@ -41,14 +41,14 @@ export default MyComponent;</code></pre>
 <p>We can change the value of this reference <strong>without the need to call setState</strong> or cause a component re-render.</p>
 <p>Using countRef.current, we can get the <strong>current value</strong> of the stored count value between component updates.</p>
 <p>Here is an example of using useRef with data input in an input field:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useRef } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useRef } from 'react';
 
 const InputComponent = () =&gt; {
-  const inputRef = useRef(null); // Creating a reference to the input element
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null); // Creating a reference to the input element
 
   const handleButtonClick = () =&gt; {
     // Getting the value from the input element using current.value
-    const inputValue = inputRef.current.value;
+    const inputValue = inputRef.current?.value;
     alert(`Entered value: ${inputValue}`);
   };
 

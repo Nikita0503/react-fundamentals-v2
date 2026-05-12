@@ -14,27 +14,33 @@
 <p>Formik is a third-party library for React that provides convenient tools for working with forms. Let's look at an example of using Formik to create a form in a React component.</p>
 <p>Let's say we want to create a form for entering user data, such as name, email, and message.</p>
 <p>We install Formik as a dependency and import the necessary components:</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+<pre class="prettyprint"><code class="lang-tsx">import React from 'react';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
+
+type ContactFormValues = {
+  name: string;
+  email: string;
+  message: string;
+};
 
 const ContactForm = () =&gt; {
   // Initial values of form fields
-  const initialValues = {
+  const initialValues: ContactFormValues = {
     name: '',
     email: '',
     message: ''
   };
 
   // Function to handle form submission
-  const handleSubmit = (values, { setSubmitting }) =&gt; {
+  const handleSubmit = (values: ContactFormValues, { setSubmitting }: FormikHelpers&lt;ContactFormValues&gt;) =&gt; {
     // Send data to the server or perform other logic
     console.log(values);
     setSubmitting(false);
   };
 
   // Validation of entered data
-  const validateForm = values =&gt; {
-    const errors = {};
+  const validateForm = (values: ContactFormValues) =&gt; {
+    const errors: Partial&lt;ContactFormValues&gt; = {};
     if (!values.name) {
       errors.name = 'The "Name" field is required';
     }

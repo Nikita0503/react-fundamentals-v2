@@ -5,9 +5,9 @@
 <p>Answer - first, the library's capabilities make the application more optimized. For example: The main reason for using the &lt;Link&gt; component from React Router instead of a regular anchor tag &lt;a href=""&gt; is that &lt;Link&gt; is designed specifically for navigation between routes in a single-page application (React is an SPA, under the hood: the entire application is one page).</p>
 <p>When you use an anchor tag with an href attribute, clicking the link will cause a full page reload, which can be slow and interrupt the application's work. On the contrary, when you use the &lt;Link&gt; component, it updates the URL and renders the new component without causing a full page reload, making the application faster and smoother. Second - using the library makes the code more structured, readable, and clean. A very convenient navigation structure allows developing flexible architecture and expanding the application won't cause problems.</p>
 <p><strong>"Is it possible to combine React Router with Redux in one project?"</strong></p>
-<p>Answer - yes. For this, you need to make small changes to App.js:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */<br />
-import React from 'react';
+<p>Answer - yes. For this, you need to make small changes to App.tsx:</p>
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
+
 import { store } from './redux/store'; // import before components
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
@@ -35,9 +35,7 @@ export default App;</code></pre>
 <p><strong>"Components were wrapped in empty tags &lt;&gt;&lt;/&gt;. What is that?"</strong></p>
 <p>Answer - In React, when a component returns <strong>more than one element</strong>, they must be <strong>wrapped in a single parent element</strong> (for example div).</p>
 <p>Using <strong>fragments</strong> allows avoiding the creation of an additional DOM element (like div) as a parent element.</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
-
-const ComponentWithFragment = () =&gt; {
+<pre class="prettyprint"><code class="lang-tsx">const ComponentWithFragment = () =&gt; {
   return (
     &lt;&gt;
       &lt;h1&gt;Title&lt;/h1&gt;

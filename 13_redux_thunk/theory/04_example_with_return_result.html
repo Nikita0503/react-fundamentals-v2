@@ -1,38 +1,40 @@
 <h3 style="color: #76cdd8;"><strong>Example with returning a result</strong></h3>
 <p>There may be a case when the request result needs to be <strong>received in the component</strong>. For this, you simply need to <strong>return</strong> it from the Thunk:</p>
-<pre class="prettyprint"><code class="lang-js">export const sendUserData = (callback) =&gt; async (dispatch, getState) =&gt; {     try{
+<pre class="prettyprint"><code class="lang-ts">export const sendUserData = (callback?: () =&gt; void) =&gt; async (dispatch: AppDispatch, getState: () =&gt; RootState) =&gt; {
+    try {
         const userName = getState().user.name;
         const userSurname = getState().user.surname;
 
-	const response = await fetch('https://yourapi/user', {
+        const response = await fetch('https://yourapi/user', {
             method: 'POST',
             body: JSON.stringify({
                 name: userName,
-                surname; userSurname,
+                surname: userSurname,
             })
         });
 
         const result = await response.json();
         console.log("Result:", result);
-	dispatch(setName(''));
+        dispatch(setName(''));
         dispatch(setSurname(''));
-	if(!!callback){
-	    callback();
-	}
+        if (callback) {
+            callback();
+        }
         return result; 
-    }catch(e){
+    } catch(e) {
         console.log('sendUserData error', e)
     }
 };</code></pre>
 <p>And handle it in the component:</p>
-<pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
+<pre class="prettyprint"><code class="lang-tsx">import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname, sendUserData } from '../redux/actions';
+import { RootState, AppDispatch } from '../redux/store';
 
 const UserData = () =&gt; {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch&lt;AppDispatch&gt;();
 
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.login.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   const successMessage = () =&gt; {
     alert('Data sent successfully.');
@@ -52,14 +54,15 @@ const UserData = () =&gt; {
 
 export default UserData;</code></pre>
 <p>The onClick takes several lines, leaving it in this form is bad practice. It's better to extract it into a separate function:</p>
-<pre class="prettyprint"><code class="lang-js">import { useSelector, useDispatch } from 'react-redux';
-import { setName, setSurname, sendUserData } from '../redux/actions'
+<pre class="prettyprint"><code class="lang-tsx">import { useSelector, useDispatch } from 'react-redux';
+import { setName, setSurname, sendUserData } from '../redux/actions';
+import { RootState, AppDispatch } from '../redux/store';
 
 const UserData = () =&gt; {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch&lt;AppDispatch&gt;();
 
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.login.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   const successMessage = () =&gt; {
     alert('Data sent successfully.');

@@ -1,12 +1,11 @@
 <h3 style="color: #76cdd8;"><strong>useParams</strong></h3>
 <p>React Router has many capabilities that are worth getting familiar with. Let's look at another one that is quite commonly found on online store websites.</p>
 <p>Example URL:</p>
-<pre class="prettyprint"><code class="lang-js">https://online-shop/product/1</code></pre>
+<pre class="prettyprint"><code class="lang-ts">https://online-shop/product/1</code></pre>
 <p>It is possible to <strong>store data in the page address</strong>, for example a <strong>product id</strong>. Then, inside the component, you can access this data.</p>
 <p>Let's add such a component to our example:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
 
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
@@ -28,14 +27,17 @@ const App = () =&gt; {
 export default App;
 </code></pre>
 <p>We add a page to the navigation - ProductPage. In its path, we add a <strong>variable - id</strong>. Such a variable is called a <strong>path variable</strong>. Let's implement ProductPage, where we display the id on the page:</p>
-<pre class="prettyprint"><code class="lang-js">/** /pages/ProductPage.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/ProductPage.tsx */
 
-import React from 'react';
 import { useParams } from "react-router-dom";
+
+type ProductParams = {
+  id: string;
+};
 
 const ProductPage = () =&gt; {
 
-  const { id } = useParams(); 
+  const { id } = useParams&lt;ProductParams&gt;(); 
 
   return (
     &lt;div&gt;

@@ -1,10 +1,9 @@
 <h3 style="color: #76cdd8;"><strong>useSearchParams</strong></h3>
 <p>An alternative to keeping data in the URL can be <strong>search params</strong>, for example:</p>
-<pre class="prettyprint"><code class="lang-js">https://online-shop/product/?id=1&amp;name=phone</code></pre>
+<pre class="prettyprint"><code class="lang-ts">https://online-shop/product/?id=1&amp;name=phone</code></pre>
 <p>Let's add one more component to the navigation:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
 
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
@@ -27,14 +26,13 @@ const App = () =&gt; {
 
 export default App;</code></pre>
 <p>TaskPage implementation:</p>
-<pre class="prettyprint"><code class="lang-js">/** /pages/TaskPage.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/TaskPage.tsx */
 
-import React from 'react';
 import { useSearchParams } from "react-router-dom";
 
 const TaskPage = () =&gt; {
 
-  let [searchParams] = useSearchParams(); 
+  const [searchParams] = useSearchParams(); 
 
   return (
     &lt;div&gt;
@@ -47,7 +45,7 @@ const TaskPage = () =&gt; {
 export default TaskPage;
 </code></pre>
 <p>When navigating to</p>
-<pre class="prettyprint"><code class="lang-js">http://localhost:3000/task?id=1&amp;title=work</code></pre>
+<pre class="prettyprint"><code class="lang-ts">http://localhost:3000/task?id=1&amp;title=work</code></pre>
 <p>the page will display something like:</p>
 <p>Task id: 1</p>
 <p>Task title: work</p>

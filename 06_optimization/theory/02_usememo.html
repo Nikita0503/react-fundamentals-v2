@@ -3,9 +3,14 @@
 <p><strong>useMemo</strong> is a hook in React that allows you to optimize component rendering and <strong>prevent unnecessary recalculations</strong>.</p>
 <p>useMemo is used to <strong>cache the results of computations</strong> and returns the cached value if the input dependencies have not changed. This can be useful when you have computationally expensive operations, such as data calculations or external API calls, that do not need to be performed on every component render.</p>
 <p>Here is an example of using useMemo:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useMemo } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useMemo } from 'react';
 
-const MyComponent = ({ a, b }) =&gt; {
+type MyComponentProps = {
+  a: number;
+  b: number;
+};
+
+const MyComponent = ({ a, b }: MyComponentProps) =&gt; {
   // Using useMemo to cache the computation result
   const result = useMemo(() =&gt; {
     console.log('Computing result');

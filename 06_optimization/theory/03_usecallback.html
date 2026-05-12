@@ -8,7 +8,7 @@
 <li><strong>Ensuring reference stability</strong>: Memoizing functions with useCallback allows you to <strong>guarantee the stability of references</strong> to these functions. This can be useful in cases where we pass these functions as props to child components that are also memoized with React.memo.</li>
 </ul>
 <p>So, here is an example of using useCallback:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState, useCallback } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">import React, { useState, useCallback } from 'react';
 import ChildComponent from './ChildComponent';
 
 const ParentComponent = () =&gt; {
@@ -31,12 +31,16 @@ const ParentComponent = () =&gt; {
 };
 
 export default ParentComponent;</code></pre>
-<pre class="prettyprint"><code class="lang-js">
+<pre class="prettyprint"><code class="lang-tsx">
 // Using React.memo to memoize the child component
 // This allows avoiding unnecessary re-renders when props don't change
 import React from 'react';
 
-const ChildComponent = ({ handleClick }) =&gt; {
+type ChildComponentProps = {
+  handleClick: () =&gt; void;
+};
+
+const ChildComponent = ({ handleClick }: ChildComponentProps) =&gt; {
   console.log('Child component renders');
   return (
     &lt;button onClick={handleClick}&gt;Increment&lt;/button&gt;

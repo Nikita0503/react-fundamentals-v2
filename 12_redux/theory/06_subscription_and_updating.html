@@ -1,6 +1,6 @@
 <h3 style="color: #76cdd8;"><strong>Subscribe (data updating)</strong></h3>
 <p>Let's return to the UserData file:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
 
 const UserData = () =&gt; {
   const [name, setName] = React.useState('');
@@ -18,12 +18,14 @@ export default UserData;</code></pre>
 <p>name and surname are now inside the <strong>Store</strong>, so the reactive variables inside the component are no longer needed.</p>
 <h3 style="color: #76cdd8;"><strong>useSelector</strong></h3>
 <p>To access name and surname in the <strong>View/UI</strong> (component), you can use the <strong>useSelector</strong> hook from the 'react-redux' package:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */<br />
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
+
 import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const UserData = () =&gt; {
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.user.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   return (
     &lt;div&gt;
@@ -40,16 +42,17 @@ export default UserData;</code></pre>
 <p>Now View/UI displays data from the Store. But when editing the input, name and surname still won't change.</p>
 <p>Therefore, we need to teach the component to update name and surname. For this, the <strong>Dispatch function</strong> is used.</p>
 <p>The <strong>useDispatch</strong> hook from the 'react-redux' package returns the <strong>Dispatch</strong> function:</p>
-<pre class="prettyprint"><code class="lang-js">/** /components/UserData.js */
+<pre class="prettyprint"><code class="lang-tsx">/** /components/UserData.tsx */
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setName, setSurname } from '../redux/actions';
+import { RootState, AppDispatch } from '../redux/store';
 
 const UserData = () =&gt; {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch&lt;AppDispatch&gt;();
 
-  const name = useSelector(state =&gt; state.user.name);
-  const surname = useSelector(state =&gt; state.login.surname);
+  const name = useSelector((state: RootState) =&gt; state.user.name);
+  const surname = useSelector((state: RootState) =&gt; state.user.surname);
 
   return (
     &lt;div&gt;

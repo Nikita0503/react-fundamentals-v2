@@ -2,7 +2,8 @@
 <p>Components can be conditionally divided into 2 categories: <strong>Dumb components</strong> and <strong>Smart components</strong>.</p>
 <h3 style="color: #76cdd8;"><strong>Dumb Components</strong></h3>
 <p>Dumb components are also called "presentational" components because their only responsibility is to present something in the DOM. Once that is done, the component is finished. There is no need to monitor it, no need to check on it from time to time to see how things are going. Place the information on the page and move on:</p>
-<pre class="prettyprint"><code class="lang-js">import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// SimpleComponent.tsx
+import React from 'react';
 
 const SimpleComponent = () =&gt; {
   return &lt;div&gt;Hello, React!&lt;/div&gt;;
@@ -12,7 +13,8 @@ export default SimpleComponent;</code></pre>
 <h3 style="color: #76cdd8;"><strong>Smart Components</strong></h3>
 <p>Smart components (or container components), on the other hand, carry a different responsibility. Since they bear the burden of being smart, they track state and <strong>care about how the application works</strong>.</p>
 <p>With the React 16.8 update, the concept of <strong>hooks</strong> was introduced, which allows using <strong>state</strong> and functional capabilities in functional components, making them more powerful and convenient. Here is an example of using functional components with hooks in React:</p>
-<pre class="prettyprint"><code class="lang-js">import React, { useState } from 'react';
+<pre class="prettyprint"><code class="lang-tsx">// SmartComponent.tsx
+import React, { useState } from 'react';
 
 const SmartComponent = () =&gt; {
   const [count, setCount] = useState(0); // Using the useState hook for state

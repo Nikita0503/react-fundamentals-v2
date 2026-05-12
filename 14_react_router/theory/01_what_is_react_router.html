@@ -2,11 +2,9 @@
 <p>React is mostly used for developing medium-sized projects. Such projects contain more than 1 page. In React, one of the most popular navigation libraries is <strong>React Router</strong>.</p>
 <p>To start working with React Router, you need to take 2 steps:</p>
 <p>Install it in the project:</p>
-<pre class="prettyprint"><code class="lang-js">npm install react-router-dom</code></pre>
+<pre class="prettyprint"><code class="lang-ts">npm install react-router-dom</code></pre>
 <p>Create 2 page components that the user will navigate to:</p>
-<pre class="prettyprint"><code class="lang-js">/** /pages/HomePage.js */
-
-import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/HomePage.tsx */
 
 const HomePage = () =&gt; {
   return (
@@ -17,9 +15,7 @@ const HomePage = () =&gt; {
 }
 
 export default HomePage;</code></pre>
-<pre class="prettyprint"><code class="lang-js">/** /pages/ProfilePage.js */
-
-import React from 'react';
+<pre class="prettyprint"><code class="lang-tsx">/** /pages/ProfilePage.tsx */
 
 const ProfilePage = () =&gt; {
   return (
@@ -32,10 +28,9 @@ const ProfilePage = () =&gt; {
 
 export default ProfilePage; 
 </code></pre>
-<p>Usually, navigation configuration is done in the App.js file:</p>
-<pre class="prettyprint"><code class="lang-js">/** App.js */
+<p>Usually, navigation configuration is done in the App.tsx file:</p>
+<pre class="prettyprint"><code class="lang-tsx">/** App.tsx */
 
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
