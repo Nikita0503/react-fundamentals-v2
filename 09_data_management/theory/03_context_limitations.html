@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>Context Is Powerful — But Has Limits</strong></h3>
+<p>Context is a great tool for sharing data across the component tree. However, it has important limitations that you need to understand to choose the right tool for each situation.</p>
+
+<h3 style="color: #76cdd8;"><strong>Limitation 1: All Consumers Re-render When Value Changes</strong></h3>
+<p>When the Provider's <code>value</code> changes, <strong>every</strong> component that calls <code>useContext(ThatContext)</code> re-renders — even if the component only uses one field from the context object.</p>
+<pre class="prettyprint"><code class="lang-tsx">// If AuthContext has { user, theme, locale } and only locale changes —
+// ALL consumers re-render, even those that only read "user".
+
+type AppContextValue = {
+  user: User;
+  theme: Theme;
+  locale: string;
+};
+
+// This component re-renders when locale changes, even though it only uses "user":
+const UserAvatar = () =&gt; {
+  const { user } = useAppContext(); // re-renders on ANY context change
+  return &lt;img src={user.avatar} alt={user.name} /&gt;;
+};
+</code></pre>
+<p>This is why splitting into multiple smaller contexts (one for auth, one for theme, one for locale) is important.</p>
+
+<h3 style="color: #76cdd8;"><strong>Limitation 2: No Built-in Selector</strong></h3>
+<p>Unlike Redux (where you can select a specific slice of state), Context gives you the <strong>whole value</strong>. You can't say "only re-render me when <code>user.name</code> changes." You always get the entire context object, and any change to any part of it triggers a re-render.</p>
+
+<h3 style="color: #76cdd8;"><strong>Limitation 3: Provider Nesting Can Get Deep</strong></h3>
+<p>With many contexts, you end up with "Provider hell":</p>
+<pre class="prettyprint"><code class="lang-tsx">&lt;AuthProvider&gt;
+  &lt;ThemeProvider&gt;
+    &lt;LocaleProvider&gt;
+      &lt;NotificationProvider&gt;
+        &lt;FeatureFlagProvider&gt;
+          &lt;App /&gt;
+        &lt;/FeatureFlagProvider&gt;
+      &lt;/NotificationProvider&gt;
+    &lt;/LocaleProvider&gt;
+  &lt;/ThemeProvider&gt;
+&lt;/AuthProvider&gt;
+</code></pre>
+<p>This is not a performance problem, but it hurts readability. You can mitigate it by composing providers into a single wrapper component.</p>
+
+<h3 style="color: #76cdd8;"><strong>When Context Is the Right Choice</strong></h3>
+<p>Context works well for:</p>
+<p>• Data that changes <strong>infrequently</strong>: theme, locale, auth status, feature flags</p>
+<p>• Data needed by <strong>many components</strong> at different levels of the tree</p>
+<p>• Simple state that doesn't require complex update logic</p>
+
+<h3 style="color: #76cdd8;"><strong>When Context Is NOT Enough</strong></h3>
+<p>Context is not the right tool when:</p>
+<p>• Data changes <strong>frequently</strong> (typing, scrolling, real-time updates) — causes too many re-renders</p>
+<p>• Complex state with many actions (add/remove/update/filter) — gets messy in a Provider</p>
+<p>• You need <strong>selectors</strong> (subscribe to specific parts of state without re-rendering on unrelated changes)</p>
+<p>• You need <strong>middleware</strong> (logging, persistence, async handling)</p>
+
+<h3 style="color: #76cdd8;"><strong>What to Use Instead</strong></h3>
+<p>For the cases where Context falls short, dedicated state management libraries exist:</p>
+<p>• <strong>Redux Toolkit</strong> (covered in Module 12) — provides selectors, middleware, DevTools, and predictable state updates for complex global state.</p>
+<p>• <strong>Zustand</strong> (covered in a later module) — minimal API, built-in selectors, no Provider needed. Great for simpler global state without boilerplate.</p>
+<p>These libraries are designed specifically for the performance and complexity challenges that Context can't handle well.</p>
+
+<h3 style="color: #76cdd8;"><strong>Practical Guideline</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th style="text-align: left;">Scenario</th><th style="text-align: left;">Tool</th></tr>
+<tr><td>Theme, locale, auth (rarely changes)</td><td>Context</td></tr>
+<tr><td>Form state (one component/page)</td><td>useState / React Hook Form</td></tr>
+<tr><td>Server data (API responses)</td><td>React Query / RTK Query</td></tr>
+<tr><td>Complex shared client state</td><td>Redux Toolkit / Zustand</td></tr>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

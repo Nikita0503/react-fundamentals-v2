@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">Why create a custom hook (like useTheme) instead of using useContext directly in components?</h4><br/>
+( ) It makes the context value mutable so components can update it.<br/>
+( ) It automatically memoizes the context value to prevent re-renders.<br/>
+(x) It provides error handling if used outside the Provider and hides implementation details from consumers.<br/>
+( ) It is required by TypeScript — useContext cannot be called directly.<br/>
+<h4 style="color: #474747; font-weight: 600;">What does the custom Provider component encapsulate?</h4><br/>
+( ) Only the JSX markup for the context consumer components.<br/>
+(x) State logic — useState, handlers, and the Context.Provider wrapper.<br/>
+( ) The default value that createContext receives.<br/>
+( ) The TypeScript type definition for the context value.<br/>
+<h4 style="color: #474747; font-weight: 600;">Should you put all app data in one big context?</h4><br/>
+( ) Yes — it simplifies the component tree by having a single Provider.<br/>
+( ) Yes — it reduces the number of imports needed in consumer components.<br/>
+(x) No — separate contexts for separate concerns, so changes in one don't re-render consumers of another.<br/>
+( ) No — React only allows one context per application.<br/>
+<h4 style="color: #474747; font-weight: 600;">What error should a custom context hook throw when used outside its Provider?</h4><br/>
+( ) "Context value is null"<br/>
+( ) "Provider not found in React tree"<br/>
+(x) "useX must be used within an XProvider"<br/>
+( ) "Cannot read properties of undefined"<br/>

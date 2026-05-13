@@ -1,0 +1,134 @@
+<h3 style="color: #76cdd8;"><strong>The Problem: Props Drilling</strong></h3>
+<p>As you learned in Module 05, data flows down through props — from parent to child. But what happens when a deeply nested component needs data from a component far above it in the tree?</p>
+<p>You end up passing props through many intermediate components that don't use the data themselves — they just forward it. This is called <strong>props drilling</strong>, and it makes code harder to maintain:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App → Layout → Sidebar → UserMenu → Avatar
+// Avatar needs the user object, but Layout and Sidebar don't care about it.
+// Yet they all must accept and pass the "user" prop.
+
+const Layout = ({ user }: { user: User }) =&gt; {
+  return &lt;Sidebar user={user} /&gt;;  // just forwarding...
+};
+
+const Sidebar = ({ user }: { user: User }) =&gt; {
+  return &lt;UserMenu user={user} /&gt;;  // just forwarding...
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>The Solution: React Context</strong></h3>
+<p><strong>React Context</strong> lets you share data with any component in the tree without passing props through every intermediate level. It creates a "broadcast channel" — any component can tune in and read the value directly.</p>
+
+<h3 style="color: #76cdd8;"><strong>Three Steps to Use Context</strong></h3>
+<p>Using Context always involves three steps:</p>
+<p><strong>1. Create</strong> — define the context with <code>createContext&lt;T&gt;(defaultValue)</code></p>
+<p><strong>2. Provide</strong> — wrap a subtree with <code>&lt;Context.Provider value={...}&gt;</code></p>
+<p><strong>3. Consume</strong> — call <code>useContext(Context)</code> in any child component</p>
+
+<h3 style="color: #76cdd8;"><strong>Basic Example</strong></h3>
+<p><strong>Step 1: Create the context</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// context/ThemeContext.ts
+import { createContext } from "react";
+
+type Theme = "light" | "dark";
+
+export const ThemeContext = createContext&lt;Theme&gt;("light");
+</code></pre>
+
+<p><strong>Step 2: Provide the value</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import { ThemeContext } from "./context/ThemeContext";
+
+const App = () =&gt; {
+  return (
+    &lt;ThemeContext.Provider value="dark"&gt;
+      &lt;Layout /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+</code></pre>
+
+<p><strong>Step 3: Consume the value</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// components/Header.tsx — consumes context (can be deeply nested)
+import { useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext";
+
+const Header = () =&gt; {
+  const theme = useContext(ThemeContext);
+  return &lt;header className={`header-${theme}`}&gt;My App&lt;/header&gt;;
+};
+</code></pre>
+<p>Notice that <code>Layout</code> doesn't need to know about theme at all — no props drilling! <code>Header</code> reads the value directly from the context, no matter how deeply nested it is.</p>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript Typing</strong></h3>
+<p>The generic parameter of <code>createContext&lt;T&gt;</code> defines the type of the value:</p>
+<p><strong>Simple value:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">const LocaleContext = createContext&lt;string&gt;("");
+</code></pre>
+
+<p><strong>Object value:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">type AuthContextValue = {
+  user: User;
+  logout: () =&gt; void;
+};
+
+const AuthContext = createContext&lt;AuthContextValue&gt;({
+  user: { id: "", name: "" },
+  logout: () =&gt; {},
+});
+</code></pre>
+
+<p><strong>When there's no sensible default</strong> (context MUST be inside a Provider):</p>
+<pre class="prettyprint"><code class="lang-ts">const AuthContext = createContext&lt;AuthContextValue | undefined&gt;(undefined);
+</code></pre>
+<p>Then in the consumer, you need to check for <code>undefined</code> — or better yet, use a custom hook that does it for you (covered in the next topic).</p>
+
+<h3 style="color: #76cdd8;"><strong>About the Default Value</strong></h3>
+<p>The default value passed to <code>createContext</code> is <strong>only used</strong> when a component calls <code>useContext</code> but there is <strong>no matching Provider</strong> above it in the tree. In practice, you almost always wrap your app (or a subtree) with a Provider, so the default is rarely used at runtime. It mainly serves as a TypeScript type hint and a fallback for edge cases.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

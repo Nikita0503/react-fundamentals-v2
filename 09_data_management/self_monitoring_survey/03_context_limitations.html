@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What happens to all consumers when a context value changes?</h4><br/>
+( ) Only the consumers that use the changed field re-render.<br/>
+( ) Nothing — consumers must manually subscribe to updates.<br/>
+(x) They ALL re-render, even if they only use part of the value.<br/>
+( ) Only the closest consumer to the Provider re-renders.<br/>
+<h4 style="color: #474747; font-weight: 600;">When is Context the right choice?</h4><br/>
+( ) For data that changes on every keystroke or scroll event.<br/>
+( ) For complex state with dozens of actions and reducers.<br/>
+(x) For data that changes infrequently — theme, locale, auth status.<br/>
+( ) For caching server responses and managing loading states.<br/>
+<h4 style="color: #474747; font-weight: 600;">When is Context NOT enough?</h4><br/>
+( ) When you need to pass data from parent to child.<br/>
+( ) When you have only two or three components sharing state.<br/>
+( ) When the data is a simple string or boolean.<br/>
+(x) For frequently changing data, complex state with many actions, or when you need selectors.<br/>
+<h4 style="color: #474747; font-weight: 600;">What tools are designed for complex global state management?</h4><br/>
+( ) useState and useReducer — they handle all state needs.<br/>
+( ) React Query and Axios — they manage all client state.<br/>
+( ) useContext with useMemo — it solves all performance issues.<br/>
+(x) Redux Toolkit and Zustand — dedicated state management libraries with selectors and middleware.<br/>

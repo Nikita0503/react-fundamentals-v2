@@ -1,0 +1,156 @@
+<h3 style="color: #76cdd8;"><strong>The Real-World Pattern</strong></h3>
+<p>In real projects, you never use raw <code>createContext</code> + <code>useContext</code> directly in components. Instead, you create a <strong>custom Provider component</strong> and a <strong>custom hook</strong>. This encapsulates the implementation details and provides a clean API.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Pattern (4 Steps)</strong></h3>
+<p><strong>1.</strong> Create context (with <code>undefined</code> default)</p>
+<p><strong>2.</strong> Create a Provider component that holds state</p>
+<p><strong>3.</strong> Create a custom hook that consumes the context (with error handling)</p>
+<p><strong>4.</strong> Export only the Provider and the hook — hide the raw context</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Example: ThemeContext with Toggle</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// context/ThemeContext.tsx
+import { createContext, useContext, useState, ReactNode } from "react";
+
+type Theme = "light" | "dark";
+
+type ThemeContextValue = {
+  theme: Theme;
+  toggleTheme: () =&gt; void;
+};
+
+const ThemeContext = createContext&lt;ThemeContextValue | undefined&gt;(undefined);
+
+// Custom hook — safe access with error if used outside Provider
+export const useTheme = (): ThemeContextValue =&gt; {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+};
+
+// Custom Provider — encapsulates state logic
+export const ThemeProvider = ({ children }: { children: ReactNode }) =&gt; {
+  const [theme, setTheme] = useState&lt;Theme&gt;("light");
+
+  const toggleTheme = () =&gt; {
+    setTheme(prev =&gt; (prev === "light" ? "dark" : "light"));
+  };
+
+  return (
+    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+</code></pre>
+
+<p><strong>Using the Provider in App:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import { ThemeProvider } from "./context/ThemeContext";
+
+const App = () =&gt; (
+  &lt;ThemeProvider&gt;
+    &lt;Layout /&gt;
+  &lt;/ThemeProvider&gt;
+);
+</code></pre>
+
+<p><strong>Consuming in any component — clean, no imports of raw context:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// Any component
+import { useTheme } from "../context/ThemeContext";
+
+const ThemeToggle = () =&gt; {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    &lt;button onClick={toggleTheme}&gt;
+      Current: {theme}. Click to switch.
+    &lt;/button&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why This Pattern Is Better</strong></h3>
+<p><strong>1. Clean consumer API</strong> — the consumer doesn't need to know about the raw Context object, just the hook.</p>
+<p><strong>2. Error handling</strong> — if someone uses <code>useTheme()</code> outside of <code>&lt;ThemeProvider&gt;</code>, they get a clear error message instead of silent <code>undefined</code>.</p>
+<p><strong>3. Encapsulated state logic</strong> — all the <code>useState</code>, handlers, and side effects live inside the Provider component.</p>
+<p><strong>4. Easy to test</strong> — in tests, you can wrap components with a mock Provider that provides controlled values.</p>
+
+<h3 style="color: #76cdd8;"><strong>Another Example: AuthContext</strong></h3>
+<p>The same pattern applies to any domain. Here's the type for an auth context:</p>
+<pre class="prettyprint"><code class="lang-tsx">type User = { id: string; name: string; email: string };
+
+type AuthContextValue = {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) =&gt; Promise&lt;void&gt;;
+  logout: () =&gt; void;
+};
+
+// Same pattern applies:
+// 1. createContext&lt;AuthContextValue | undefined&gt;(undefined)
+// 2. AuthProvider component with useState, login/logout logic
+// 3. useAuth() custom hook with undefined check
+// 4. Export only AuthProvider and useAuth
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Multiple Contexts</strong></h3>
+<p>You can (and should) have separate contexts for separate concerns:</p>
+<pre class="prettyprint"><code class="lang-tsx">const App = () =&gt; (
+  &lt;AuthProvider&gt;
+    &lt;ThemeProvider&gt;
+      &lt;Layout /&gt;
+    &lt;/ThemeProvider&gt;
+  &lt;/AuthProvider&gt;
+);
+</code></pre>
+<p>Each context is independent — changing the theme doesn't re-render components that only consume auth, and vice versa. This separation of concerns keeps your app performant and your code organized.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
