@@ -1,1 +1,23 @@
-TODO
+<h4 style="color: #474747; font-weight: 600;">When should you choose Axios over fetch for a React project?</h4><br/> 
+( ) Always — fetch should never be used
+( ) Never — fetch is always better because it's native
+(x) When you need interceptors, automatic error handling, instances with defaults, and better TypeScript support
+( ) Only when the project uses Node.js on the backend
+
+<h4 style="color: #474747; font-weight: 600;">Which is a best practice when working with Axios?</h4><br/> 
+( ) Use bare axios.get() directly in components for simplicity
+( ) Store the access token in the URL query parameters
+(x) Create an Axios instance with baseURL and interceptors, and use a service layer for API calls
+( ) Disable error throwing to handle all responses in .then()
+
+<h4 style="color: #474747; font-weight: 600;">What is the recommended file structure for API code?</h4><br/> 
+( ) Put all API calls in a single api.ts file
+( ) Define API calls inline inside each component
+(x) Separate into httpClient.ts (instance + interceptors), service files (users.ts, posts.ts), and types.ts
+( ) Create one file per HTTP method (get.ts, post.ts, delete.ts)
+
+<h4 style="color: #474747; font-weight: 600;">Why should you NOT store access tokens in localStorage in production?</h4><br/> 
+( ) localStorage is too slow for token access
+( ) localStorage has a size limit of 1KB
+(x) localStorage is vulnerable to XSS attacks — httpOnly cookies are more secure because JavaScript cannot access them
+( ) localStorage is not supported in modern browsers

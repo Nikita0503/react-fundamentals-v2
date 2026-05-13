@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does axios.isAxiosError() do?</h4><br/> 
+( ) It checks if Axios is installed correctly
+( ) It returns true for any JavaScript error
+(x) It is a type guard that narrows an unknown error to AxiosError, allowing safe access to response, status, and data
+( ) It checks if the request was cancelled
+
+<h4 style="color: #474747; font-weight: 600;">How do you distinguish a network error from a server error in Axios?</h4><br/> 
+( ) Network errors have status 0, server errors have status > 0
+(x) Network errors have no error.response (undefined), server errors have error.response with status and data
+( ) Network errors throw TypeError, server errors throw AxiosError
+( ) You cannot distinguish them — both look the same
+
+<h4 style="color: #474747; font-weight: 600;">What is AbortController used for with Axios?</h4><br/> 
+( ) To abort the entire application when an error occurs
+( ) To cancel all pending requests globally
+(x) To cancel a specific request — typically used in useEffect cleanup to prevent state updates on unmounted components
+( ) To set a timeout for the request
+
+<h4 style="color: #474747; font-weight: 600;">Where should errors be handled in a well-structured application?</h4><br/> 
+( ) Only in components — interceptors should never handle errors
+( ) Only in interceptors — components should never use try/catch
+(x) At two levels: globally in interceptors (network errors, 500s, token refresh) and locally in components (UI-specific errors)
+( ) In a separate error-handling microservice

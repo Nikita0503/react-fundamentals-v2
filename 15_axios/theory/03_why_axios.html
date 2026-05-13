@@ -1,0 +1,163 @@
+<h3 style="color: #76cdd8;"><strong>Why Axios</strong></h3>
+<p><strong>Axios</strong> is a promise-based HTTP client for both browser and Node.js. It wraps HTTP requests with a developer-friendly API that eliminates the boilerplate of raw fetch.</p>
+
+<h3 style="color: #76cdd8;"><strong>Installation</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">npm install axios</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why Axios over raw fetch</strong></h3>
+<ul>
+<li><strong>Automatic JSON parsing</strong> — <code>response.data</code> is already parsed, no <code>.json()</code> call needed</li>
+<li><strong>Automatic error throwing</strong> — 4xx/5xx responses go to <code>catch</code> automatically</li>
+<li><strong>Request/response interceptors</strong> — inject auth tokens, handle errors globally</li>
+<li><strong>Request cancellation</strong> — AbortController support built-in</li>
+<li><strong>Timeout configuration</strong> — simple <code>timeout</code> option</li>
+<li><strong>Instance creation</strong> — pre-configure baseURL, headers, defaults</li>
+<li><strong>Better TypeScript support</strong> — generics for typing responses</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>fetch vs axios — Same Request</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// fetch — verbose
+const response = await fetch("/api/users");
+if (!response.ok) throw new Error(`${response.status}`);
+const users: User[] = await response.json();
+
+// axios — concise
+const { data: users } = await axios.get&lt;User[]&gt;("/api/users");
+// That's it. Errors auto-throw, JSON auto-parsed.</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Axios Methods</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import axios from "axios";
+
+// GET — retrieve data
+axios.get&lt;T&gt;(url, config?)
+
+// POST — create resource
+axios.post&lt;T&gt;(url, data?, config?)
+
+// PUT — replace resource
+axios.put&lt;T&gt;(url, data?, config?)
+
+// PATCH — partial update
+axios.patch&lt;T&gt;(url, data?, config?)
+
+// DELETE — remove resource
+axios.delete&lt;T&gt;(url, config?)</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript Generics — Type the Response</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// The generic parameter types response.data
+const { data } = await axios.get&lt;User[]&gt;("/api/users");
+// data is typed as User[]
+
+const { data } = await axios.get&lt;User&gt;("/api/users/1");
+// data is typed as User</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>POST/PUT with Body</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">interface CreateUserDto {
+  name: string;
+  email: string;
+}
+
+// POST — second argument is the request body (auto-serialized to JSON)
+const { data } = await axios.post&lt;User&gt;("/api/users", {
+  name: "Alice",
+  email: "alice@test.com",
+});
+
+// PUT — replace entire resource
+const { data } = await axios.put&lt;User&gt;("/api/users/1", {
+  name: "Alice Updated",
+  email: "alice.new@test.com",
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full Component Example</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+import axios from "axios";
+
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
+
+const PostList = () => {
+  const [posts, setPosts] = useState&lt;Post[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const { data } = await axios.get&lt;Post[]&gt;(
+          "https://jsonplaceholder.typicode.com/posts"
+        );
+        setPosts(data);
+      } catch (err) {
+        setError("Failed to load posts");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;{error}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

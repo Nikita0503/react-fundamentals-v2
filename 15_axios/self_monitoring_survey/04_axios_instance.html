@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Why should you create an Axios instance instead of using axios directly?</h4><br/> 
+( ) It makes requests faster
+( ) It is required by TypeScript
+(x) To avoid repeating baseURL, headers, and timeout on every request
+( ) To enable JSON parsing
+
+<h4 style="color: #474747; font-weight: 600;">What does the baseURL option do in axios.create()?</h4><br/> 
+( ) It validates that the URL is correct before sending
+(x) It is prepended to all relative URLs used with that instance
+( ) It sets the URL that will be used for all requests regardless of what you pass
+( ) It configures CORS for the specified domain
+
+<h4 style="color: #474747; font-weight: 600;">How do you make a request using a custom Axios instance?</h4><br/> 
+( ) axios.get("/users", { instance: httpClient })
+( ) httpClient.fetch("/users")
+(x) httpClient.get&lt;User[]&gt;("/users") — call methods directly on the instance
+( ) axios.use(httpClient).get("/users")
+
+<h4 style="color: #474747; font-weight: 600;">What is the service layer pattern in API architecture?</h4><br/> 
+( ) A middleware that runs between the client and server
+(x) Grouping related API calls into an object (e.g., usersApi.getAll(), usersApi.create()) to keep components clean
+( ) A design pattern that requires a separate server for each API endpoint
+( ) A caching layer that stores all API responses

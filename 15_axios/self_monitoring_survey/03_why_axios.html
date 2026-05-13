@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does Axios do automatically that fetch does not?</h4><br/> 
+( ) Makes requests faster by using WebSockets
+(x) Parses JSON responses and throws errors on 4xx/5xx status codes
+( ) Caches all responses in localStorage
+( ) Handles CORS issues on the client side
+
+<h4 style="color: #474747; font-weight: 600;">How do you type an Axios response in TypeScript?</h4><br/> 
+( ) axios.get("/users") as User[]
+( ) axios.get("/users", { type: User[] })
+(x) axios.get&lt;User[]&gt;("/users") — using a generic type parameter
+( ) axios.get("/users").then((data: User[]) => data)
+
+<h4 style="color: #474747; font-weight: 600;">What does axios.get&lt;T&gt;(url) return?</h4><br/> 
+( ) A plain JavaScript object of type T
+( ) A Response object like fetch
+(x) A Promise that resolves to an AxiosResponse with data typed as T
+( ) A string that needs to be parsed with JSON.parse()
+
+<h4 style="color: #474747; font-weight: 600;">When making a POST request with Axios, how do you send the request body?</h4><br/> 
+( ) axios.post(url, { body: JSON.stringify(data) })
+(x) axios.post(url, data) — pass the object directly as the second argument
+( ) axios.post(url, { data: data })
+( ) axios.post(url).send(data)

@@ -1,0 +1,141 @@
+<h3 style="color: #76cdd8;"><strong>Fetch API</strong></h3>
+<p><strong>fetch</strong> is the native browser API for making HTTP requests. It requires no installation — it's built into every modern browser.</p>
+
+<h3 style="color: #76cdd8;"><strong>Basic Syntax</strong></h3>
+<p><code>fetch(url, options)</code> returns a <code>Promise&lt;Response&gt;</code>. The Response object provides:</p>
+<ul>
+<li><code>response.ok</code> — <code>true</code> if status is 200-299</li>
+<li><code>response.status</code> — the HTTP status code (200, 404, etc.)</li>
+<li><code>response.json()</code> — parses the body as JSON (returns a Promise)</li>
+<li><code>response.text()</code> — returns the body as plain text</li>
+</ul>
+
+<p><strong>Important:</strong> fetch does <strong>NOT</strong> reject on HTTP errors (4xx, 5xx). It only rejects on network failures (no internet, DNS error). You must check <code>response.ok</code> manually.</p>
+
+<h3 style="color: #76cdd8;"><strong>GET Request</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const fetchUsers = async (): Promise&lt;User[]&gt; => {
+  const response = await fetch("https://api.example.com/users");
+
+  if (!response.ok) {
+    throw new Error(`HTTP error: ${response.status}`);
+  }
+
+  return response.json();
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>POST Request</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">interface CreateUserDto {
+  name: string;
+  email: string;
+}
+
+const createUser = async (user: CreateUserDto): Promise&lt;User&gt; => {
+  const response = await fetch("https://api.example.com/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error: ${response.status}`);
+  }
+
+  return response.json();
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Using fetch in a React Component</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+
+const UserList = () => {
+  const [users, setUsers] = useState&lt;User[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const response = await fetch("https://api.example.com/users");
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+        const data: User[] = await response.json();
+        setUsers(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {users.map((user) =&gt; (
+        &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Limitations of fetch</strong></h3>
+<ul>
+<li>No automatic JSON parsing — you must call <code>.json()</code> manually</li>
+<li>No request/response interceptors</li>
+<li>No built-in timeout</li>
+<li>No automatic error throwing on 4xx/5xx — you must check <code>response.ok</code></li>
+<li>Verbose for repeated patterns — you repeat headers, base URL, and auth logic on every request</li>
+</ul>
+
+<p><strong>Conclusion:</strong> fetch is fine for simple cases, but for production apps with authentication, centralized error handling, and many endpoints — a dedicated HTTP library helps reduce boilerplate and prevent bugs.</p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

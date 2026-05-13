@@ -1,0 +1,122 @@
+<h3 style="color: #76cdd8;"><strong>HTTP Basics</strong></h3>
+<p><strong>HTTP (HyperText Transfer Protocol)</strong> is the foundation of client-server communication on the web. Every time your React app fetches data from a server, it uses HTTP.</p>
+
+<h3 style="color: #76cdd8;"><strong>Request Structure</strong></h3>
+<p>Every HTTP request consists of:</p>
+<ul>
+<li><strong>Method</strong> — what action to perform (GET, POST, PUT, etc.)</li>
+<li><strong>URL</strong> — the address of the resource</li>
+<li><strong>Headers</strong> — metadata (Content-Type, Authorization, etc.)</li>
+<li><strong>Body</strong> — data sent to the server (not all methods have a body)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Response Structure</strong></h3>
+<p>Every HTTP response consists of:</p>
+<ul>
+<li><strong>Status code</strong> — numeric indicator of the result (200, 404, 500, etc.)</li>
+<li><strong>Headers</strong> — metadata about the response</li>
+<li><strong>Body</strong> — the data returned (usually JSON)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>HTTP Methods</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Method</th><th>Purpose</th><th>Has Body?</th></tr>
+<tr><td>GET</td><td>Retrieve data</td><td>No</td></tr>
+<tr><td>POST</td><td>Create a new resource</td><td>Yes</td></tr>
+<tr><td>PUT</td><td>Replace entire resource</td><td>Yes</td></tr>
+<tr><td>PATCH</td><td>Partial update of a resource</td><td>Yes</td></tr>
+<tr><td>DELETE</td><td>Remove a resource</td><td>Usually no</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Status Codes</strong></h3>
+<p><strong>2xx — Success:</strong></p>
+<ul>
+<li><strong>200 OK</strong> — request succeeded</li>
+<li><strong>201 Created</strong> — new resource was created</li>
+<li><strong>204 No Content</strong> — success, but no body in response</li>
+</ul>
+<p><strong>3xx — Redirect:</strong></p>
+<ul>
+<li><strong>301 Moved Permanently</strong> — resource has a new URL</li>
+<li><strong>304 Not Modified</strong> — cached version is still valid</li>
+</ul>
+<p><strong>4xx — Client Error:</strong></p>
+<ul>
+<li><strong>400 Bad Request</strong> — malformed request</li>
+<li><strong>401 Unauthorized</strong> — authentication required</li>
+<li><strong>403 Forbidden</strong> — authenticated but not allowed</li>
+<li><strong>404 Not Found</strong> — resource does not exist</li>
+<li><strong>422 Unprocessable Entity</strong> — validation failed</li>
+</ul>
+<p><strong>5xx — Server Error:</strong></p>
+<ul>
+<li><strong>500 Internal Server Error</strong> — something broke on the server</li>
+<li><strong>503 Service Unavailable</strong> — server is temporarily down</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Common Headers</strong></h3>
+<ul>
+<li><strong>Content-Type</strong> — describes the format of the body (e.g., <code>application/json</code>)</li>
+<li><strong>Authorization</strong> — carries authentication credentials (e.g., <code>Bearer &lt;token&gt;</code>)</li>
+<li><strong>Accept</strong> — tells the server what format the client expects in the response</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What is REST API</strong></h3>
+<p><strong>REST (Representational State Transfer)</strong> is an architectural style for APIs:</p>
+<ul>
+<li><strong>Resources as URLs</strong> — each entity has a unique address (e.g., <code>/users</code>, <code>/users/123</code>)</li>
+<li><strong>HTTP methods as operations</strong> — GET reads, POST creates, PUT/PATCH updates, DELETE removes</li>
+<li><strong>Stateless</strong> — each request contains all information needed; the server doesn't store session state between requests</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>JSON as the Standard Format</strong></h3>
+<p><strong>JSON (JavaScript Object Notation)</strong> is the standard data format for REST APIs. Both request bodies and response bodies are typically JSON:</p>
+<pre class="prettyprint"><code class="lang-ts">// Example JSON response from GET /users/1
+{
+  "id": 1,
+  "name": "Alice",
+  "email": "alice@example.com"
+}</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

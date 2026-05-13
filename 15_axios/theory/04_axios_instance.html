@@ -1,0 +1,144 @@
+<h3 style="color: #76cdd8;"><strong>Axios Instance</strong></h3>
+<p>In real projects, you don't use bare <code>axios.get()</code> with a full URL every time. Instead, you create a <strong>pre-configured instance</strong> that holds your base URL, timeout, and default headers.</p>
+
+<h3 style="color: #76cdd8;"><strong>Creating an Instance</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// api/httpClient.ts
+import axios from "axios";
+
+export const httpClient = axios.create({
+  baseURL: "https://api.example.com",
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Using the Instance</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import { httpClient } from "./api/httpClient";
+
+// Request goes to https://api.example.com/users
+const { data } = await httpClient.get&lt;User[]&gt;("/users");
+
+// Request goes to https://api.example.com/users/1
+const { data } = await httpClient.get&lt;User&gt;("/users/1");</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Multiple Instances for Different APIs</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// api/httpClient.ts
+import axios from "axios";
+
+export const mainApi = axios.create({
+  baseURL: "https://api.example.com",
+  timeout: 10000,
+});
+
+export const analyticsApi = axios.create({
+  baseURL: "https://analytics.example.com",
+  timeout: 5000,
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Instance Config Options</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Option</th><th>Description</th></tr>
+<tr><td><code>baseURL</code></td><td>Prepended to all relative URLs</td></tr>
+<tr><td><code>timeout</code></td><td>Milliseconds before request is aborted</td></tr>
+<tr><td><code>headers</code></td><td>Default headers sent with every request</td></tr>
+<tr><td><code>withCredentials</code></td><td>Send cookies with cross-origin requests</td></tr>
+<tr><td><code>params</code></td><td>Default query parameters</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Recommended File Structure</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">src/
+  api/
+    httpClient.ts      // axios instance + interceptors
+    users.ts           // user-related API functions
+    posts.ts           // post-related API functions
+    types.ts           // API request/response types</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>API Service Layer Pattern</strong></h3>
+<p>Group related API calls into a service object. This keeps your components clean — they call <code>usersApi.getAll()</code> instead of knowing about URLs and HTTP methods:</p>
+<pre class="prettyprint"><code class="lang-ts">// api/users.ts
+import { httpClient } from "./httpClient";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface CreateUserDto {
+  name: string;
+  email: string;
+}
+
+interface UpdateUserDto {
+  name?: string;
+  email?: string;
+}
+
+export const usersApi = {
+  getAll: () =>
+    httpClient.get&lt;User[]&gt;("/users"),
+
+  getById: (id: string) =>
+    httpClient.get&lt;User&gt;(`/users/${id}`),
+
+  create: (data: CreateUserDto) =>
+    httpClient.post&lt;User&gt;("/users", data),
+
+  update: (id: string, data: UpdateUserDto) =>
+    httpClient.put&lt;User&gt;(`/users/${id}`, data),
+
+  delete: (id: string) =>
+    httpClient.delete(`/users/${id}`),
+};</code></pre>
+
+<p>Now in your component:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { usersApi } from "./api/users";
+
+// Clean and readable
+const { data } = await usersApi.getAll();
+const { data } = await usersApi.getById("123");
+await usersApi.create({ name: "Alice", email: "alice@test.com" });</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

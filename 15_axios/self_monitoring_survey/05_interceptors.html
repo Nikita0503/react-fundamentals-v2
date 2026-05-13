@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">When does a request interceptor run?</h4><br/> 
+( ) After the response is received from the server
+( ) Only when an error occurs
+(x) Before every request is sent to the server
+( ) Only on the first request made by the instance
+
+<h4 style="color: #474747; font-weight: 600;">What does a response interceptor catch?</h4><br/> 
+( ) Only network errors
+( ) Only successful responses
+(x) Both successful responses and errors — you define handlers for each case
+( ) Only 401 Unauthorized errors
+
+<h4 style="color: #474747; font-weight: 600;">In the token refresh flow, what happens when the server returns 401?</h4><br/> 
+( ) The user is immediately logged out
+( ) The request is silently dropped
+(x) The interceptor attempts to refresh the token and retry the original request
+( ) The error is ignored and the response is returned as null
+
+<h4 style="color: #474747; font-weight: 600;">What does the _retry flag prevent in the refresh interceptor?</h4><br/> 
+( ) It prevents the request from being sent more than once
+( ) It prevents the token from being stored in localStorage
+(x) It prevents an infinite loop — ensures only one refresh attempt per failed request
+( ) It prevents other interceptors from running

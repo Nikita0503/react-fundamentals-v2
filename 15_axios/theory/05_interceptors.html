@@ -1,0 +1,130 @@
+<h3 style="color: #76cdd8;"><strong>Interceptors</strong></h3>
+<p><strong>Interceptors</strong> are middleware functions that run <strong>before every request</strong> or <strong>after every response</strong>. They let you centralize cross-cutting concerns like authentication and error handling.</p>
+
+<h3 style="color: #76cdd8;"><strong>Request Interceptor — Inject Auth Token</strong></h3>
+<p>Instead of manually adding the Authorization header to every request, a request interceptor does it automatically:</p>
+<pre class="prettyprint"><code class="lang-ts">httpClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});</code></pre>
+<p>Now every request made through <code>httpClient</code> automatically carries the token — no manual header setting needed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Response Interceptor — Token Refresh</strong></h3>
+<p>When an access token expires, the server returns <strong>401</strong>. A response interceptor can catch this, refresh the token, and retry the original request — all transparently:</p>
+<pre class="prettyprint"><code class="lang-ts">httpClient.interceptors.response.use(
+  (response) => response, // success — pass through
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const { data } = await axios.post&lt;{ accessToken: string }&gt;(
+          "https://api.example.com/auth/refresh",
+          { refreshToken: localStorage.getItem("refreshToken") }
+        );
+
+        localStorage.setItem("accessToken", data.accessToken);
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
+        return httpClient(originalRequest);
+      } catch {
+        // Refresh failed — logout user
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>How the Refresh Flow Works</strong></h3>
+<ol>
+<li>A request fails with <strong>401 Unauthorized</strong></li>
+<li>The response interceptor catches the error</li>
+<li>It sends a refresh token to get a new access token</li>
+<li>If refresh succeeds → retries the original request with the new token</li>
+<li>If refresh fails → logs the user out and redirects to login</li>
+<li>The <code>_retry</code> flag prevents an infinite loop (only one retry attempt per request)</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Queue Pattern (Advanced)</strong></h3>
+<p>When multiple requests fail with 401 simultaneously, you don't want to refresh the token multiple times. An advanced pattern uses a <strong>promise queue</strong> — all failed requests wait for a single refresh call, then retry together. This is a production optimization worth knowing exists, but the basic pattern above covers most cases.</p>
+
+<h3 style="color: #76cdd8;"><strong>Other Use Cases for Interceptors</strong></h3>
+<ul>
+<li><strong>Logging</strong> — log request/response details in development</li>
+<li><strong>Correlation IDs</strong> — add a unique ID to every request for tracing</li>
+<li><strong>Data transformation</strong> — transform response data globally (e.g., convert dates)</li>
+<li><strong>Global loading indicator</strong> — show/hide a spinner on every request</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-ts">// Example: logging interceptor (development only)
+httpClient.interceptors.request.use((config) => {
+  console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
+  return config;
+});
+
+httpClient.interceptors.response.use(
+  (response) => {
+    console.log(`[API] ${response.status} ${response.config.url}`);
+    return response;
+  },
+  (error) => {
+    console.error(`[API] Error: ${error.response?.status} ${error.config?.url}`);
+    return Promise.reject(error);
+  }
+);</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

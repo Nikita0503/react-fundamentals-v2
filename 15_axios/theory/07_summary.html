@@ -1,45 +1,128 @@
-<h3 style="color: #76cdd8;"><strong>Summary</strong></h3>
-<p>In this module, we covered working with the Axios library, which is used for interacting with REST API. This knowledge will be sufficient for implementing work with various endpoints in projects of different scales.</p>
-<p><img src="blob:https://studio.elearn.epam.com/9e958bd0-e9a5-47d3-87b9-41a0873c14d7" alt="" /></p>
-<p>Possible questions:</p>
-<p><strong>"On the Internet, there are code fragments where interceptors are configured directly in axios itself, without creating an axiosInstance. Why create them at all then?"</strong></p>
-<p>Answer - in some projects, not 1 server is used for REST API interaction, but several. Each requires different request configuration, so different instances are created. Using instances makes the code predictable. You may need to make a request to an API that doesn't require extra headers or other settings, for which you can use axios directly, without an instance (instead of fetch).</p>
+<h3 style="color: #76cdd8;"><strong>Summary & Cheat Sheet</strong></h3>
+
+<h3 style="color: #76cdd8;"><strong>HTTP Methods</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Method</th><th>Purpose</th><th>Has Body?</th></tr>
+<tr><td>GET</td><td>Retrieve data</td><td>No</td></tr>
+<tr><td>POST</td><td>Create new resource</td><td>Yes</td></tr>
+<tr><td>PUT</td><td>Replace entire resource</td><td>Yes</td></tr>
+<tr><td>PATCH</td><td>Partial update</td><td>Yes</td></tr>
+<tr><td>DELETE</td><td>Remove resource</td><td>Usually no</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Status Codes Quick Reference</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>200</td><td>OK</td></tr>
+<tr><td>201</td><td>Created</td></tr>
+<tr><td>204</td><td>No Content</td></tr>
+<tr><td>400</td><td>Bad Request</td></tr>
+<tr><td>401</td><td>Unauthorized</td></tr>
+<tr><td>403</td><td>Forbidden</td></tr>
+<tr><td>404</td><td>Not Found</td></tr>
+<tr><td>500</td><td>Internal Server Error</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>fetch vs axios</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Feature</th><th>fetch</th><th>axios</th></tr>
+<tr><td>JSON parsing</td><td>Manual (<code>.json()</code>)</td><td>Automatic (<code>response.data</code>)</td></tr>
+<tr><td>Error on 4xx/5xx</td><td>No (must check <code>response.ok</code>)</td><td>Yes (auto-throws)</td></tr>
+<tr><td>Interceptors</td><td>No</td><td>Yes</td></tr>
+<tr><td>Timeout</td><td>No built-in</td><td>Simple <code>timeout</code> option</td></tr>
+<tr><td>Instance with defaults</td><td>No</td><td>Yes (<code>axios.create()</code>)</td></tr>
+<tr><td>TypeScript generics</td><td>Manual casting</td><td>Built-in (<code>get&lt;T&gt;()</code>)</td></tr>
+<tr><td>Cancel requests</td><td>AbortController</td><td>AbortController</td></tr>
+<tr><td>Install required</td><td>No (native)</td><td>Yes (<code>npm install axios</code>)</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Axios Instance Config</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">const httpClient = axios.create({
+  baseURL: "https://api.example.com",  // prepended to all URLs
+  timeout: 10000,                       // ms before abort
+  headers: {                            // default headers
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,                // send cookies cross-origin
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Interceptor Patterns</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">// Request: inject auth token
+httpClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Response: refresh token on 401
+httpClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true;
+      // refresh token logic...
+      return httpClient(error.config);
+    }
+    return Promise.reject(error);
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Recommended Architecture</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">src/api/
+  httpClient.ts     // axios instance + interceptors
+  users.ts          // usersApi service
+  posts.ts          // postsApi service
+  types.ts          // API response/request types</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Best Practices</strong></h3>
+<ul>
+<li><strong>Always create an instance</strong> — never use bare <code>axios.get()</code> in components</li>
+<li><strong>Type your responses</strong> — use generics: <code>httpClient.get&lt;User[]&gt;("/users")</code></li>
+<li><strong>Handle errors at two levels</strong> — global (interceptor) + local (component)</li>
+<li><strong>Cancel requests on unmount</strong> — use AbortController in useEffect cleanup</li>
+<li><strong>Use a service layer</strong> — group API calls into service objects (<code>usersApi</code>, <code>postsApi</code>)</li>
+<li><strong>Security note:</strong> Don't store tokens in localStorage in production — use httpOnly cookies instead. localStorage is vulnerable to XSS attacks.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What's Next</strong></h3>
+<p>In real applications, Axios is often combined with <strong>React Query (TanStack Query)</strong> or <strong>RTK Query</strong> for:</p>
+<ul>
+<li>Automatic caching and cache invalidation</li>
+<li>Request deduplication (same request made by multiple components)</li>
+<li>Automatic refetching (on window focus, on interval)</li>
+<li>Built-in loading/error/success states</li>
+<li>Optimistic updates</li>
+</ul>
+<p>Understanding raw Axios patterns is the foundation — React Query builds on top of them.</p>
+
 <style><!--
 .row-container {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
-    
     .row {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 48%;
     }
-    
     .row img {
         width: 200px;
         height: auto;
     }
-
-
-  
   	@media only screen and (max-width: 500px) {
     	.img-row-container {
         	align-items: center;
           	flex-direction: column;
     	}
-      
       	.img-row {
         	width: 90%;
         }
-      
       	.img-row img {
         	width: 90%;
           margin-bottom:10px;
         }
- 
  .code-background {
     position: relative;
     padding: 0 18px;
@@ -54,4 +137,3 @@
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>

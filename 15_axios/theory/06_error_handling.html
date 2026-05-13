@@ -1,0 +1,167 @@
+<h3 style="color: #76cdd8;"><strong>Error Handling</strong></h3>
+<p>Proper error handling is essential — users need feedback when something goes wrong, and developers need debugging information. Axios provides structured error objects that make this straightforward.</p>
+
+<h3 style="color: #76cdd8;"><strong>AxiosError Structure</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import axios, { AxiosError } from "axios";
+
+interface ApiErrorResponse {
+  message: string;
+  errors?: Record&lt;string, string[]&gt;;
+}
+
+try {
+  const { data } = await httpClient.get&lt;User&gt;("/users/123");
+} catch (error) {
+  if (axios.isAxiosError&lt;ApiErrorResponse&gt;(error)) {
+    // Typed error response
+    console.log(error.response?.status);       // 404
+    console.log(error.response?.data.message); // "User not found"
+    console.log(error.code);                   // "ERR_BAD_REQUEST"
+  }
+}</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>axios.isAxiosError() — Type Guard</strong></h3>
+<p><code>axios.isAxiosError(error)</code> is a type guard that narrows the <code>unknown</code> error to <code>AxiosError</code>. Always use it in catch blocks to safely access Axios-specific properties.</p>
+
+<h3 style="color: #76cdd8;"><strong>Error Categories</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<tr><th>Category</th><th>How to Detect</th><th>Example</th></tr>
+<tr><td>Network error (no response)</td><td><code>error.response</code> is undefined, <code>error.code === "ERR_NETWORK"</code></td><td>No internet, DNS failure</td></tr>
+<tr><td>Timeout</td><td><code>error.code === "ECONNABORTED"</code></td><td>Server took too long</td></tr>
+<tr><td>Server error (has response)</td><td><code>error.response.status</code> and <code>error.response.data</code></td><td>404, 500, validation errors</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Centralized Error Handling in Interceptor</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">import { AxiosError } from "axios";
+
+interface ApiErrorResponse {
+  message: string;
+}
+
+httpClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError&lt;ApiErrorResponse&gt;) => {
+    if (!error.response) {
+      // Network error — no response from server
+      console.error("Network error — check your connection");
+    } else if (error.response.status >= 500) {
+      // Server error
+      console.error("Server error — try again later");
+    }
+
+    return Promise.reject(error);
+  }
+);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Per-Request Error Handling in Components</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+import axios from "axios";
+import { usersApi } from "./api/users";
+
+const UserProfile = () => {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  const loadUser = async () => {
+    try {
+      const { data } = await usersApi.getById("123");
+      setUser(data);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message ?? "Something went wrong");
+      }
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      {error && &lt;p style={{ color: "red" }}&gt;{error}&lt;/p&gt;}
+      {user && &lt;p&gt;{user.name}&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Request Cancellation with AbortController</strong></h3>
+<p>When a component unmounts before a request completes, you should cancel the request to avoid setting state on an unmounted component:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+import axios from "axios";
+import { httpClient } from "./api/httpClient";
+
+const UserList = () => {
+  const [users, setUsers] = useState&lt;User[]&gt;([]);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    httpClient
+      .get&lt;User[]&gt;("/users", { signal: controller.signal })
+      .then(({ data }) => setUsers(data))
+      .catch((err) => {
+        if (!axios.isCancel(err)) {
+          setError("Failed to load users");
+        }
+      });
+
+    return () => controller.abort(); // cleanup on unmount
+  }, []);
+
+  return (
+    &lt;ul&gt;
+      {users.map((user) =&gt; (
+        &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Two Levels of Error Handling</strong></h3>
+<p>In production apps, errors are handled at two levels:</p>
+<ul>
+<li><strong>Global (interceptor)</strong> — handles network errors, 500s, token refresh, logging</li>
+<li><strong>Local (component)</strong> — handles specific errors relevant to the UI (show validation messages, "not found" states)</li>
+</ul>
+<p><strong>Note:</strong> In production, error handling is often combined with React Query (TanStack Query), which manages loading/error states automatically. But understanding the raw patterns is essential before using abstractions.</p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

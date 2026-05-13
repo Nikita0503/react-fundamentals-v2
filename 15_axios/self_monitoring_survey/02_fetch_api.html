@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Does fetch reject its Promise when the server returns a 404 status?</h4><br/> 
+( ) Yes, fetch rejects on any non-2xx status
+(x) No, fetch only rejects on network failures — you must check response.ok manually
+( ) Yes, but only for 4xx errors, not 5xx
+( ) It depends on the browser implementation
+
+<h4 style="color: #474747; font-weight: 600;">What does response.json() return?</h4><br/> 
+( ) A parsed JavaScript object directly
+(x) A Promise that resolves to the parsed JSON data
+( ) A string representation of the JSON
+( ) The raw response body as bytes
+
+<h4 style="color: #474747; font-weight: 600;">How do you check if a fetch response was successful?</h4><br/> 
+( ) Check if response.status === "success"
+( ) Check if response.data is not null
+(x) Check response.ok (true when status is 200-299)
+( ) Wrap it in try/catch — fetch throws on errors
+
+<h4 style="color: #474747; font-weight: 600;">Which of the following is a limitation of the fetch API?</h4><br/> 
+( ) It cannot make POST requests
+( ) It does not support async/await
+(x) It has no built-in request/response interceptors or timeout configuration
+( ) It cannot send JSON data in the request body
