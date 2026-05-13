@@ -1,20 +1,43 @@
-<h3 style="color: #76cdd8;"><strong>useState</strong></h3>
-<p>Programming in React does not involve using regular variables:</p>
-<pre class="prettyprint"><code class="lang-ts">let count: number = 0;
-count = count + 1;</code></pre>
-<p>This approach is used in imperative programming (in regular programming, for example using Java). In React components, <strong>"reactive" variables</strong> are used. They are created using hooks. You can create a variable in a functional component using the <strong>useState</strong> hook.</p>
-<p>The <strong>useState</strong> hook is one of the built-in hooks in React that is used to add state (variables) to functional components. It allows storing and updating state values in functional components, which was previously only possible using class components.</p>
-<p>Here is an example of using the useState hook in a functional component:</p>
-<pre class="prettyprint"><code class="lang-tsx">// Counter.tsx
-import React, { useState } from 'react';
+<h3 style="color: #76cdd8;"><strong>What is State?</strong></h3>
+<p><span style="color: #76cdd8;">State</span> is data that can change over time and triggers a <strong>re-render</strong> when it does. When state changes, React re-executes the component function and updates the UI to reflect the new data.</p>
 
-const Counter = () =&gt; {
-  // Using the useState hook to create state with a default value of 0
+<h3 style="color: #76cdd8;"><strong>Why Not Regular Variables?</strong></h3>
+<p>A regular <code>let</code> variable doesn't work for UI state because:</p>
+<ul>
+<li>It <strong>resets</strong> on every render — the component function runs again, and the variable is re-initialized.</li>
+<li>Changing it <strong>doesn't trigger a re-render</strong> — React has no way to know the value changed.</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-tsx">// ❌ This doesn't work — variable resets on every render
+const Counter = () => {
+  let count = 0;
+  const increment = () => { count += 1; }; // UI won't update
+  return &lt;p&gt;Count: {count}&lt;/p&gt;;
+};</code></pre>
+
+<p>No matter how many times you click, the UI will always show <code>Count: 0</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>useState Syntax</strong></h3>
+<p>React provides the <code>useState</code> hook to solve this problem:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const [value, setValue] = useState(initialValue);</code></pre>
+
+<p><strong>What's happening here:</strong></p>
+<ul>
+<li><code>useState(initialValue)</code> — returns an array with two elements.</li>
+<li><code>[value, setValue]</code> — array destructuring to name them. <code>value</code> is the current state, <code>setValue</code> is the function to update it.</li>
+<li><strong>Naming convention:</strong> <code>value</code> / <code>setValue</code> — e.g., <code>count</code> / <code>setCount</code>, <code>name</code> / <code>setName</code>.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Working Counter Example</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+
+const Counter = () => {
   const [count, setCount] = useState(0);
 
-  // Function to increment the counter value
-  const increment = () =&gt; {
-    setCount(count + 1);
+  const increment = () => {
+    setCount(count + 1); // tells React: "new value is count + 1, please re-render"
   };
 
   return (
@@ -23,18 +46,59 @@ const Counter = () =&gt; {
       &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
     &lt;/div&gt;
   );
-};
+};</code></pre>
 
-export default Counter;</code></pre>
-<p>In this example, we use the useState hook to create state with a default value of 0. The useState hook returns an <strong>array</strong>, where the first element is the <strong>current state value</strong> (count), and the second element is the <strong>function to update the state</strong> (setCount). We use this setCount function to change the count state value on each button click.</p>
-<p>Thus, the useState hook allows us to store and update state in functional components, making them simpler and more understandable.</p>
-<p>Changing the component's state forces it to re-render (<strong>rerender</strong>), in order to display up-to-date data.</p>
-<p>The algorithm of how a component thinks:</p>
-<p>1) The component displays markup with <strong>initial data</strong>. "Count: 0". Since the initial value of count = 0.</p>
-<p>2) Clicking the button calls the increment function, where setCount(count + 1) is called. This means that in setCount (the function to change the count value), we pass the current <strong>count value incremented by 1</strong>.</p>
-<p>3) The component understands that the <strong>count value has changed</strong> (count = 1), so it must re-render with up-to-date data.</p>
-<p>4) The component <strong>re-renders</strong> and displays markup with up-to-date (updated) data. "Count: 1". Since the count value = 1.</p>
-<p></p>
+<p>Now clicking the button updates the UI because <code>setCount</code> tells React to re-render with the new value.</p>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript: When to Use the Generic useState&lt;T&gt;()</strong></h3>
+<p><strong>NOT needed</strong> when TypeScript can infer the type from the initial value:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const [count, setCount] = useState(0);        // infers number
+const [name, setName] = useState("");          // infers string
+const [isOpen, setIsOpen] = useState(true);    // infers boolean</code></pre>
+
+<p><strong>NEEDED</strong> when the initial value doesn't reveal the full type:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">// Will be User later, but starts as null
+const [user, setUser] = useState&lt;User | null&gt;(null);
+
+// Empty array — TS can't infer element type
+const [items, setItems] = useState&lt;string[]&gt;([]);
+
+// Union type — initial value is just one variant
+const [status, setStatus] = useState&lt;"idle" | "loading" | "error"&gt;("idle");</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Multiple useState in One Component</strong></h3>
+<p>Each piece of state is independent. You can have as many <code>useState</code> calls as you need:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const SignupForm = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState&lt;number | null&gt;(null);
+  // Each piece of state is independent
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>When to Use State vs a Regular Variable</strong></h3>
+<ul>
+<li><strong>Use state:</strong> when the value should be displayed in UI and can change over time.</li>
+<li><strong>Use a regular variable/const:</strong> for derived values, calculations, event handler logic that doesn't need to persist between renders.</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-tsx">const ProductList = () => {
+  const [products, setProducts] = useState&lt;Product[]&gt;([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // ✅ Derived value — no state needed
+  const filteredProducts = products.filter(p =&gt;
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // ✅ Regular const — doesn't need to persist between renders
+  const hasResults = filteredProducts.length &gt; 0;
+
+  return (/* ... */);
+};</code></pre>
+
 <style><!--
 .row-container {
         display: flex;
@@ -54,8 +118,6 @@ export default Counter;</code></pre>
         height: auto;
     }
 
-
-  
   	@media only screen and (max-width: 500px) {
     	.img-row-container {
         	align-items: center;
@@ -85,5 +147,3 @@ export default Counter;</code></pre>
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>
-<p></p>

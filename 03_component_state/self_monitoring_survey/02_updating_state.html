@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">When should you use the functional updater setState(prev => ...)?</h4><br/>
+( ) Always — it's the only correct way to update state
+( ) Only when updating arrays
+(x) When the new value depends on the previous value
+( ) Only inside useEffect
+
+<h4 style="color: #474747; font-weight: 600;">What happens if you call setCount(count + 1) three times in one handler?</h4><br/>
+( ) Count increments by 3 as expected
+( ) React throws an error for multiple setState calls
+(x) Only increments by 1 — stale closure
+( ) The component re-renders three times
+
+<h4 style="color: #474747; font-weight: 600;">Can you read the new state value immediately after calling setState?</h4><br/>
+( ) Yes — the variable updates instantly
+( ) Yes — but only inside async functions
+(x) No — state updates are asynchronous
+( ) Yes — if you use the functional updater form
+
+<h4 style="color: #474747; font-weight: 600;">What is batching?</h4><br/>
+( ) Splitting state updates across multiple renders for performance
+( ) Grouping components into batches for lazy loading
+(x) React groups multiple setState calls into one re-render
+( ) A way to queue API calls and send them together

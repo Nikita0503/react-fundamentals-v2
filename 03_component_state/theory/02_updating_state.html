@@ -1,0 +1,112 @@
+<h3 style="color: #76cdd8;"><strong>State is Read-Only</strong></h3>
+<p>You should never mutate state directly. The setter function (<code>setState</code>) tells React "here's the new value, please re-render." Without calling the setter, React doesn't know anything changed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Direct Value Update</strong></h3>
+<p>The simplest way to update state — replace it with a specific value:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">setCount(5);          // set count to exactly 5
+setName("Alice");     // set name to "Alice"
+setIsOpen(false);     // set isOpen to false</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Functional Updater</strong></h3>
+<p>Update based on the previous value by passing a function:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">setCount(prev =&gt; prev + 1);  // increment based on previous value</code></pre>
+
+<p>The function receives the most recent state value as its argument and returns the new value.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why Functional Updater is Important — The Stale Closure Problem</strong></h3>
+<p>When you reference state directly inside an event handler, you capture the value from that render. If you call the setter multiple times, they all use the same stale value:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Bug: if called multiple times in one event, uses stale value
+const handleTripleIncrement = () => {
+  setCount(count + 1); // all three use the same "count" value
+  setCount(count + 1); // from the closure
+  setCount(count + 1); // result: only +1, not +3
+};
+
+// ✅ Correct: each update sees the latest value
+const handleTripleIncrement = () => {
+  setCount(prev =&gt; prev + 1); // prev = 0 → 1
+  setCount(prev =&gt; prev + 1); // prev = 1 → 2
+  setCount(prev =&gt; prev + 1); // prev = 2 → 3
+};</code></pre>
+
+<p><strong>Rule of thumb:</strong> use the functional updater when the new value depends on the previous value.</p>
+
+<h3 style="color: #76cdd8;"><strong>Batching</strong></h3>
+<p>React groups multiple <code>setState</code> calls in the same event handler into <strong>one re-render</strong> (not three separate re-renders). This is automatic since React 18.</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const handleClick = () => {
+  setName("Alice");       // queued
+  setAge(25);             // queued
+  setIsLoggedIn(true);    // queued
+  // React re-renders ONCE with all three updates applied
+};</code></pre>
+
+<p>This means React is smart about performance — it doesn't wastefully re-render after every single setter call.</p>
+
+<h3 style="color: #76cdd8;"><strong>State Updates are Asynchronous</strong></h3>
+<p>You can't read the new value immediately after calling <code>setState</code>. The state variable still holds the old value until the next render:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const handleClick = () => {
+  setCount(prev =&gt; prev + 1);
+  console.log(count); // still the OLD value! React hasn't re-rendered yet.
+};</code></pre>
+
+<p>The component will re-render with the new value — that's when you "see" it. If you need to use the new value in the same handler, calculate it in a variable first:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const handleClick = () => {
+  const newCount = count + 1;
+  setCount(newCount);
+  console.log(newCount); // ✅ use the calculated value directly
+};</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

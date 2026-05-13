@@ -1,0 +1,144 @@
+<h3 style="color: #76cdd8;"><strong>Reference Equality</strong></h3>
+<p>React compares old and new state with <code>Object.is()</code>. For objects and arrays, this means comparing the <strong>reference</strong> (memory address), not the content:</p>
+<ul>
+<li><strong>Same reference</strong> → no re-render (React thinks nothing changed)</li>
+<li><strong>New reference</strong> → re-render (even if content is identical)</li>
+</ul>
+<p><strong>Rule: never mutate state directly. Always create a new object or array.</strong></p>
+
+<h3 style="color: #76cdd8;"><strong>Updating Objects — Use Spread Operator</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">type User = { name: string; email: string; age: number };
+const [user, setUser] = useState&lt;User&gt;({ name: "Alice", email: "alice@test.com", age: 25 });
+
+// ❌ Mutation — won't trigger re-render
+user.name = "Bob";
+setUser(user); // same reference!
+
+// ✅ New object with spread
+setUser({ ...user, name: "Bob" });
+
+// or with functional updater:
+setUser(prev =&gt; ({ ...prev, name: "Bob" }));</code></pre>
+
+<p>The spread operator (<code>...</code>) copies all properties into a new object. Properties listed after the spread override the copied ones.</p>
+
+<h3 style="color: #76cdd8;"><strong>Updating Nested Objects</strong></h3>
+<p>When objects are nested, you must spread at <strong>every level</strong> that contains a change:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">type Profile = { name: string; address: { city: string; zip: string } };
+const [profile, setProfile] = useState&lt;Profile&gt;({
+  name: "Alice",
+  address: { city: "NYC", zip: "10001" },
+});
+
+// ✅ Spread at every level
+setProfile(prev =&gt; ({
+  ...prev,
+  address: { ...prev.address, city: "LA" },
+}));</code></pre>
+
+<p>If you only spread the top level and directly assign a nested property, the nested object is still the same reference — React won't detect the change.</p>
+
+<h3 style="color: #76cdd8;"><strong>Updating Arrays — Common Operations</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">type Todo = { id: number; text: string; done: boolean };
+const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
+
+// Add item
+setTodos(prev =&gt; [...prev, { id: Date.now(), text: "New todo", done: false }]);
+
+// Remove item by id
+setTodos(prev =&gt; prev.filter(todo =&gt; todo.id !== idToRemove));
+
+// Update one item (toggle done)
+setTodos(prev =&gt; prev.map(todo =&gt;
+  todo.id === idToToggle ? { ...todo, done: !todo.done } : todo
+));
+
+// Replace entire array
+setTodos(newTodos);</code></pre>
+
+<p>All of these create a <strong>new array</strong> — they never modify the existing one in place.</p>
+
+<h3 style="color: #76cdd8;"><strong>Summary Table</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #f0f0f0;">
+<th>Operation</th>
+<th>Array</th>
+<th>Object</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add</strong></td>
+<td><code>[...arr, newItem]</code></td>
+<td><code>{ ...obj, newKey: value }</code></td>
+</tr>
+<tr>
+<td><strong>Remove</strong></td>
+<td><code>arr.filter(...)</code></td>
+<td><code>const { keyToRemove, ...rest } = obj</code></td>
+</tr>
+<tr>
+<td><strong>Update</strong></td>
+<td><code>arr.map(...)</code></td>
+<td><code>{ ...obj, key: newValue }</code></td>
+</tr>
+<tr>
+<td><strong>Replace</strong></td>
+<td><code>setArr(newArr)</code></td>
+<td><code>setObj(newObj)</code></td>
+</tr>
+</tbody>
+</table>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

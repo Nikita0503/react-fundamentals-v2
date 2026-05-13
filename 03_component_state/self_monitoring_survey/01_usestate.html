@@ -1,80 +1,23 @@
-<h4 style="color: #474747; font-weight: 600;">What are the main differences between imperative and reactive approaches to programming in the context of React?</h4><br/>
-(x) The imperative approach uses regular variables to store and update data, while the reactive approach uses "reactive" variables created with hooks to manage state in React components.
-( ) The imperative approach uses only class components, and the reactive approach uses only functional ones.
-( ) Imperative programming uses a stylized approach to creating components, while reactive uses a declarative one.
-<h4 style="color: #474747; font-weight: 600;">How is the useState hook used to work with state in React functional components?</h4><br/>
-(x) The useState hook creates a pair of a value and a function to update it, is initialized with a default value, and this allows creating and updating state in functional components.
-( ) The useState hook is used only to change state values in class components.
-( ) The useState hook automatically determines and updates state without setting an initial value.
-<h4 style="color: #474747; font-weight: 600;">What does an example of using the useState hook to create a Counter in a React functional component look like?</h4><br/>
-<span>Option 1:</span>
-<pre>// Counter.tsx
-import React, { useState } from 'react';
+<h4 style="color: #474747; font-weight: 600;">What does useState return?</h4><br/>
+( ) A single value that updates automatically
+( ) An object with get and set methods
+(x) An array with [currentValue, setterFunction]
+( ) A promise that resolves to the state value
 
-const Counter = () => {
+<h4 style="color: #474747; font-weight: 600;">When do you need to specify the generic type useState&lt;T&gt;()?</h4><br/>
+( ) Always — TypeScript requires it for every useState call
+( ) Only when the initial value is a number
+(x) When TypeScript can't infer the full type from the initial value
+( ) Only when using objects as state
 
-  const count = 0;
+<h4 style="color: #474747; font-weight: 600;">Why doesn't a regular `let` variable work for UI state?</h4><br/>
+( ) JavaScript doesn't allow variables inside functions
+( ) React doesn't support the let keyword
+(x) It resets on every render and doesn't trigger re-renders
+( ) It causes a memory leak in the browser
 
-  const setCount = (newCount: number) => {
-    count = newCount;
-  };
-
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  return (
-  &lt;div&gt;
-    &lt;p&gt;Count: {count}&lt;/p&gt;
-    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
-  &lt;/div&gt;);
-};
-
-export default Counter;</pre>
-<br/>
-<span>Option 2:</span><br/>
-<pre>// Counter.tsx
-import React, { useState } from 'react';
-
-const Counter = () => {
-  const [count, setCount] = useState&lt;number&gt;(0);
-
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  return (
-  &lt;div&gt;
-    &lt;p&gt;Count: {count}&lt;/p&gt;
-    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
-  &lt;/div&gt;);
-  );
-};
-
-export default Counter;</pre>
-<br/>
-<span>Option 3:</span>
-<pre>// Counter.tsx
-import React, { useState } from 'react';
-
-const Counter = () => {
-  let count = 0;
-
-  const increment = () => {
-    count = count + 1;
-  };
-
-  return (
-  &lt;div&gt;
-    &lt;p&gt;Count: {count}&lt;/p&gt;
-    &lt;button onClick={increment}&gt;Increment&lt;/button&gt;
-  &lt;/div&gt;);
-  );
-};
-
-export default Counter;</pre>
-<br/>
-( ) Option 1
-(x) Option 2
-( ) Option 3
-
+<h4 style="color: #474747; font-weight: 600;">What naming convention is used for state?</h4><br/>
+( ) get/set — e.g., getCount/setCount
+( ) state/dispatch — e.g., countState/countDispatch
+(x) value/setValue — e.g., count/setCount
+( ) read/write — e.g., readCount/writeCount

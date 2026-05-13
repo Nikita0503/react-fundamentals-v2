@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Why doesn't mutating an object and passing it to setState trigger a re-render?</h4><br/>
+( ) React only supports primitive state values
+( ) The setState function ignores objects
+(x) Same reference — React thinks nothing changed
+( ) You need to call forceUpdate() after mutating objects
+
+<h4 style="color: #474747; font-weight: 600;">How do you correctly update one field in a state object?</h4><br/>
+( ) Directly assign the new value: obj.field = newValue
+( ) Use Object.assign() on the existing object
+(x) Spread: { ...obj, field: newValue }
+( ) Delete the old field and add a new one
+
+<h4 style="color: #474747; font-weight: 600;">How do you remove an item from a state array?</h4><br/>
+( ) Use splice() to remove it in place
+( ) Use delete arr[index]
+(x) filter() to create a new array without that item
+( ) Set the item to undefined
+
+<h4 style="color: #474747; font-weight: 600;">How do you update one item in a state array?</h4><br/>
+( ) Find the item by index and reassign it
+( ) Use arr[index] = newValue
+(x) map() to create a new array with the updated item
+( ) Use splice() to replace the item

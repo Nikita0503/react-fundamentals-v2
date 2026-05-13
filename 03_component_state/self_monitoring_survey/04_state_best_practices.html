@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What is lazy initialization in useState?</h4><br/>
+( ) Delaying the import of the useState hook
+( ) Using setTimeout to set the initial value
+(x) Passing a function that runs only on first render
+( ) Setting state to undefined and loading it later
+
+<h4 style="color: #474747; font-weight: 600;">Should you store a value in state if it can be derived from other state?</h4><br/>
+( ) Yes — it improves performance by caching the value
+( ) Yes — React requires all displayed values to be in state
+(x) No — compute it instead
+( ) Only if the derivation is expensive
+
+<h4 style="color: #474747; font-weight: 600;">What should you do if two sibling components need the same state?</h4><br/>
+( ) Duplicate the state in both components
+( ) Use a global variable
+(x) Lift state up to their common parent
+( ) Use localStorage to share the value
+
+<h4 style="color: #474747; font-weight: 600;">What's wrong with storing a value in state that doesn't affect the UI?</h4><br/>
+( ) React will throw an error
+( ) It causes memory leaks
+(x) Use useRef instead — avoids unnecessary re-renders
+( ) Nothing — it's perfectly fine
