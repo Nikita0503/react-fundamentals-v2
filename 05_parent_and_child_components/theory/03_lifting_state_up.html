@@ -1,0 +1,110 @@
+<h3 style="color: #76cdd8;"><strong>The Problem</strong></h3>
+<p>Two sibling components need to share the same data, but they can't pass props to each other — props only flow from parent to child. So how do siblings communicate?</p>
+
+<h3 style="color: #76cdd8;"><strong>The Solution: Lift State Up</strong></h3>
+<p><strong>Lifting state up</strong> means moving the shared state to the nearest common parent of the components that need it. The parent owns the state and passes it down to both children — one reads it, one writes it, or both do both.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Example — Temperature Converter</strong></h3>
+<p>Two input fields (Celsius and Fahrenheit) that stay in sync. When you type in one, the other updates automatically:</p>
+<pre class="prettyprint"><code class="lang-tsx">const TemperatureConverter = () =&gt; {
+  const [celsius, setCelsius] = useState("");
+
+  const fahrenheit = celsius ? String((Number(celsius) * 9) / 5 + 32) : "";
+
+  return (
+    &lt;div&gt;
+      &lt;TemperatureInput
+        label="Celsius"
+        value={celsius}
+        onChange={setCelsius}
+      /&gt;
+      &lt;TemperatureInput
+        label="Fahrenheit"
+        value={fahrenheit}
+        onChange={(f) =&gt; setCelsius(String(((Number(f) - 32) * 5) / 9))}
+      /&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">type TemperatureInputProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) =&gt; void;
+};
+
+const TemperatureInput = ({ label, value, onChange }: TemperatureInputProps) =&gt; (
+  &lt;label&gt;
+    {label}:
+    &lt;input value={value} onChange={(e) =&gt; onChange(e.target.value)} /&gt;
+  &lt;/label&gt;
+);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Key Insight: Controlled Components</strong></h3>
+<p>The <code>TemperatureInput</code> component is "controlled" — it doesn't own its value, the parent does. The parent passes the value down and receives changes back via the callback. This makes both inputs stay in sync because they both derive from the same source of truth (<code>celsius</code> state in the parent).</p>
+
+<h3 style="color: #76cdd8;"><strong>When to Lift State Up</strong></h3>
+<ul>
+<li>Two or more components need the same data</li>
+<li>A child needs to update something that affects a sibling</li>
+<li>You want a "single source of truth" for a piece of data</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>When NOT to Lift (Keep State Local)</strong></h3>
+<ul>
+<li>Only one component uses the data</li>
+<li>The state is purely UI-related (dropdown open/closed, input focus, hover state)</li>
+<li>Lifting would add complexity without benefit</li>
+</ul>
+<p>Not every piece of state needs to be lifted. Keep state as close to where it's used as possible — only lift when sharing is genuinely needed.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,16 @@
+<h4 style="color: #474747; font-weight: 600;">What does <code>{...rest}</code> do when applied to a JSX element?</h4><br/>
+( ) It creates a copy of the element with new props.<br/>
+( ) It removes all props from the element.<br/>
+(x) It spreads all remaining props onto the element, forwarding them.<br/>
+<h4 style="color: #474747; font-weight: 600;">What is props drilling?</h4><br/>
+( ) A technique for optimizing prop passing performance.<br/>
+(x) Passing props through intermediate components that don't use them, just to reach a deeply nested child.<br/>
+( ) A pattern where child components drill into parent state directly.<br/>
+<h4 style="color: #474747; font-weight: 600;">At how many levels deep does props drilling typically become a problem?</h4><br/>
+( ) Any level — props drilling is always bad.<br/>
+( ) 1-2 levels.<br/>
+(x) 5+ levels — 2-3 levels is normal and acceptable.<br/>
+<h4 style="color: #474747; font-weight: 600;">What are solutions to props drilling?</h4><br/>
+( ) Only state management libraries like Redux.<br/>
+( ) There is no solution — you must always pass props through every level.<br/>
+(x) Composition (restructuring), Context API, or state management libraries.<br/>

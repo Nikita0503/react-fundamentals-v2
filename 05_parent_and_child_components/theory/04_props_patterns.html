@@ -1,0 +1,132 @@
+<h3 style="color: #76cdd8;"><strong>Spreading Props</strong></h3>
+<p>Sometimes you want to create a wrapper component that adds some behavior but forwards all native attributes to the underlying element. The spread operator makes this easy:</p>
+<pre class="prettyprint"><code class="lang-tsx">type InputProps = {
+  label: string;
+} &amp; React.InputHTMLAttributes&lt;HTMLInputElement&gt;;
+
+const Input = ({ label, ...rest }: InputProps) =&gt; (
+  &lt;label&gt;
+    {label}
+    &lt;input {...rest} /&gt;
+  &lt;/label&gt;
+);
+
+// Usage — all standard input attributes are forwarded:
+&lt;Input label="Email" type="email" placeholder="you@example.com" required /&gt;
+</code></pre>
+<ul>
+<li><code>...rest</code> collects all remaining props (everything except <code>label</code>)</li>
+<li><code>{...rest}</code> spreads them onto the <code>&lt;input&gt;</code> element</li>
+<li>This is useful for wrapper components that add behavior but forward native attributes</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Props Drilling — The Problem</strong></h3>
+<p><strong>Props drilling</strong> happens when you pass props through many intermediate components that don't use them — they just pass them along to reach a deeply nested child:</p>
+<pre class="prettyprint"><code class="lang-ts">// The "theme" prop must travel through components that don't use it:
+// App → Layout → Sidebar → UserMenu → Avatar
+// Layout, Sidebar, and UserMenu don't use "theme" but must pass it through
+</code></pre>
+
+<p>Problems with props drilling:</p>
+<ul>
+<li>Cluttered component APIs — intermediate components have props they don't care about</li>
+<li>Hard to refactor — changing the prop name or type requires updating every component in the chain</li>
+<li>Unnecessary coupling — intermediate components are coupled to data they don't use</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Props Drilling — Code Example</strong></h3>
+<p>Here's a 3-level example where <code>Layout</code> doesn't use <code>theme</code> but must pass it through:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App passes "theme" through Layout to Header — Layout doesn't use it
+const App = () =&gt; {
+  const [theme, setTheme] = useState&lt;"light" | "dark"&gt;("light");
+  return &lt;Layout theme={theme} /&gt;;
+};
+
+const Layout = ({ theme }: { theme: "light" | "dark" }) =&gt; (
+  &lt;div&gt;
+    &lt;Header theme={theme} /&gt;  {/* just passing through */}
+  &lt;/div&gt;
+);
+
+const Header = ({ theme }: { theme: "light" | "dark" }) =&gt; (
+  &lt;nav className={`nav-${theme}`}&gt;Navigation&lt;/nav&gt;
+);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Solutions to Props Drilling</strong></h3>
+
+<p><strong>1. Composition — restructure so the parent renders the deep child directly:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">const App = () =&gt; {
+  const [theme, setTheme] = useState&lt;"light" | "dark"&gt;("light");
+  return (
+    &lt;Layout&gt;
+      &lt;Header theme={theme} /&gt;  {/* App passes directly, no drilling */}
+    &lt;/Layout&gt;
+  );
+};
+</code></pre>
+<p>By using <code>children</code>, the <code>Layout</code> component no longer needs to know about <code>theme</code> at all.</p>
+
+<p><strong>2. Context — share data without passing through every level</strong></p>
+<p>React Context lets you "broadcast" data to any component in the tree without explicitly passing it through each level. Covered in detail in Module 09.</p>
+
+<p><strong>3. State management libraries — Redux/Zustand for complex shared state</strong></p>
+<p>For large applications with many pieces of shared state, dedicated state management libraries provide a global store accessible from any component. Covered in Module 12.</p>
+
+<h3 style="color: #76cdd8;"><strong>When Props Drilling Is Fine</strong></h3>
+<p>Don't over-engineer. Props drilling through 2-3 levels is completely normal and often the simplest solution. Only reach for Context or state management when drilling becomes painful:</p>
+<ul>
+<li>5+ levels deep</li>
+<li>Many props being drilled</li>
+<li>Multiple unrelated components need the same data</li>
+<li>Refactoring becomes difficult due to the prop chain</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

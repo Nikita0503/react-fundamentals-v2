@@ -1,0 +1,16 @@
+<h4 style="color: #474747; font-weight: 600;">What does "lifting state up" mean?</h4><br/>
+( ) Moving state from a parent component into a child component.<br/>
+(x) Moving shared state to the nearest common parent of the components that need it.<br/>
+( ) Storing state in a global variable outside of React.<br/>
+<h4 style="color: #474747; font-weight: 600;">When should you lift state up?</h4><br/>
+( ) Whenever a component has any state at all.<br/>
+( ) When a single component needs local UI state like open/closed.<br/>
+(x) When two or more sibling components need the same data.<br/>
+<h4 style="color: #474747; font-weight: 600;">What is a "controlled component"?</h4><br/>
+( ) A component that uses useEffect to control side effects.<br/>
+( ) A component wrapped in React.memo for performance.<br/>
+(x) A component that doesn't own its value — the parent controls it via props.<br/>
+<h4 style="color: #474747; font-weight: 600;">When should you keep state local instead of lifting it up?</h4><br/>
+(x) When only one component uses the data (e.g., dropdown open/closed, input focus).<br/>
+( ) Always — state should never be lifted.<br/>
+( ) When the state changes frequently.<br/>

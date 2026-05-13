@@ -1,0 +1,125 @@
+<h3 style="color: #76cdd8;"><strong>What Are Props?</strong></h3>
+<p><strong>Props</strong> (short for "properties") are data passed from a parent component to a child component via JSX attributes. They are the mechanism that allows components to communicate in one direction — from parent to child.</p>
+<p>Props are <strong>read-only</strong> — a child component can never modify its own props. If a child needs to change something, it must ask the parent to do it (via callbacks — covered in the next topic).</p>
+
+<h3 style="color: #76cdd8;"><strong>How to Pass Props</strong></h3>
+<p>The parent passes data to the child as JSX attributes:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Parent passes data to child
+&lt;UserCard name="Alice" age={25} isAdmin={true} /&gt;
+</code></pre>
+<p>Strings are passed in quotes. Numbers, booleans, arrays, objects, and functions are passed in curly braces <code>{}</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>How to Receive Props</strong></h3>
+<p>There are two ways to receive props in a child component:</p>
+
+<p><strong>1. Destructuring (preferred):</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">type UserCardProps = {
+  name: string;
+  age: number;
+  isAdmin: boolean;
+};
+
+const UserCard = ({ name, age, isAdmin }: UserCardProps) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{name}&lt;/h2&gt;
+      &lt;p&gt;Age: {age}&lt;/p&gt;
+      {isAdmin &amp;&amp; &lt;span&gt;Admin&lt;/span&gt;}
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+
+<p><strong>2. Props object (also valid):</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">const UserCard = (props: UserCardProps) =&gt; {
+  return &lt;p&gt;{props.name}&lt;/p&gt;;
+};
+</code></pre>
+<p>Destructuring is preferred because it makes it immediately clear which props the component uses.</p>
+
+<h3 style="color: #76cdd8;"><strong>Different Prop Types</strong></h3>
+<p>Props can be of any type. Here's a comprehensive example showing the most common ones:</p>
+<pre class="prettyprint"><code class="lang-tsx">type ExampleProps = {
+  text: string;                    // string
+  count: number;                   // number
+  isVisible: boolean;              // boolean
+  items: string[];                 // array
+  user: { name: string; id: number }; // object
+  onClick: () =&gt; void;             // function (no args)
+  onChange: (value: string) =&gt; void; // function (with args)
+  icon?: React.ReactNode;          // optional, any renderable content
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Default Values</strong></h3>
+<p>Use JavaScript default parameters to provide default values for optional props:</p>
+<pre class="prettyprint"><code class="lang-tsx">type ButtonProps = {
+  label: string;
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
+};
+
+const Button = ({ label, variant = "primary", size = "md" }: ButtonProps) =&gt; {
+  return &lt;button className={`btn-${variant} btn-${size}`}&gt;{label}&lt;/button&gt;;
+};
+
+// Usage — defaults apply when prop is not passed:
+&lt;Button label="Click me" /&gt;              // variant="primary", size="md"
+&lt;Button label="Cancel" variant="secondary" /&gt; // variant="secondary", size="md"
+</code></pre>
+<p>This approach is clean and idiomatic — no need for <code>defaultProps</code> (which is deprecated for function components).</p>
+
+<h3 style="color: #76cdd8;"><strong>Props Are the Component's API</strong></h3>
+<p>Think of props as the <strong>interface</strong> that defines how a component can be configured from the outside. Just like a function's parameters define how you call it, a component's props define how you use it.</p>
+<p>A well-designed props interface makes a component easy to use, predictable, and reusable across different parts of your application.</p>
+
+<p><em>Note: there's a special prop called <code>children</code> that lets you pass content between opening and closing tags — covered in detail in Module 11.</em></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

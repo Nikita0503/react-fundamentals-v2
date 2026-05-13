@@ -1,0 +1,133 @@
+<h3 style="color: #76cdd8;"><strong>Data Down, Events Up</strong></h3>
+<p>In React, communication between components follows a clear pattern:</p>
+<ul>
+<li><strong>Data flows DOWN</strong> — parent → child via props</li>
+<li><strong>Events flow UP</strong> — child → parent via callback functions</li>
+</ul>
+<p>A child component cannot directly modify the parent's state. Instead, the parent passes a function (callback) as a prop, and the child calls that function when something happens.</p>
+
+<h3 style="color: #76cdd8;"><strong>Passing Functions as Props</strong></h3>
+<p>The parent owns the state and the handler. The child receives the handler via props and calls it to communicate back:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Parent owns the state and the handler
+const TodoList = () =&gt; {
+  const [todos, setTodos] = useState&lt;string[]&gt;([]);
+
+  const handleAddTodo = (text: string) =&gt; {
+    setTodos(prev =&gt; [...prev, text]);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Todos ({todos.length})&lt;/h1&gt;
+      &lt;AddTodoForm onAdd={handleAddTodo} /&gt;
+      &lt;ul&gt;
+        {todos.map((todo, i) =&gt; &lt;li key={i}&gt;{todo}&lt;/li&gt;)}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// Child calls the callback to notify parent
+type AddTodoFormProps = {
+  onAdd: (text: string) =&gt; void;
+};
+
+const AddTodoForm = ({ onAdd }: AddTodoFormProps) =&gt; {
+  const [input, setInput] = useState("");
+
+  const handleSubmit = () =&gt; {
+    if (input.trim()) {
+      onAdd(input);    // notify parent
+      setInput("");    // reset local state
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input value={input} onChange={(e) =&gt; setInput(e.target.value)} /&gt;
+      &lt;button onClick={handleSubmit}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Naming Convention for Callback Props</strong></h3>
+<p>Callback props should be prefixed with <code>on</code> to indicate they are event handlers:</p>
+<ul>
+<li><code>onClick</code> — when something is clicked</li>
+<li><code>onChange</code> — when a value changes</li>
+<li><code>onSubmit</code> — when a form is submitted</li>
+<li><code>onDelete</code> — when an item should be deleted</li>
+<li><code>onAdd</code> — when an item should be added</li>
+</ul>
+<p>This convention makes it immediately clear that the prop expects a function and that it will be called in response to some event.</p>
+
+<h3 style="color: #76cdd8;"><strong>Separation of Concerns</strong></h3>
+<p>The child doesn't know or care what the parent does with the data — it just calls the function. The parent decides how to handle the event. This is <strong>separation of concerns</strong> — each component has a single responsibility.</p>
+
+<h3 style="color: #76cdd8;"><strong>Passing Data WITH the Callback</strong></h3>
+<p>Often the child needs to tell the parent <em>which</em> item triggered the event. Pass identifying data along with the callback call:</p>
+<pre class="prettyprint"><code class="lang-tsx">type TodoItemProps = {
+  id: number;
+  text: string;
+  onDelete: (id: number) =&gt; void;
+};
+
+const TodoItem = ({ id, text, onDelete }: TodoItemProps) =&gt; (
+  &lt;li&gt;
+    {text}
+    &lt;button onClick={() =&gt; onDelete(id)}&gt;Delete&lt;/button&gt;
+  &lt;/li&gt;
+);
+</code></pre>
+<p>Notice the arrow function in <code>onClick</code> — it creates a closure that captures the <code>id</code> and passes it to <code>onDelete</code> when the button is clicked. Without the arrow function, <code>onDelete(id)</code> would be called immediately during render.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

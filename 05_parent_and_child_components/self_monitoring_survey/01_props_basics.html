@@ -1,0 +1,17 @@
+<h4 style="color: #474747; font-weight: 600;">Can a child component modify its own props?</h4><br/>
+( ) Yes — the child can reassign props at any time.<br/>
+( ) Yes — but only if the parent allows it via a special flag.<br/>
+(x) No — props are read-only. The child can never modify its own props.<br/>
+<h4 style="color: #474747; font-weight: 600;">How do you provide a default value for an optional prop in a functional component?</h4><br/>
+( ) Using the static defaultProps property on the component.<br/>
+(x) Using a default parameter in destructuring: <code>{ prop = "default" }</code><br/>
+( ) By setting the default inside useEffect on mount.<br/>
+<h4 style="color: #474747; font-weight: 600;">What type would you use for a prop that accepts any renderable content (strings, numbers, elements, arrays, fragments)?</h4><br/>
+( ) React.ReactElement<br/>
+( ) JSX.Element<br/>
+(x) React.ReactNode<br/>
+( ) string | number<br/>
+<h4 style="color: #474747; font-weight: 600;">What are props conceptually?</h4><br/>
+( ) Internal state that the component manages on its own.<br/>
+(x) The component's external API — the configuration interface that defines how it can be used from the outside.<br/>
+( ) A way for child components to send data back to the parent.<br/>
