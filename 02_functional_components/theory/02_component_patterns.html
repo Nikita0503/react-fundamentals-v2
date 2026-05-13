@@ -1,0 +1,141 @@
+<h3 style="color: #76cdd8;"><strong>Two Common Roles for Components</strong></h3>
+<p>Components in React tend to fall into two categories based on their responsibility. These aren't strict rules — they're patterns that help you think about component design.</p>
+
+<h3 style="color: #76cdd8;"><strong>UI Components (Presentational)</strong></h3>
+<p>UI components focus on <strong>how things look</strong>. They:</p>
+<ul>
+<li>Receive all data via props</li>
+<li>Usually have no state (or only UI state like "is dropdown open")</li>
+<li>Are highly reusable across the application</li>
+<li>Examples: Button, Card, Avatar, Badge, Input</li>
+</ul>
+<pre class="prettyprint"><code class="lang-tsx">type ButtonProps = {
+  label: string;
+  onClick: () =&gt; void;
+  variant?: "primary" | "secondary";
+};
+
+const Button = ({ label, onClick, variant = "primary" }: ButtonProps) =&gt; {
+  return (
+    &lt;button className={`btn btn-${variant}`} onClick={onClick}&gt;
+      {label}
+    &lt;/button&gt;
+  );
+};
+
+export { Button };
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Components with Logic (Container/Feature)</strong></h3>
+<p>These components manage <strong>state, fetch data, and handle business logic</strong>. They:</p>
+<ul>
+<li>Manage state and side effects</li>
+<li>Compose UI components together</li>
+<li>Connect to external systems (APIs, stores, context)</li>
+<li>Examples: UserProfile, ProductList, CheckoutForm</li>
+</ul>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+import { Card } from "./Card";
+
+type User = { id: number; name: string; email: string };
+
+const UserProfile = () =&gt; {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+
+  useEffect(() =&gt; {
+    fetch("/api/user/1")
+      .then((res) =&gt; res.json())
+      .then((data) =&gt; setUser(data));
+  }, []);
+
+  if (!user) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;Card&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;{user.email}&lt;/p&gt;
+    &lt;/Card&gt;
+  );
+};
+
+export { UserProfile };
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Composition</strong></h3>
+<p><strong>Composition</strong> means building complex UI from simple pieces. React encourages composing small, focused components — each one does one thing well:</p>
+<pre class="prettyprint"><code class="lang-tsx">const DashboardPage = () =&gt; {
+  return (
+    &lt;div className="layout"&gt;
+      &lt;Header /&gt;
+      &lt;Sidebar /&gt;
+      &lt;main&gt;
+        &lt;UserProfile /&gt;
+        &lt;RecentActivity /&gt;
+      &lt;/main&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+<p>A page is just a component that composes other components. Header, Sidebar, Footer — each is independent and can be developed, tested, and reused separately.</p>
+
+<h3 style="color: #76cdd8;"><strong>Reusability</strong></h3>
+<p><strong>Reusability</strong> means the same component can be used in many places with different data:</p>
+<ul>
+<li>A single <code>Button</code> component used everywhere with different labels and actions</li>
+<li>A <code>Card</code> component that wraps any content</li>
+<li>A <code>UserAvatar</code> component that shows different users' photos</li>
+</ul>
+<p>This is the power of the component model — <strong>write once, use many times</strong>. Instead of duplicating markup, you create a component and pass different props each time you use it.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Line is Not Strict</strong></h3>
+<p>The distinction between UI and logic components isn't rigid. A component can start as pure UI and gain logic over time. A feature component might be simple enough to look presentational. The goal is <strong>clarity</strong>, not rigid categories — organize your code so it's easy to understand and maintain.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

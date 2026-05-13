@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>Two Ways to Write Components</strong></h3>
+<p>React has two ways to define components: <strong>functions</strong> and <strong>classes</strong>. Both produce the same result, but functional components are the modern standard.</p>
+
+<h3 style="color: #76cdd8;"><strong>Functional Components (What We Use)</strong></h3>
+<p>A functional component is just a function that returns JSX. State and side effects are managed with hooks:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+
+const Counter = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Class Components (Legacy)</strong></h3>
+<p>Class components were the only way to have state before React 16.8. You'll encounter them in older codebases:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { Component } from "react";
+
+type CounterState = { count: number };
+
+class Counter extends Component&lt;{}, CounterState&gt; {
+  state: CounterState = { count: 0 };
+
+  handleClick = () =&gt; {
+    this.setState((prev) =&gt; ({ count: prev.count + 1 }));
+  };
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+        &lt;button onClick={this.handleClick}&gt;Increment&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+export default Counter;
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why Functional Components Win</strong></h3>
+<p>Same result, but functional components are better in every way:</p>
+<ul>
+<li><strong>Less code</strong> — no constructor, no <code>this</code>, no <code>render()</code> method</li>
+<li><strong>Easier to read</strong> — just a function that returns JSX</li>
+<li><strong>Hooks</strong> — <code>useState</code>, <code>useEffect</code>, <code>useContext</code>, custom hooks (impossible in classes)</li>
+<li><strong>Better TypeScript</strong> — simpler type annotations, no generic class syntax</li>
+<li><strong>Better testing</strong> — plain functions are easier to test</li>
+<li><strong>Better performance</strong> — slightly less overhead (no class instance creation)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Why Class Components Still Exist</strong></h3>
+<p>You won't write class components, but you should know why they're still around:</p>
+<ul>
+<li><strong>Legacy codebases</strong> — projects started before 2019 (pre-hooks era)</li>
+<li><strong>Error Boundaries</strong> — as of React 19, this is the only remaining use case that <em>requires</em> a class component</li>
+<li><strong>Older libraries</strong> — some libraries may use them internally</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The Rule</strong></h3>
+<p><strong>Always write functional components.</strong> For this course and for modern React development, there is no reason to write class components. If you encounter them in existing code, you'll know what they are — but don't write new ones.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

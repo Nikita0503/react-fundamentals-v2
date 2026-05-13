@@ -1,0 +1,146 @@
+<h3 style="color: #76cdd8;"><strong>What is a Component?</strong></h3>
+<p>A component is a <strong>function that returns JSX</strong>. That's it. Every piece of UI in a React application is a component — a button, a form, a page, even the entire app itself.</p>
+
+<h3 style="color: #76cdd8;"><strong>Anatomy of a Component File</strong></h3>
+<p>Every component file follows the same structure:</p>
+<ol>
+<li><strong>Imports</strong> — React, other components, types, styles</li>
+<li><strong>Type definition</strong> — for props (if any)</li>
+<li><strong>The component function</strong> — receives props, contains logic</li>
+<li><strong>Return statement</strong> — JSX that describes the UI</li>
+<li><strong>Export</strong> — makes the component available to other files</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Minimal Component</strong></h3>
+<p>The simplest possible component — no props, no state, just JSX:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Greeting.tsx
+const Greeting = () =&gt; {
+  return &lt;h1&gt;Hello, World!&lt;/h1&gt;;
+};
+
+export default Greeting;
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Component with Props</strong></h3>
+<p>Props are covered in detail in Module 05, but here's a brief preview — a component that accepts data from the outside:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Greeting.tsx
+type GreetingProps = {
+  name: string;
+  age?: number; // optional prop
+};
+
+const Greeting = ({ name, age }: GreetingProps) =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Hello, {name}!&lt;/h1&gt;
+      {age &amp;&amp; &lt;p&gt;You are {age} years old.&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+};
+
+export default Greeting;
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Naming Conventions</strong></h3>
+<ul>
+<li><strong>Component names</strong>: always <strong>PascalCase</strong> — <code>Button</code>, <code>UserCard</code>, <code>NavigationMenu</code></li>
+<li><strong>File names</strong>: match the component name — <code>Button.tsx</code>, <code>UserCard.tsx</code></li>
+<li><strong>One component per file</strong>: each file exports one main component</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>File Structure in a Project</strong></h3>
+<p>A typical React project organizes components like this:</p>
+<pre class="prettyprint"><code class="lang-ts">src/
+├── components/          // Shared/reusable components
+│   ├── Button.tsx
+│   ├── Card.tsx
+│   └── Header.tsx
+├── pages/               // Page-level components
+│   ├── HomePage.tsx
+│   └── ProfilePage.tsx
+└── App.tsx              // Root component
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Import and Use</strong></h3>
+<p>Once a component is exported, you import it and use it like an HTML tag:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import Greeting from "./components/Greeting";
+
+const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;Greeting name="Alice" /&gt;
+      &lt;Greeting name="Bob" age={30} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Named Exports vs Default Exports</strong></h3>
+<p>Both are valid in React. You'll see both in real projects:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Default export — one per file
+const Button = () =&gt; { ... };
+export default Button;
+
+// Import:
+import Button from "./Button";
+</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// Named export — can have multiple per file
+const Button = () =&gt; { ... };
+export { Button };
+
+// Import:
+import { Button } from "./Button";
+</code></pre>
+<p><strong>Named exports are preferred in larger projects</strong> — they're easier to refactor (rename detection works better), provide better autocomplete in editors, and prevent accidental name mismatches on import.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
