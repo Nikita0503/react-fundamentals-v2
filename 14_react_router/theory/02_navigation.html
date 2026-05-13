@@ -1,0 +1,120 @@
+<h3 style="color: #76cdd8;"><strong>Navigation</strong></h3>
+<p>There are two ways to navigate: <strong>declarative</strong> (Link/NavLink) and <strong>programmatic</strong> (useNavigate).</p>
+<h3 style="color: #76cdd8;"><strong>Link</strong></h3>
+<p><strong>Link</strong> renders an <code>&lt;a&gt;</code> tag but prevents a full page reload:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { Link } from "react-router-dom";
+
+const Navigation = () =&gt; (
+  &lt;nav&gt;
+    &lt;Link to="/"&gt;Home&lt;/Link&gt;
+    &lt;Link to="/about"&gt;About&lt;/Link&gt;
+    &lt;Link to="/products"&gt;Products&lt;/Link&gt;
+  &lt;/nav&gt;
+);</code></pre>
+<p>Always use <code>&lt;Link&gt;</code> instead of <code>&lt;a href&gt;</code> for internal navigation (no page reload, preserves SPA behavior). Use regular <code>&lt;a href&gt;</code> only for external links (other websites).</p>
+<h3 style="color: #76cdd8;"><strong>NavLink</strong></h3>
+<p><strong>NavLink</strong> is like Link but knows if it's "active" (current route matches):</p>
+<pre class="prettyprint"><code class="lang-tsx">import { NavLink } from "react-router-dom";
+
+const Navigation = () =&gt; (
+  &lt;nav&gt;
+    &lt;NavLink to="/" className={({ isActive }) =&gt; isActive ? "nav-active" : ""}&gt;
+      Home
+    &lt;/NavLink&gt;
+    &lt;NavLink to="/about" className={({ isActive }) =&gt; isActive ? "nav-active" : ""}&gt;
+      About
+    &lt;/NavLink&gt;
+  &lt;/nav&gt;
+);</code></pre>
+<p>Use NavLink for navigation menus where you need to highlight the current page. It receives <code>isActive</code> and <code>isPending</code> in className/style/children functions.</p>
+<h3 style="color: #76cdd8;"><strong>useNavigate</strong></h3>
+<p><strong>useNavigate</strong> — programmatic navigation (after form submit, after login, on button click):</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useNavigate } from "react-router-dom";
+
+type LoginData = {
+  email: string;
+  password: string;
+};
+
+const LoginForm = () =&gt; {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (data: LoginData) =&gt; {
+    await login(data);
+    navigate("/dashboard"); // redirect after successful login
+  };
+
+  const goBack = () =&gt; {
+    navigate(-1); // go back one step in history
+  };
+
+  return (
+    &lt;form onSubmit={() =&gt; handleSubmit({ email: "", password: "" })}&gt;
+      {/* form fields */}
+      &lt;button type="submit"&gt;Login&lt;/button&gt;
+      &lt;button type="button" onClick={goBack}&gt;Back&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};</code></pre>
+<p><code>navigate("/path")</code> — go to path.</p>
+<p><code>navigate(-1)</code> — go back.</p>
+<p><code>navigate("/path", { replace: true })</code> — replace current history entry (user can't go back).</p>
+<h3 style="color: #76cdd8;"><strong>When to use what</strong></h3>
+<table>
+<thead><tr><th>Scenario</th><th>Tool</th></tr></thead>
+<tbody>
+<tr><td>Navigation menu, links in content</td><td><code>&lt;Link&gt;</code> or <code>&lt;NavLink&gt;</code></td></tr>
+<tr><td>Highlight active page in nav</td><td><code>&lt;NavLink&gt;</code></td></tr>
+<tr><td>Redirect after action (login, form submit, delete)</td><td><code>useNavigate</code></td></tr>
+<tr><td>Go back button</td><td><code>useNavigate(-1)</code></td></tr>
+</tbody>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .img-row-container {
+            align-items: center;
+            flex-direction: column;
+        }
+      
+        .img-row {
+            width: 90%;
+        }
+      
+        .img-row img {
+            width: 90%;
+            margin-bottom:10px;
+        }
+
+        .code-background {
+            position: relative;
+            padding: 0 18px;
+            margin-bottom: 10px;
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
+            background-color: #f8f8f8;
+            overflow-x: auto;
+        }
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

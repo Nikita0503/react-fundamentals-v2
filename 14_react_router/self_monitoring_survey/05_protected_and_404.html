@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What path matches all unmatched URLs?</h4><br/>
+( ) path="404"
+( ) path="/**"
+(x) path="*" — the catch-all route
+( ) path="notfound"
+<h4 style="color: #474747; font-weight: 600;">What does &lt;Navigate to="/login" replace /&gt; do?</h4><br/>
+( ) It renders a link to /login that the user must click
+( ) It shows a login modal on the current page
+(x) It immediately redirects to /login and replaces the current history entry
+( ) It removes the /login route from the router
+<h4 style="color: #474747; font-weight: 600;">How does a ProtectedRoute component work?</h4><br/>
+( ) It encrypts the route path so unauthorized users can't see it
+( ) It hides the component but keeps it in the DOM
+(x) It checks auth — if authenticated renders Outlet, otherwise redirects
+( ) It adds a password input before every protected page
+<h4 style="color: #474747; font-weight: 600;">Should Provider (Redux) be inside or outside BrowserRouter?</h4><br/>
+( ) Inside — BrowserRouter must always be the outermost wrapper
+( ) It doesn't matter, they are independent
+(x) Outside — Provider wraps everything so Router components can access the store
+( ) They cannot be used together

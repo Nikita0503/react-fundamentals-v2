@@ -1,0 +1,90 @@
+<h3 style="color: #76cdd8;"><strong>Setup and Basics</strong></h3>
+<p><strong>Why a router?</strong> React is a Single Page Application (SPA) — there is only one HTML page. JavaScript handles "page" changes by swapping components in and out. A router maps URLs to components, so users can navigate between "pages" without a full page reload.</p>
+<p><strong>Installation:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">npm install react-router-dom</code></pre>
+<p><strong>Core components:</strong></p>
+<p><strong>BrowserRouter</strong> — wraps the entire app, enables URL-based routing (uses the browser History API under the hood).</p>
+<p><strong>Routes</strong> — a container for all route definitions. It only renders the first matching route.</p>
+<p><strong>Route</strong> — maps a path to a component: <code>&lt;Route path="about" element={&lt;AboutPage /&gt;} /&gt;</code></p>
+<p><strong>Basic setup:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HomePage } from "./pages/HomePage";
+import { AboutPage } from "./pages/AboutPage";
+
+const App = () =&gt; (
+  &lt;BrowserRouter&gt;
+    &lt;Routes&gt;
+      &lt;Route path="/" element={&lt;HomePage /&gt;} /&gt;
+      &lt;Route path="/about" element={&lt;AboutPage /&gt;} /&gt;
+    &lt;/Routes&gt;
+  &lt;/BrowserRouter&gt;
+);
+
+export default App;</code></pre>
+<p><strong>Page components are just regular components:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// pages/HomePage.tsx
+const HomePage = () =&gt; &lt;h1&gt;Welcome Home&lt;/h1&gt;;
+export { HomePage };
+
+// pages/AboutPage.tsx
+const AboutPage = () =&gt; &lt;h1&gt;About Us&lt;/h1&gt;;
+export { AboutPage };</code></pre>
+<p><strong>How it works:</strong> when the URL is <code>/about</code>, React Router renders <code>&lt;AboutPage /&gt;</code>. When the URL is <code>/</code>, it renders <code>&lt;HomePage /&gt;</code>. No page reload happens — just a component swap.</p>
+<p><strong>File structure recommendation:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">src/
+├── pages/
+│   ├── HomePage.tsx
+│   ├── AboutPage.tsx
+│   └── NotFoundPage.tsx
+├── App.tsx
+└── main.tsx</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .img-row-container {
+            align-items: center;
+            flex-direction: column;
+        }
+      
+        .img-row {
+            width: 90%;
+        }
+      
+        .img-row img {
+            width: 90%;
+            margin-bottom:10px;
+        }
+
+        .code-background {
+            position: relative;
+            padding: 0 18px;
+            margin-bottom: 10px;
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
+            background-color: #f8f8f8;
+            overflow-x: auto;
+        }
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

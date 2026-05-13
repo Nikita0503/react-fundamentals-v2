@@ -1,0 +1,131 @@
+<h3 style="color: #76cdd8;"><strong>Protected Routes and 404</strong></h3>
+<h3 style="color: #76cdd8;"><strong>404 / Not Found Route</strong></h3>
+<p>Catch all unmatched URLs with a wildcard route:</p>
+<pre class="prettyprint"><code class="lang-tsx">&lt;Routes&gt;
+  &lt;Route element={&lt;RootLayout /&gt;}&gt;
+    &lt;Route path="/" element={&lt;HomePage /&gt;} /&gt;
+    &lt;Route path="/about" element={&lt;AboutPage /&gt;} /&gt;
+    &lt;Route path="*" element={&lt;NotFoundPage /&gt;} /&gt; {/* catches everything else */}
+  &lt;/Route&gt;
+&lt;/Routes&gt;</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// pages/NotFoundPage.tsx
+import { Link } from "react-router-dom";
+
+const NotFoundPage = () =&gt; (
+  &lt;div&gt;
+    &lt;h1&gt;404 — Page Not Found&lt;/h1&gt;
+    &lt;p&gt;The page you're looking for doesn't exist.&lt;/p&gt;
+    &lt;Link to="/"&gt;Go home&lt;/Link&gt;
+  &lt;/div&gt;
+);</code></pre>
+<p><code>path="*"</code> matches any URL that didn't match previous routes. Always put it last inside Routes.</p>
+<h3 style="color: #76cdd8;"><strong>Protected Routes</strong></h3>
+<p>Restrict access to authenticated users:</p>
+<pre class="prettyprint"><code class="lang-tsx">// components/ProtectedRoute.tsx
+import { Navigate, Outlet } from "react-router-dom";
+
+type ProtectedRouteProps = {
+  isAuthenticated: boolean;
+  redirectTo?: string;
+};
+
+const ProtectedRoute = ({ isAuthenticated, redirectTo = "/login" }: ProtectedRouteProps) =&gt; {
+  if (!isAuthenticated) {
+    return &lt;Navigate to={redirectTo} replace /&gt;;
+  }
+  return &lt;Outlet /&gt;;
+};
+
+export { ProtectedRoute };</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx — using protected routes
+const App = () =&gt; {
+  const { isAuthenticated } = useAuth(); // from your auth context
+
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route element={&lt;RootLayout /&gt;}&gt;
+          {/* Public routes */}
+          &lt;Route path="/" element={&lt;HomePage /&gt;} /&gt;
+          &lt;Route path="/login" element={&lt;LoginPage /&gt;} /&gt;
+
+          {/* Protected routes — redirect to /login if not authenticated */}
+          &lt;Route element={&lt;ProtectedRoute isAuthenticated={isAuthenticated} /&gt;}&gt;
+            &lt;Route path="/dashboard" element={&lt;DashboardPage /&gt;} /&gt;
+            &lt;Route path="/profile" element={&lt;ProfilePage /&gt;} /&gt;
+            &lt;Route path="/settings" element={&lt;SettingsPage /&gt;} /&gt;
+          &lt;/Route&gt;
+
+          &lt;Route path="*" element={&lt;NotFoundPage /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+};</code></pre>
+<p><code>&lt;Navigate to="/login" replace /&gt;</code> — redirects immediately, <code>replace</code> prevents back-button loop.</p>
+<p>ProtectedRoute uses <code>&lt;Outlet /&gt;</code> — it's a layout route that either renders children or redirects.</p>
+<p>This pattern works with any auth system (Context, Redux, etc.).</p>
+<h3 style="color: #76cdd8;"><strong>Combining with Redux</strong></h3>
+<p>React Router and Redux work together without issues. Just wrap Router inside Provider:</p>
+<pre class="prettyprint"><code class="lang-tsx">// main.tsx
+import { Provider } from "react-redux";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { store } from "./store/store";
+
+const App = () =&gt; (
+  &lt;Provider store={store}&gt;
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;{/* ... */}&lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  &lt;/Provider&gt;
+);</code></pre>
+<p>Provider must be the outermost wrapper (so Router components can access the store). You can use Redux state in route guards, navigation logic, etc.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .img-row-container {
+            align-items: center;
+            flex-direction: column;
+        }
+      
+        .img-row {
+            width: 90%;
+        }
+      
+        .img-row img {
+            width: 90%;
+            margin-bottom:10px;
+        }
+
+        .code-background {
+            position: relative;
+            padding: 0 18px;
+            margin-bottom: 10px;
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
+            background-color: #f8f8f8;
+            overflow-x: auto;
+        }
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

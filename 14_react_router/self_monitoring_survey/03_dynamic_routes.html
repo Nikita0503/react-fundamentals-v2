@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">How do you define a dynamic route parameter?</h4><br/>
+( ) path="/products/#id"
+( ) path="/products/{id}"
+(x) path="/products/:id"
+( ) path="/products/$id"
+<h4 style="color: #474747; font-weight: 600;">What type are route params always returned as?</h4><br/>
+( ) number
+( ) The type you specify in the generic
+(x) string — parse to number if needed
+( ) unknown
+<h4 style="color: #474747; font-weight: 600;">When should you use search params instead of route params?</h4><br/>
+( ) When the value is a number
+( ) When you need to identify a specific resource
+(x) For optional, shareable data like filters, sorting, pagination
+( ) When the URL should be hidden from the user
+<h4 style="color: #474747; font-weight: 600;">What does useLocation return?</h4><br/>
+( ) The browser's window.location object directly
+( ) Only the current pathname as a string
+(x) The current location object with pathname, search, hash, and state
+( ) A function to change the current location

@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>Nested Routes</strong></h3>
+<p><strong>The problem:</strong> most apps have a shared layout (header, sidebar, footer) that stays the same across pages. Only the main content area changes.</p>
+<p><strong>Nested routes</strong> solve this: define a parent route with a layout, child routes render inside it.</p>
+<h3 style="color: #76cdd8;"><strong>Outlet</strong></h3>
+<p><strong>Outlet</strong> is a placeholder component that renders the matched child route:</p>
+<pre class="prettyprint"><code class="lang-tsx">// App.tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { RootLayout } from "./layouts/RootLayout";
+import { HomePage } from "./pages/HomePage";
+import { AboutPage } from "./pages/AboutPage";
+import { ProductsPage } from "./pages/ProductsPage";
+import { ProductPage } from "./pages/ProductPage";
+
+const App = () =&gt; (
+  &lt;BrowserRouter&gt;
+    &lt;Routes&gt;
+      &lt;Route element={&lt;RootLayout /&gt;}&gt;
+        &lt;Route path="/" element={&lt;HomePage /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;AboutPage /&gt;} /&gt;
+        &lt;Route path="/products" element={&lt;ProductsPage /&gt;} /&gt;
+        &lt;Route path="/products/:id" element={&lt;ProductPage /&gt;} /&gt;
+      &lt;/Route&gt;
+    &lt;/Routes&gt;
+  &lt;/BrowserRouter&gt;
+);</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// layouts/RootLayout.tsx
+import { Outlet, Link } from "react-router-dom";
+
+const RootLayout = () =&gt; (
+  &lt;div&gt;
+    &lt;header&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt;
+        &lt;Link to="/about"&gt;About&lt;/Link&gt;
+        &lt;Link to="/products"&gt;Products&lt;/Link&gt;
+      &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main&gt;
+      &lt;Outlet /&gt; {/* Child route renders here */}
+    &lt;/main&gt;
+
+    &lt;footer&gt;© 2025 My App&lt;/footer&gt;
+  &lt;/div&gt;
+);
+
+export { RootLayout };</code></pre>
+<p>The parent Route has <strong>no path</strong> — it's a layout route (always matches).</p>
+<p><code>&lt;Outlet /&gt;</code> is where the child route's element appears.</p>
+<p>Header and footer stay on screen, only <code>&lt;Outlet /&gt;</code> content changes.</p>
+<h3 style="color: #76cdd8;"><strong>Multiple Levels of Nesting</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">&lt;Routes&gt;
+  &lt;Route element={&lt;RootLayout /&gt;}&gt;
+    &lt;Route path="/" element={&lt;HomePage /&gt;} /&gt;
+    &lt;Route path="/dashboard" element={&lt;DashboardLayout /&gt;}&gt;
+      &lt;Route index element={&lt;DashboardHome /&gt;} /&gt;
+      &lt;Route path="settings" element={&lt;Settings /&gt;} /&gt;
+      &lt;Route path="profile" element={&lt;Profile /&gt;} /&gt;
+    &lt;/Route&gt;
+  &lt;/Route&gt;
+&lt;/Routes&gt;</code></pre>
+<p><code>/dashboard</code> → DashboardLayout with DashboardHome in its Outlet.</p>
+<p><code>/dashboard/settings</code> → DashboardLayout with Settings in its Outlet.</p>
+<p><code>index</code> route — renders when parent path matches exactly (no sub-path).</p>
+<h3 style="color: #76cdd8;"><strong>Why Nested Routes Are Powerful</strong></h3>
+<p>Layouts are defined once, not repeated in every page.</p>
+<p>Each layout can have its own navigation, sidebar, loading states.</p>
+<p>Routes are composable — add new pages without touching the layout.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .img-row-container {
+            align-items: center;
+            flex-direction: column;
+        }
+      
+        .img-row {
+            width: 90%;
+        }
+      
+        .img-row img {
+            width: 90%;
+            margin-bottom:10px;
+        }
+
+        .code-background {
+            position: relative;
+            padding: 0 18px;
+            margin-bottom: 10px;
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
+            background-color: #f8f8f8;
+            overflow-x: auto;
+        }
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

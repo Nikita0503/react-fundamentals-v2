@@ -1,0 +1,119 @@
+<h3 style="color: #76cdd8;"><strong>Dynamic Routes</strong></h3>
+<h3 style="color: #76cdd8;"><strong>Route Parameters (useParams)</strong></h3>
+<p>Dynamic segments in the URL allow you to pass identifiers through the path:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Route definition with :id parameter
+&lt;Route path="/products/:id" element={&lt;ProductPage /&gt;} /&gt;</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// ProductPage.tsx — reading the parameter
+import { useParams } from "react-router-dom";
+
+type ProductParams = {
+  id: string;
+};
+
+const ProductPage = () =&gt; {
+  const { id } = useParams&lt;ProductParams&gt;();
+
+  return &lt;h1&gt;Product #{id}&lt;/h1&gt;;
+  // URL: /products/42 → shows "Product #42"
+};</code></pre>
+<p>Parameters are always <strong>strings</strong> (parse to number if needed: <code>Number(id)</code>).</p>
+<p>Multiple params: <code>/users/:userId/posts/:postId</code></p>
+<p>Common use: product pages, user profiles, blog posts.</p>
+<h3 style="color: #76cdd8;"><strong>Query Parameters (useSearchParams)</strong></h3>
+<p>Query parameters are the <code>?key=value</code> part of the URL:</p>
+<pre class="prettyprint"><code class="lang-tsx">// URL: /products?category=electronics&amp;sort=price
+import { useSearchParams } from "react-router-dom";
+
+const ProductList = () =&gt; {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const category = searchParams.get("category"); // "electronics"
+  const sort = searchParams.get("sort");         // "price"
+
+  // Update search params (doesn't reload page):
+  const handleCategoryChange = (newCategory: string) =&gt; {
+    setSearchParams({ category: newCategory, sort: sort ?? "name" });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Category: {category}, Sort: {sort}&lt;/p&gt;
+      &lt;button onClick={() =&gt; handleCategoryChange("clothing")}&gt;Clothing&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>Use for: filters, search queries, pagination, sorting — anything that should be shareable via URL.</p>
+<p><code>searchParams.get("key")</code> — read a param (returns <code>string | null</code>).</p>
+<p><code>setSearchParams({...})</code> — update params.</p>
+<h3 style="color: #76cdd8;"><strong>useLocation</strong></h3>
+<p>Read the current location object:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useLocation } from "react-router-dom";
+
+const Breadcrumbs = () =&gt; {
+  const location = useLocation();
+  // location.pathname — "/products/42"
+  // location.search — "?color=red"
+  // location.hash — "#details"
+  // location.state — any data passed via navigate
+
+  return &lt;p&gt;Current path: {location.pathname}&lt;/p&gt;;
+};</code></pre>
+<p>Useful for: breadcrumbs, analytics tracking, conditional rendering based on current route.</p>
+<h3 style="color: #76cdd8;"><strong>Params vs Search Params — when to use which</strong></h3>
+<table>
+<thead><tr><th>Use case</th><th>Tool</th><th>Example URL</th></tr></thead>
+<tbody>
+<tr><td>Identify a specific resource</td><td>Route params (<code>:id</code>)</td><td><code>/products/42</code></td></tr>
+<tr><td>Filter/sort/search (optional, shareable)</td><td>Search params (<code>?</code>)</td><td><code>/products?sort=price</code></td></tr>
+<tr><td>Pass data without showing in URL</td><td><code>navigate(path, { state })</code> + <code>location.state</code></td><td>—</td></tr>
+</tbody>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .img-row-container {
+            align-items: center;
+            flex-direction: column;
+        }
+      
+        .img-row {
+            width: 90%;
+        }
+      
+        .img-row img {
+            width: 90%;
+            margin-bottom:10px;
+        }
+
+        .code-background {
+            position: relative;
+            padding: 0 18px;
+            margin-bottom: 10px;
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
+            background-color: #f8f8f8;
+            overflow-x: auto;
+        }
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
