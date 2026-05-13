@@ -1,0 +1,130 @@
+<h3 style="color: #76cdd8;"><strong>Children &amp; Composition</strong></h3>
+
+<h4 style="color: #76cdd8;">The <code>children</code> prop</h4>
+<p>The <code>children</code> prop is a <strong>special prop</strong> that contains whatever is placed between a component's opening and closing tags. Its TypeScript type is <code>ReactNode</code> (can be text, elements, components, arrays, null, undefined).</p>
+
+<h4 style="color: #76cdd8;">Basic wrapper / container pattern</h4>
+<pre class="prettyprint"><code class="lang-tsx">import { ReactNode } from "react";
+
+type ContainerProps = {
+  children: ReactNode;
+};
+
+const Container = ({ children }: ContainerProps) =&gt; (
+  &lt;div className="container"&gt;{children}&lt;/div&gt;
+);
+
+// Usage:
+&lt;Container&gt;
+  &lt;h1&gt;Title&lt;/h1&gt;
+  &lt;p&gt;Any content goes here&lt;/p&gt;
+&lt;/Container&gt;
+</code></pre>
+
+<h4 style="color: #76cdd8;">Card pattern — wrapper with its own props + children</h4>
+<pre class="prettyprint"><code class="lang-tsx">type CardProps = {
+  title: string;
+  children: ReactNode;
+};
+
+const Card = ({ title, children }: CardProps) =&gt; (
+  &lt;div className="card"&gt;
+    &lt;h2 className="card-title"&gt;{title}&lt;/h2&gt;
+    &lt;div className="card-body"&gt;{children}&lt;/div&gt;
+  &lt;/div&gt;
+);
+
+// Usage:
+&lt;Card title="User Profile"&gt;
+  &lt;p&gt;Name: Alice&lt;/p&gt;
+  &lt;button&gt;Edit&lt;/button&gt;
+&lt;/Card&gt;
+</code></pre>
+
+<h4 style="color: #76cdd8;">Layout pattern — page structure with named slots</h4>
+<pre class="prettyprint"><code class="lang-tsx">type LayoutProps = {
+  header: ReactNode;
+  sidebar: ReactNode;
+  children: ReactNode; // main content
+};
+
+const Layout = ({ header, sidebar, children }: LayoutProps) =&gt; (
+  &lt;div className="layout"&gt;
+    &lt;header&gt;{header}&lt;/header&gt;
+    &lt;aside&gt;{sidebar}&lt;/aside&gt;
+    &lt;main&gt;{children}&lt;/main&gt;
+  &lt;/div&gt;
+);
+
+// Usage:
+&lt;Layout header={&lt;NavBar /&gt;} sidebar={&lt;Menu /&gt;}&gt;
+  &lt;h1&gt;Page Content&lt;/h1&gt;
+&lt;/Layout&gt;
+</code></pre>
+<p>This is the <strong>"slots" pattern</strong> — named props for specific areas + <code>children</code> for the main content.</p>
+
+<h4 style="color: #76cdd8;">Composition over inheritance</h4>
+<ul>
+  <li>React doesn't use class inheritance for component reuse</li>
+  <li>Instead: compose components together (small pieces → bigger pieces)</li>
+  <li><code>children</code> is the primary mechanism for composition</li>
+  <li>This is more flexible than inheritance — any content can go inside</li>
+</ul>
+
+<h4 style="color: #76cdd8;">When to use children</h4>
+<ul>
+  <li>Layout components (Container, Card, Modal, Sidebar)</li>
+  <li>Generic wrappers (ErrorBoundary, ThemeProvider, AnimationWrapper)</li>
+  <li>Components where the inner content varies but the outer structure is fixed</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

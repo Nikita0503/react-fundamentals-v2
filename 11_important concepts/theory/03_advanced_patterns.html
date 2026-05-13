@@ -1,0 +1,231 @@
+<h3 style="color: #76cdd8;"><strong>Advanced Patterns</strong></h3>
+<p>React has several patterns for sharing logic between components. Some are modern, some are legacy (but still appear on interviews).</p>
+
+<h4 style="color: #76cdd8;">Higher-Order Components (HOC) — legacy pattern</h4>
+<p>A function that takes a component and returns a new enhanced component. Was the primary way to share logic before hooks (2018).</p>
+<pre class="prettyprint"><code class="lang-tsx">import { ComponentType } from "react";
+
+const withAuth = &lt;P extends object&gt;(WrappedComponent: ComponentType&lt;P&gt;) =&gt; {
+  return (props: P) =&gt; {
+    const isAuthenticated = true; // check auth logic
+
+    if (!isAuthenticated) {
+      return &lt;p&gt;Access denied. Please log in.&lt;/p&gt;;
+    }
+
+    return &lt;WrappedComponent {...props} /&gt;;
+  };
+};
+
+// Usage:
+const Dashboard = () =&gt; &lt;h1&gt;Dashboard&lt;/h1&gt;;
+const ProtectedDashboard = withAuth(Dashboard);
+</code></pre>
+
+<p><strong>Problems with HOCs:</strong></p>
+<ul>
+  <li>"Wrapper hell" — multiple HOCs create deeply nested component trees</li>
+  <li>Props collision — HOCs can overwrite each other's props</li>
+  <li>Hard to type in TypeScript</li>
+  <li>Hard to trace where props come from (debugging)</li>
+</ul>
+
+<p><strong>Modern replacement:</strong> custom hooks (useAuth, usePermissions) + conditional rendering:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Modern approach — same result, simpler:
+const Dashboard = () =&gt; {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return &lt;p&gt;Access denied.&lt;/p&gt;;
+  return &lt;h1&gt;Dashboard&lt;/h1&gt;;
+};
+</code></pre>
+<p><strong>When you'll still see HOCs:</strong> older codebases, some libraries (React Redux's <code>connect()</code> — though <code>useSelector</code> replaced it).</p>
+
+<h4 style="color: #76cdd8;">Render Props — legacy pattern</h4>
+<p>A component that takes a function as a prop (or children) and calls it to determine what to render.</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, ReactNode } from "react";
+
+type MousePosition = { x: number; y: number };
+
+type MouseTrackerProps = {
+  render: (position: MousePosition) =&gt; ReactNode;
+};
+
+const MouseTracker = ({ render }: MouseTrackerProps) =&gt; {
+  const [position, setPosition] = useState&lt;MousePosition&gt;({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent) =&gt; {
+    setPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  return &lt;div onMouseMove={handleMouseMove}&gt;{render(position)}&lt;/div&gt;;
+};
+
+// Usage:
+&lt;MouseTracker render={({ x, y }) =&gt; &lt;p&gt;Mouse: {x}, {y}&lt;/p&gt;} /&gt;
+</code></pre>
+
+<p><strong>Modern replacement:</strong> custom hook:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+
+const useMousePosition = () =&gt; {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  useEffect(() =&gt; {
+    const handler = (e: MouseEvent) =&gt; setPosition({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", handler);
+    return () =&gt; window.removeEventListener("mousemove", handler);
+  }, []);
+  return position;
+};
+
+// Usage — much simpler:
+const Component = () =&gt; {
+  const { x, y } = useMousePosition();
+  return &lt;p&gt;Mouse: {x}, {y}&lt;/p&gt;;
+};
+</code></pre>
+
+<h4 style="color: #76cdd8;">Compound Components — modern pattern</h4>
+<p>A set of components that work together, sharing implicit state via Context. Think: <code>&lt;Select&gt;</code>, <code>&lt;Tabs&gt;</code>, <code>&lt;Accordion&gt;</code> — parent manages state, children render parts.</p>
+<pre class="prettyprint"><code class="lang-tsx">import { createContext, useContext, useState, ReactNode } from "react";
+
+// Internal context
+type TabsContextValue = { activeTab: string; setActiveTab: (tab: string) =&gt; void };
+const TabsContext = createContext&lt;TabsContextValue | undefined&gt;(undefined);
+
+const useTabs = () =&gt; {
+  const ctx = useContext(TabsContext);
+  if (!ctx) throw new Error("Tab components must be used within &lt;Tabs&gt;");
+  return ctx;
+};
+
+// Parent — manages state
+const Tabs = ({ defaultTab, children }: { defaultTab: string; children: ReactNode }) =&gt; {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  return (
+    &lt;TabsContext.Provider value={{ activeTab, setActiveTab }}&gt;
+      &lt;div className="tabs"&gt;{children}&lt;/div&gt;
+    &lt;/TabsContext.Provider&gt;
+  );
+};
+
+// Child — tab button
+const TabButton = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
+  const { activeTab, setActiveTab } = useTabs();
+  return (
+    &lt;button className={activeTab === name ? "active" : ""} onClick={() =&gt; setActiveTab(name)}&gt;
+      {children}
+    &lt;/button&gt;
+  );
+};
+
+// Child — tab content
+const TabPanel = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
+  const { activeTab } = useTabs();
+  return activeTab === name ? &lt;div&gt;{children}&lt;/div&gt; : null;
+};
+
+// Usage — clean, declarative API:
+&lt;Tabs defaultTab="profile"&gt;
+  &lt;TabButton name="profile"&gt;Profile&lt;/TabButton&gt;
+  &lt;TabButton name="settings"&gt;Settings&lt;/TabButton&gt;
+  &lt;TabPanel name="profile"&gt;&lt;ProfilePage /&gt;&lt;/TabPanel&gt;
+  &lt;TabPanel name="settings"&gt;&lt;SettingsPage /&gt;&lt;/TabPanel&gt;
+&lt;/Tabs&gt;
+</code></pre>
+<p><strong>Why it's good:</strong> clean API, flexible composition, state is hidden from the consumer.</p>
+<p><strong>Where you see it:</strong> UI libraries (Radix, React Aria, Headless UI).</p>
+
+<h4 style="color: #76cdd8;">Summary</h4>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr style="background-color: #2d2d2d; color: #fff;">
+      <th>Pattern</th>
+      <th>Era</th>
+      <th>Use today?</th>
+      <th>Replaced by</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HOC</td>
+      <td>Pre-hooks (2015-2018)</td>
+      <td>Legacy only</td>
+      <td>Custom hooks</td>
+    </tr>
+    <tr>
+      <td>Render Props</td>
+      <td>Pre-hooks (2017-2019)</td>
+      <td>Rare</td>
+      <td>Custom hooks</td>
+    </tr>
+    <tr>
+      <td>Custom Hooks</td>
+      <td>Modern (2019+)</td>
+      <td>✅ Primary</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Compound Components</td>
+      <td>Modern</td>
+      <td>✅ For UI kits</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>children / Composition</td>
+      <td>Always</td>
+      <td>✅ Always</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
