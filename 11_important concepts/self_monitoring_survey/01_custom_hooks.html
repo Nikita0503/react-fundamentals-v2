@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What must a custom hook's name start with?</h4><br/>
+( ) "get" — e.g., getToggle, getFetch
+( ) "hook" — e.g., hookToggle, hookFetch
+(x) "use" — e.g., useToggle, useFetch
+( ) "custom" — e.g., customToggle, customFetch
+
+<h4 style="color: #474747; font-weight: 600;">Where can hooks be called?</h4><br/>
+( ) Inside conditions and loops for dynamic behavior
+( ) Only inside class component lifecycle methods
+(x) Only at the top level of a component or another hook — not inside conditions or loops
+( ) Anywhere in a JavaScript file, including utility functions
+
+<h4 style="color: #474747; font-weight: 600;">What does the useFetch hook return?</h4><br/>
+( ) Only the fetched data
+( ) A promise that resolves with the response
+(x) An object with data, error, and loading state
+( ) A callback function to trigger the fetch manually
+
+<h4 style="color: #474747; font-weight: 600;">When should you create a custom hook?</h4><br/>
+( ) For every single piece of state in your application
+( ) Only when a library doesn't provide the hook you need
+(x) When the same useState/useEffect pattern is repeated in multiple components
+( ) Only when working with class components

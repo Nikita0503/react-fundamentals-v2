@@ -1,0 +1,205 @@
+<h3 style="color: #76cdd8;"><strong>Custom Hooks</strong></h3>
+
+<h4 style="color: #76cdd8;">What is a custom hook?</h4>
+<p>A custom hook is a <strong>function that starts with <code>use</code></strong> and can call other hooks inside it. It allows you to extract reusable logic from components. Instead of copy-pasting <code>useState</code>/<code>useEffect</code> patterns across multiple components, you put them in a hook.</p>
+
+<h4 style="color: #76cdd8;">Rules of Hooks (apply to custom hooks too)</h4>
+<ol>
+  <li>Must start with <code>use</code> (useToggle, useFetch, useDebounce)</li>
+  <li>Can only be called at the top level (not inside conditions, loops, or nested functions)</li>
+  <li>Can only be called from React components or other custom hooks</li>
+</ol>
+
+<h4 style="color: #76cdd8;">When to create a custom hook</h4>
+<ul>
+  <li>Same <code>useState</code> + <code>useEffect</code> pattern repeated in multiple components</li>
+  <li>Complex logic that clutters the component</li>
+  <li>You want to test the logic independently from the UI</li>
+</ul>
+
+<h4 style="color: #76cdd8;">Example 1: useToggle — simple boolean toggle</h4>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useCallback } from "react";
+
+const useToggle = (initialValue = false) =&gt; {
+  const [value, setValue] = useState(initialValue);
+
+  const toggle = useCallback(() =&gt; setValue(prev =&gt; !prev), []);
+  const setTrue = useCallback(() =&gt; setValue(true), []);
+  const setFalse = useCallback(() =&gt; setValue(false), []);
+
+  return { value, toggle, setTrue, setFalse };
+};
+
+// Usage:
+const Modal = () =&gt; {
+  const { value: isOpen, toggle, setFalse: close } = useToggle();
+  return (
+    &lt;div&gt;
+      &lt;button onClick={toggle}&gt;Toggle Modal&lt;/button&gt;
+      {isOpen &amp;&amp; &lt;div className="modal"&gt;&lt;button onClick={close}&gt;Close&lt;/button&gt;&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+
+<h4 style="color: #76cdd8;">Example 2: useFetch — generic data fetching with loading/error states</h4>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+
+type UseFetchResult&lt;T&gt; = {
+  data: T | null;
+  error: string | null;
+  loading: boolean;
+};
+
+const useFetch = &lt;T = unknown&gt;(url: string): UseFetchResult&lt;T&gt; =&gt; {
+  const [data, setData] = useState&lt;T | null&gt;(null);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+
+    fetch(url, { signal: controller.signal })
+      .then(res =&gt; {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json: T) =&gt; setData(json))
+      .catch(err =&gt; {
+        if (err.name !== "AbortError") setError(err.message);
+      })
+      .finally(() =&gt; setLoading(false));
+
+    return () =&gt; controller.abort();
+  }, [url]);
+
+  return { data, error, loading };
+};
+
+// Usage:
+type Post = { id: number; title: string };
+
+const PostList = () =&gt; {
+  const { data: posts, loading, error } = useFetch&lt;Post[]&gt;("https://api.example.com/posts");
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+  return &lt;ul&gt;{posts?.map(p =&gt; &lt;li key={p.id}&gt;{p.title}&lt;/li&gt;)}&lt;/ul&gt;;
+};
+</code></pre>
+<p><strong>Note:</strong> includes AbortController for cleanup (prevents setting state on unmounted component).</p>
+<p><strong>Note:</strong> in real projects, you'd use React Query/TanStack Query instead of a custom useFetch — but understanding the pattern is valuable.</p>
+
+<h4 style="color: #76cdd8;">Example 3: useLocalStorage — persist state in localStorage</h4>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+
+const useLocalStorage = &lt;T&gt;(key: string, initialValue: T) =&gt; {
+  const [value, setValue] = useState&lt;T&gt;(() =&gt; {
+    const stored = localStorage.getItem(key);
+    return stored ? (JSON.parse(stored) as T) : initialValue;
+  });
+
+  useEffect(() =&gt; {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue] as const;
+};
+
+// Usage:
+const Settings = () =&gt; {
+  const [theme, setTheme] = useLocalStorage&lt;"light" | "dark"&gt;("theme", "light");
+  return &lt;button onClick={() =&gt; setTheme(theme === "light" ? "dark" : "light")}&gt;{theme}&lt;/button&gt;;
+};
+</code></pre>
+
+<h4 style="color: #76cdd8;">Example 4: useDebounce — delay value updates (for search inputs)</h4>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
+
+const useDebounce = &lt;T&gt;(value: T, delay: number): T =&gt; {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; setDebouncedValue(value), delay);
+    return () =&gt; clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+// Usage:
+const Search = () =&gt; {
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 300);
+
+  useEffect(() =&gt; {
+    if (debouncedQuery) {
+      // fetch search results only after user stops typing for 300ms
+      fetch(`/api/search?q=${debouncedQuery}`);
+    }
+  }, [debouncedQuery]);
+
+  return &lt;input value={query} onChange={e =&gt; setQuery(e.target.value)} /&gt;;
+};
+</code></pre>
+
+<h4 style="color: #76cdd8;">Custom hook best practices</h4>
+<ul>
+  <li>Name clearly: <code>useX</code> where X describes what it does</li>
+  <li>Return an object (for named access) or tuple (for positional, like useState)</li>
+  <li>Keep hooks focused — one responsibility per hook</li>
+  <li>Hooks can call other custom hooks (composition)</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+
+  
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
