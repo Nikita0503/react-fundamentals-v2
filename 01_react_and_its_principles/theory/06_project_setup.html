@@ -1,0 +1,125 @@
+<h3 style="color: #76cdd8;"><strong>Creating a React Project in 2025</strong></h3>
+<p><strong>Vite</strong> is the standard tool for creating React projects today. It's fast, modern, and has TypeScript support out of the box.</p>
+
+<h3 style="color: #76cdd8;"><strong>Creating a Project</strong></h3>
+<p>Run these commands in your terminal:</p>
+<pre class="prettyprint"><code class="lang-ts">npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install
+npm run dev
+</code></pre>
+<p>That's it — you have a working React + TypeScript project with a development server running.</p>
+
+<h3 style="color: #76cdd8;"><strong>What Vite Gives You</strong></h3>
+<ul>
+<li><strong>Dev server with hot reload</strong>: Changes appear instantly in the browser without losing state</li>
+<li><strong>TypeScript support</strong>: No extra configuration needed</li>
+<li><strong>Fast builds</strong>: Uses esbuild for development and Rollup for production</li>
+<li><strong>ES modules</strong>: Modern module system, no bundling during development</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Project Structure</strong></h3>
+<p>After creation, your project looks like this:</p>
+<pre class="prettyprint"><code class="lang-ts">my-app/
+├── public/            # Static files (favicon, etc.)
+├── src/
+│   ├── App.tsx        # Root component
+│   ├── main.tsx       # Entry point (renders App into DOM)
+│   ├── App.css        # Styles for App
+│   └── vite-env.d.ts  # Vite TypeScript declarations
+├── index.html         # Single HTML page (SPA entry)
+├── package.json       # Dependencies and scripts
+├── tsconfig.json      # TypeScript configuration
+└── vite.config.ts     # Vite configuration
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>The Entry Point — main.tsx</strong></h3>
+<p>This is where your React application starts:</p>
+<pre class="prettyprint"><code class="lang-tsx">import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  &lt;React.StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/React.StrictMode&gt;
+);
+</code></pre>
+<p>What's happening here:</p>
+<ul>
+<li><code>createRoot</code> mounts your React application into the <code>&lt;div id="root"&gt;</code> element in <code>index.html</code></li>
+<li><code>React.StrictMode</code> is a development-only wrapper that helps find bugs early. It double-renders components in development to catch side effects, and warns about deprecated APIs. It has no effect in production.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Your First Component — App.tsx</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;My First React App&lt;/h1&gt;
+      &lt;p&gt;Edit src/App.tsx and save to see changes.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;
+</code></pre>
+<p>This is a functional component — a plain function that returns JSX. It's the simplest building block in React.</p>
+
+<h3 style="color: #76cdd8;"><strong>Key Scripts</strong></h3>
+<ul>
+<li><code>npm run dev</code> — Start the development server (with hot reload)</li>
+<li><code>npm run build</code> — Create an optimized production build</li>
+<li><code>npm run preview</code> — Preview the production build locally</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>A Note on Create React App (CRA)</strong></h3>
+<p>You may see older tutorials using <code>npx create-react-app</code>. This tool is <strong>deprecated as of 2023</strong> and is no longer maintained. Vite is the recommended replacement — it's faster, simpler, and actively developed.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

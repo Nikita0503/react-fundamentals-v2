@@ -1,21 +1,23 @@
-<h4 style="color: #474747; font-weight: 600;">Virtual DOM is?</h4><br/> 
-( ) Virtual DOM is a new programming language standard.
-( ) Virtual DOM is only for the Python language.
-(x) Virtual DOM is a web application optimization technique.
+<h4 style="color: #474747; font-weight: 600;">What is the Virtual DOM?</h4><br/>
+( ) A special browser API for faster rendering
+( ) A separate HTML file that mirrors the main page
+(x) A lightweight JavaScript object that mirrors the real DOM structure
+( ) A plugin that must be installed separately
 
-<h4 style="color: #474747; font-weight: 600;">What advantages does using Virtual DOM in React provide?</h4><br/> 
-( ) Virtual DOM simplifies the code writing process but does not affect application performance.
-(x) Reducing the number of operations for updating the interface and improving performance.
-( ) Virtual DOM is not used in React at all.
+<h4 style="color: #474747; font-weight: 600;">Why is direct DOM manipulation slow at scale?</h4><br/>
+( ) JavaScript is a slow language
+(x) Each change can trigger expensive layout recalculations and repaints
+( ) The DOM has a maximum number of elements it can hold
+( ) Browsers limit the number of DOM operations per second
 
-<h4 style="color: #474747; font-weight: 600;">How does React use Virtual DOM to update the user interface?</h4><br/> 
-( ) React updates the real DOM directly without using Virtual DOM.
-(x) React compares the new Virtual DOM tree with the previous one and updates only those parts where changes occurred.
-( ) React uses Virtual DOM only to save the component state.
+<h4 style="color: #474747; font-weight: 600;">What does reconciliation do in React?</h4><br/>
+( ) It merges two React applications into one
+( ) It synchronizes data between the frontend and backend
+(x) It compares the new Virtual DOM with the previous one and applies only the minimal changes to the real DOM
+( ) It resolves conflicts between different component states
 
-<h4 style="color: #474747; font-weight: 600;">What is DOM in the context of web development?</h4><br/> 
-(x) DOM is a structure that represents a web page in the browser as a tree of elements.
-( ) DOM is a framework for working with databases in React.
-( ) DOM is a new programming language for web development.
-
- 
+<h4 style="color: #474747; font-weight: 600;">Does the developer manually interact with the Virtual DOM?</h4><br/>
+( ) Yes, you must optimize Virtual DOM operations manually
+( ) Yes, you create Virtual DOM nodes directly
+(x) No, it's an internal implementation detail — you just write components and React handles the rest
+( ) Only when using class components

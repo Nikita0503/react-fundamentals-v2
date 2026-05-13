@@ -1,25 +1,46 @@
-<h3 style="color: #76cdd8;"><strong>Single-Page Application</strong></h3>
-<p>A Single-Page Application (<strong>SPA</strong>) is an application that loads a single HTML page and all the necessary resources (such as JavaScript and CSS) required for the application to work.</p>
-<p>Any interaction with the page or subsequent pages does not require a request to the server, which means the <strong>page does not reload</strong>.</p>
-<h1><img src="blob:https://studio.elearn.epam.com/216e5d91-4058-426a-8d4b-13cefbcfa49e" alt="" style="display: block; margin-left: auto; margin-right: auto;" width="430" height="242" /></h1>
-<p>In the past, when browsers were much smaller than today and JavaScript performance was low, every page came from the server. Every time you clicked something, a new request was sent to the server, and then the browser loaded a new page.</p>
-<p>Only very innovative products worked differently and experimented with new approaches.</p>
+<h3 style="color: #76cdd8;"><strong>What is a Single-Page Application (SPA)?</strong></h3>
+<p>A <strong>Single-Page Application</strong> (SPA) is a web application that loads one HTML page and then dynamically updates content using JavaScript — without full page reloads.</p>
+<p>In a traditional website, every link click sends a request to the server, which returns a completely new HTML page. In an SPA, the browser loads the application once, and all subsequent "page changes" are handled by JavaScript on the client side.</p>
+
+<h3 style="color: #76cdd8;"><strong>How it Works</strong></h3>
+<ol>
+<li>The browser loads the initial HTML page (usually just a <code>&lt;div id="root"&gt;</code> and a JavaScript bundle)</li>
+<li>JavaScript takes over and renders the UI</li>
+<li>When the user navigates (clicks a link), the URL changes but <strong>no new page is requested from the server</strong></li>
+<li>A client-side router intercepts the URL change and renders the appropriate component</li>
+<li>Only data (JSON) is fetched from the server when needed — not entire pages</li>
+</ol>
+
 <h3 style="color: #76cdd8;"><strong>SPA Advantages</strong></h3>
 <ul>
-<li><strong>Speed</strong>: SPA provides smoother and faster user interaction, as content updates happen without page reloads.</li>
-<li><strong>Caching</strong>: Since all SPA code and resources are loaded once, after the first page load the application can be cached, which reduces load time for subsequent visits.</li>
-<li><strong>More independent development</strong>: SPA development usually allows <strong>separating frontend and backend</strong>, which allows developers to work independently from each other and implement changes faster.</li>
-<li><strong>Multiple platforms</strong>: SPA can run on different platforms, including web, mobile devices, and desktop computers, using frameworks that support different platforms.</li>
-<li><strong>Smooth navigation</strong>: SPA allows transitions between pages without flickering and delays, providing a more convenient user experience.</li>
-<li><strong>Convenience</strong>: Using asynchronous requests and client-side data updates, SPAs can provide faster and seamless user interaction.</li>
+<li><strong>Fast navigation</strong>: No page reloads means instant transitions between views</li>
+<li><strong>Smooth user experience</strong>: The app feels native, like a desktop or mobile application</li>
+<li><strong>Clear separation of frontend and backend</strong>: The frontend is a standalone application that communicates with the backend via APIs</li>
+<li><strong>Rich interactivity</strong>: Complex UI interactions (drag-and-drop, real-time updates, animations) are natural to implement</li>
 </ul>
+
 <h3 style="color: #76cdd8;"><strong>SPA Disadvantages</strong></h3>
 <ul>
-<li><strong>SEO</strong>: SPA may have problems with search engine indexing, since all content is generated dynamically on the client side. Special measures are needed to improve SEO in SPA.</li>
-<li><strong>Browser load</strong>: SPAs require a large amount of JavaScript code and resources, which can lead to a greater load on the user's browser. This can be a problem for older browsers or devices with limited resources.</li>
-<li><strong>Initial load time</strong>: The first load of an SPA page can take a long time, since all the necessary code and resources need to be downloaded.</li>
+<li><strong>Initial load can be slow</strong>: The browser must download the entire JavaScript bundle before the app becomes interactive</li>
+<li><strong>SEO challenges</strong>: Search engines may struggle to index content that is rendered by JavaScript (not present in the initial HTML)</li>
+<li><strong>Browser history needs special handling</strong>: The back/forward buttons don't work automatically — a client-side router must manage navigation state (this is solved by routing libraries)</li>
 </ul>
-<p></p>
+
+<h3 style="color: #76cdd8;"><strong>Modern Solutions to SPA Problems</strong></h3>
+<p>The React ecosystem has mature solutions for every SPA limitation:</p>
+<ul>
+<li><strong>Code splitting / lazy loading</strong>: Load only the code needed for the current page. The rest is loaded on demand. This dramatically reduces initial bundle size.</li>
+<li><strong>Server-Side Rendering (SSR)</strong>: Frameworks like Next.js render the page on the server first, send ready HTML to the browser, then "hydrate" it with JavaScript for interactivity. This solves both SEO and initial load speed.</li>
+<li><strong>Static Site Generation (SSG)</strong>: Pre-render pages at build time. The result is plain HTML files that load instantly and are perfectly indexable by search engines.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>React Supports All Approaches</strong></h3>
+<ul>
+<li><strong>Pure SPA</strong>: Vite + React Router (client-side only)</li>
+<li><strong>SSR</strong>: Next.js (server-rendered with hydration)</li>
+<li><strong>SSG</strong>: Next.js, Astro (pre-rendered at build time)</li>
+</ul>
+<p>For this course, we'll build a <strong>pure SPA</strong> — it's the foundation you need before moving to SSR or SSG. Understanding how a client-side app works makes server-side concepts much easier to grasp later.</p>
 <p></p>
 <style><!--
 .row-container {
@@ -40,8 +61,6 @@
         height: auto;
     }
 
-
-  
   	@media only screen and (max-width: 500px) {
     	.img-row-container {
         	align-items: center;
@@ -71,5 +90,3 @@
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>
-<p></p>

@@ -1,21 +1,43 @@
-<h3 style="color: #76cdd8;"><strong>What is DOM?</strong></h3>
-<p><strong>DOM (Document Object Model)</strong> is a structure that represents a web page in the browser as a tree of elements (for example, HTML tags) that can be modified or displayed on the screen.</p>
-<h1><img src="blob:https://studio.elearn.epam.com/b6908b5a-35a3-4164-934c-79cf411c697b" alt="" style="display: block; margin-left: auto; margin-right: auto;" width="432" height="448" /></h1>
-<p>One of the peculiarities of working with the DOM is that changes to the DOM can be expensive in terms of performance, especially when updating a large number of elements at scale. Each change to the DOM can lead to recalculation of the layout and appearance of elements, which can be resource-intensive for the browser and lead to decreased application performance.</p>
-<p>The page's DOM can be seen by opening DevTools in the Elements tab.</p>
+<h3 style="color: #76cdd8;"><strong>What is the DOM?</strong></h3>
+<p>The <strong>DOM</strong> (Document Object Model) is the browser's tree representation of an HTML page. Every HTML element becomes a node in this tree. JavaScript can read and modify these nodes — changing text, adding elements, removing them, updating styles.</p>
+<p>When you write <code>document.getElementById("app")</code> or <code>element.innerHTML = "..."</code>, you're directly manipulating the DOM.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Problem: Direct DOM Manipulation at Scale</strong></h3>
+<p>Direct DOM manipulation works fine for small changes. But in complex applications with hundreds of elements updating frequently, it becomes a performance bottleneck:</p>
+<ul>
+<li>Every DOM change can trigger <strong>layout recalculation</strong> (the browser recalculates positions and sizes of elements)</li>
+<li>Layout changes trigger <strong>repaints</strong> (the browser redraws pixels on screen)</li>
+<li>Multiple uncoordinated updates cause the browser to repeat this expensive work many times</li>
+</ul>
+<p>Imagine updating 100 list items one by one — the browser might recalculate layout 100 times instead of once.</p>
+
 <h3 style="color: #76cdd8;"><strong>What is Virtual DOM?</strong></h3>
-<p><strong>Virtual DOM</strong> is a web application optimization technique used in React and other JavaScript libraries and frameworks to improve the performance of working with the DOM tree.</p>
-<p>The Virtual DOM is an abstract representation of the real DOM in the browser's memory. Instead of directly interacting with the real DOM, React creates a Virtual DOM, which is lightweight and efficient. It is stored in memory as a regular <strong>JavaScript object</strong>. The Virtual DOM consists of nodes (or elements) with their properties and child nodes. React uses the Virtual DOM to perform state change operations on components, compare old and new states, and <strong>update the real DOM only in those places where changes have occurred</strong>.</p>
-<h1><img src="https://habrastorage.org/getpro/habr/post_images/12a/500/0c2/12a5000c239d0c3eb96cd4848e7221a1.jpg" alt="Немного о том, как работает виртуальный DOM в React / Хабр" style="display: block; margin-left: auto; margin-right: auto;" /></h1>
-<p>The advantage is that React does not update the entire real DOM, but only those parts of the DOM that need to be updated (<span style="color: #f3b043;">orange circles</span>). Other (<span style="color: #76d87c;">green circles</span>) parts of the DOM that do not need updating are not affected. This concept significantly <strong>improves application performance</strong>.</p>
-<p>The process of working with the Virtual DOM in React can be as follows:</p>
-<p><strong>1)</strong> A React component updates its internal state (data), or receives new properties (data).</p>
-<p><strong>2)</strong> React creates a new Virtual DOM tree, representing the updated state of the component.</p>
-<p><strong>3)</strong> React compares the new Virtual DOM tree with the previous Virtual DOM tree and determines which elements need to be updated.</p>
-<p><strong>4)</strong> React updates the real DOM only in those places where changes have occurred, instead of fully updating the entire DOM tree.</p>
-<p><strong>5)</strong> The updated elements in the real DOM are displayed on the browser's web page, providing the corresponding update of the user interface (with up-to-date data).</p>
-<p>This approach allows optimizing DOM updates and reducing the number of operations required to update the user interface, which leads to <strong>improved application performance</strong>.</p>
-<p>Using the Virtual DOM in React allows developers to write efficient and performant code, update the user interface effectively, and provides a better experience when using web applications.</p>
+<p>The <strong>Virtual DOM</strong> is a lightweight JavaScript object that mirrors the structure of the real DOM. It's essentially a "blueprint" of what the UI should look like — stored in memory, not rendered on screen.</p>
+<p>Think of it as a draft: React makes all its changes on the draft first, then applies only the final differences to the real page.</p>
+
+<h3 style="color: #76cdd8;"><strong>How React Uses Virtual DOM</strong></h3>
+<p>When something changes in your application (state update, new props), React follows this process:</p>
+<ol>
+<li><strong>State or props change</strong> in a component</li>
+<li>React creates a <strong>new Virtual DOM tree</strong> representing the updated UI</li>
+<li>React <strong>compares (diffs)</strong> the new tree with the previous tree</li>
+<li>React calculates the <strong>minimal set of changes</strong> needed</li>
+<li>React applies <strong>only those changes</strong> to the real DOM — this process is called <strong>reconciliation</strong></li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Why This is Fast</strong></h3>
+<ul>
+<li><strong>Batching</strong>: Multiple state updates are grouped together into a single DOM update</li>
+<li><strong>Minimal operations</strong>: Only the elements that actually changed get updated in the real DOM</li>
+<li><strong>Efficient diffing algorithm</strong>: React's comparison algorithm runs in O(n) time, making it practical even for large component trees</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Important Note</strong></h3>
+<p>Virtual DOM is an <strong>internal implementation detail</strong>. As a developer, you don't interact with it directly — you just write components and React handles the rest. You don't need to "optimize for the Virtual DOM" manually in most cases.</p>
+<p>Your job is to describe what the UI should look like. React's job is to figure out the most efficient way to make it happen.</p>
+
+<h3 style="color: #76cdd8;"><strong>React 19 and the React Compiler</strong></h3>
+<p>React 19 introduces the <strong>React Compiler</strong> — a build-time tool that can automatically optimize re-renders. It analyzes your components and adds memoization where needed, reducing unnecessary work without you writing any extra code. This is the future direction of React performance optimization.</p>
 <p></p>
 <style><!--
 .row-container {
@@ -36,8 +58,6 @@
         height: auto;
     }
 
-
-  
   	@media only screen and (max-width: 500px) {
     	.img-row-container {
         	align-items: center;
@@ -67,5 +87,3 @@
 <p>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
 </p>
-<p></p>
-<p></p>

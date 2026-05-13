@@ -1,0 +1,120 @@
+<h3 style="color: #76cdd8;"><strong>What is JSX?</strong></h3>
+<p><strong>JSX</strong> (JavaScript XML) is a syntax extension that lets you write HTML-like code inside JavaScript/TypeScript files. It makes component templates readable and intuitive.</p>
+<p>JSX is <strong>not HTML</strong> — it's syntactic sugar that gets compiled into <code>React.createElement()</code> calls. The browser never sees JSX — a build tool (like Vite) transforms it into regular JavaScript before the code runs.</p>
+
+<h3 style="color: #76cdd8;"><strong>JSX Transformation</strong></h3>
+<p>Here's what happens under the hood:</p>
+<pre class="prettyprint"><code class="lang-tsx">// What you write (JSX):
+const element = &lt;h1 className="title"&gt;Hello, world!&lt;/h1&gt;;
+
+// What React sees (after compilation):
+const element = React.createElement("h1", { className: "title" }, "Hello, world!");
+</code></pre>
+<p>You never need to write <code>React.createElement()</code> manually — JSX does it for you. But understanding this transformation helps you debug issues and understand how React works internally.</p>
+
+<h3 style="color: #76cdd8;"><strong>JSX Rules</strong></h3>
+<p>JSX looks like HTML but has important differences:</p>
+<ol>
+<li><strong>Single root element</strong>: A component must return one parent element. If you don't want an extra wrapper <code>&lt;div&gt;</code>, use a Fragment: <code>&lt;&gt;...&lt;/&gt;</code></li>
+<li><strong>className, not class</strong>: Because <code>class</code> is a reserved word in JavaScript</li>
+<li><strong>htmlFor, not for</strong>: Same reason — used on <code>&lt;label&gt;</code> elements</li>
+<li><strong>camelCase attributes</strong>: <code>onClick</code>, <code>onChange</code>, <code>tabIndex</code> (not <code>onclick</code>, <code>onchange</code>, <code>tabindex</code>)</li>
+<li><strong>Self-closing tags are required</strong>: <code>&lt;img /&gt;</code>, <code>&lt;input /&gt;</code>, <code>&lt;br /&gt;</code> (you can't write <code>&lt;img&gt;</code> without closing)</li>
+<li><strong>Expressions in curly braces</strong>: <code>{variable}</code>, <code>{condition &amp;&amp; &lt;Component /&gt;}</code>, <code>{items.map(...)}</code></li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Embedding Expressions</strong></h3>
+<p>You can embed any JavaScript expression inside JSX using curly braces <code>{}</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">const name = "Alice";
+const age = 25;
+
+const greeting = (
+  &lt;div&gt;
+    &lt;h1&gt;Hello, {name}!&lt;/h1&gt;
+    &lt;p&gt;You are {age} years old.&lt;/p&gt;
+    &lt;p&gt;Next year you'll be {age + 1}.&lt;/p&gt;
+  &lt;/div&gt;
+);
+</code></pre>
+<p>Anything that is a valid JavaScript expression can go inside <code>{}</code> — variables, function calls, math operations, ternary operators.</p>
+
+<h3 style="color: #76cdd8;"><strong>Conditional Rendering</strong></h3>
+<p>You can conditionally show or hide elements using JavaScript expressions:</p>
+<pre class="prettyprint"><code class="lang-tsx">const isLoggedIn = true;
+
+return (
+  &lt;div&gt;
+    {isLoggedIn ? &lt;p&gt;Welcome back!&lt;/p&gt; : &lt;p&gt;Please log in.&lt;/p&gt;}
+    {isLoggedIn &amp;&amp; &lt;button&gt;Logout&lt;/button&gt;}
+  &lt;/div&gt;
+);
+</code></pre>
+<ul>
+<li><strong>Ternary operator</strong> (<code>? :</code>): Show one thing or another</li>
+<li><strong>Logical AND</strong> (<code>&amp;&amp;</code>): Show something only if the condition is true</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Rendering Lists</strong></h3>
+<p>Use <code>.map()</code> to render arrays of data as lists of elements:</p>
+<pre class="prettyprint"><code class="lang-tsx">const fruits = ["Apple", "Banana", "Cherry"];
+
+return (
+  &lt;ul&gt;
+    {fruits.map((fruit) =&gt; (
+      &lt;li key={fruit}&gt;{fruit}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>The key Prop</strong></h3>
+<p>When rendering lists, every element needs a unique <code>key</code> prop. This helps React identify which items changed, were added, or removed — making updates efficient. We'll cover this in detail in the Lists module.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
