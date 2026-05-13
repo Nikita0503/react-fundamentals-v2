@@ -1,0 +1,137 @@
+<h3 style="color: #76cdd8;"><strong>Rule #1: Don't Optimize Prematurely</strong></h3>
+<p>React is fast by default. Most apps don't need manual optimization.</p>
+<ul>
+<li><strong>Wrong approach:</strong> wrap everything in memo/useMemo/useCallback "just in case"</li>
+<li><strong>Right approach:</strong> build first, measure, optimize bottlenecks</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Rule #2: Measure Before Optimizing</strong></h3>
+<p>Use the <strong>React DevTools Profiler</strong> — it shows which components re-render and how long they take.</p>
+<ul>
+<li>If a component renders in &lt;1ms, memoizing it saves nothing</li>
+<li>Look for: components that render &gt;16ms (causes frame drops), or render hundreds of times per second</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Rule #3: Structural Optimization First</strong></h3>
+<p>Before reaching for memo, try restructuring your components:</p>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Entire page re-renders when input changes
+const Page = () =&gt; {
+  const [search, setSearch] = useState("");
+  return (
+    &lt;div&gt;
+      &lt;input value={search} onChange={e =&gt; setSearch(e.target.value)} /&gt;
+      &lt;ExpensiveChart /&gt;  {/* re-renders on every keystroke! */}
+    &lt;/div&gt;
+  );
+};
+
+// ✅ Move state down — only SearchInput re-renders
+const Page = () =&gt; (
+  &lt;div&gt;
+    &lt;SearchInput /&gt;       {/* owns its own state */}
+    &lt;ExpensiveChart /&gt;    {/* doesn't re-render */}
+  &lt;/div&gt;
+);
+
+const SearchInput = () =&gt; {
+  const [search, setSearch] = useState("");
+  return &lt;input value={search} onChange={e =&gt; setSearch(e.target.value)} /&gt;;
+};</code></pre>
+<p>"Move state down" and "lift content up" are <strong>free optimizations</strong> — no memo needed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Rule #4: The Optimization Toolkit (in order of preference)</strong></h3>
+<ol>
+<li><strong>Move state down / restructure components</strong> (free)</li>
+<li><strong>React.memo</strong> for expensive children that re-render unnecessarily</li>
+<li><strong>useMemo</strong> for expensive computations</li>
+<li><strong>useCallback</strong> for stabilizing function references (paired with memo)</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>React Compiler (Future)</strong></h3>
+<p>React 19 introduces the <strong>React Compiler</strong> (formerly "React Forget"):</p>
+<ul>
+<li>It automatically memoizes components, values, and callbacks at build time</li>
+<li>In the future, manual memo/useMemo/useCallback will become less necessary</li>
+<li>But understanding WHY they exist is still important for interviews and working with current codebases</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Summary — When to Optimize</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #2d2d2d; color: #f8f8f8;">
+<th>Symptom</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expensive child re-renders when parent state changes</td>
+<td>React.memo on child</td>
+</tr>
+<tr>
+<td>Expensive computation runs on every render</td>
+<td>useMemo</td>
+</tr>
+<tr>
+<td>Memoized child re-renders because function prop changes</td>
+<td>useCallback + React.memo</td>
+</tr>
+<tr>
+<td>Input causes entire page to re-render</td>
+<td>Move state down</td>
+</tr>
+<tr>
+<td>Many context consumers re-render</td>
+<td>Split context or use selectors</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

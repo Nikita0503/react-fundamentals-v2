@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What should you try before reaching for React.memo?</h4><br/>
+( ) Add useCallback to every function in the parent component.
+( ) Wrap the entire app in a single context provider.
+(x) Restructure components — move state down to the component that needs it, or lift content up as children.
+( ) Convert all components to class components with shouldComponentUpdate.
+<h4 style="color: #474747; font-weight: 600;">What tool helps measure component render performance in React?</h4><br/>
+( ) Chrome DevTools Performance tab (without React extension).
+( ) console.time() around the component function.
+(x) React DevTools Profiler — it shows which components re-render and how long each render takes.
+( ) Lighthouse performance audit.
+<h4 style="color: #474747; font-weight: 600;">What is the React Compiler?</h4><br/>
+( ) A tool that converts React components to vanilla JavaScript without React runtime.
+( ) A linter that checks for performance issues in your code.
+(x) An automatic memoization tool in React 19 that reduces the need for manual memo/useMemo/useCallback by applying them at build time.
+( ) A bundler replacement for webpack that optimizes React applications.
+<h4 style="color: #474747; font-weight: 600;">What is the correct order of optimization steps?</h4><br/>
+( ) Optimize everything → measure to confirm → ship to production.
+( ) Measure → add React.memo everywhere → remove what doesn't help.
+( ) Add useMemo/useCallback to all hooks → test performance → remove unnecessary ones.
+(x) Build correctly first → measure with Profiler → optimize only the bottlenecks you found.

@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What does React.memo do?</h4><br/>
+( ) It caches the component's state between renders so it doesn't reset.
+( ) It prevents a component from ever re-rendering after the initial mount.
+(x) It skips re-rendering a component if its props haven't changed (using shallow comparison).
+( ) It deeply compares all props and state to decide whether to re-render.
+<h4 style="color: #474747; font-weight: 600;">When is React.memo useless (won't prevent re-renders)?</h4><br/>
+( ) When the component has no children.
+(x) When props change on every render anyway (e.g., parent creates new function/object references each time).
+( ) When the component uses useState internally.
+( ) When the component is a leaf node with no children.
+<h4 style="color: #474747; font-weight: 600;">What comparison does React.memo use by default?</h4><br/>
+( ) Deep comparison using JSON.stringify on all props.
+( ) Reference equality check on the props object itself.
+(x) Shallow comparison with Object.is on each individual prop.
+( ) It uses a custom comparator that must be provided by the developer.
+<h4 style="color: #474747; font-weight: 600;">Should you wrap every component in React.memo?</h4><br/>
+( ) Yes — it's always beneficial and has no cost.
+( ) Yes — it's a best practice recommended by the React team.
+(x) No — only expensive components that re-render unnecessarily benefit from it. For cheap components, the comparison cost may exceed the render cost.
+( ) No — React.memo is deprecated and should never be used.

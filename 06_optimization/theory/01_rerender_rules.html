@@ -1,0 +1,88 @@
+<h3 style="color: #76cdd8;"><strong>Understanding Re-renders</strong></h3>
+<p>Understanding re-renders is the foundation of optimization. You can't optimize what you don't understand.</p>
+<p>A <strong>re-render</strong> means React calls your component function again to get the new JSX. This is how React keeps the UI in sync with state.</p>
+
+<h3 style="color: #76cdd8;"><strong>What Triggers a Re-render</strong></h3>
+<p>There are exactly three triggers:</p>
+<ol>
+<li><strong>State change</strong> — when <code>setState</code> is called, the component re-renders</li>
+<li><strong>Parent re-renders</strong> — when a parent re-renders, ALL its children re-render too (even if their props didn't change!)</li>
+<li><strong>Context change</strong> — when a context value changes, all consumers re-render</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Re-render ≠ DOM Update</strong></h3>
+<p>This is a critical distinction. React re-renders (runs the component function), diffs the Virtual DOM, and only updates the real DOM if something actually changed. Re-renders are usually fast — it's unnecessary DOM updates that are expensive.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Re-render Cascade</strong></h3>
+<p>When a parent's state changes, the entire subtree re-renders:</p>
+<pre class="prettyprint"><code class="lang-tsx">// When App's state changes, ALL of these re-render:
+const App = () => {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;          {/* re-renders (parent re-rendered) */}
+      &lt;Counter count={count} /&gt; {/* re-renders (parent + props changed) */}
+      &lt;Footer /&gt;          {/* re-renders (parent re-rendered) — even though nothing changed for it! */}
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>This is Usually Fine!</strong></h3>
+<p>React is fast. Most re-renders are cheap. The problem only arises when:</p>
+<ul>
+<li>A component is <strong>expensive to render</strong> (complex calculations, large lists)</li>
+<li>Re-renders happen <strong>very frequently</strong> (typing, scrolling, animations)</li>
+<li>The component tree is <strong>very deep</strong></li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Don't Optimize Prematurely</strong></h3>
+<p>The golden rule: first make it work correctly, then measure, then optimize only what's slow. Most performance problems are imaginary — React handles the vast majority of cases without any manual optimization.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

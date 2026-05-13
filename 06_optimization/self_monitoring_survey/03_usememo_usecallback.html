@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What does useMemo cache?</h4><br/>
+( ) A function reference so it stays stable between renders.
+(x) The result of a computation, recomputing only when dependencies change.
+( ) The entire component tree to avoid re-rendering children.
+( ) The previous state value for comparison purposes.
+<h4 style="color: #474747; font-weight: 600;">What does useCallback cache?</h4><br/>
+(x) A function reference, keeping it stable between renders unless dependencies change.
+( ) The return value of a function call.
+( ) The component's props to compare them on the next render.
+( ) The DOM node that the function is attached to.
+<h4 style="color: #474747; font-weight: 600;">When does useCallback help prevent child re-renders?</h4><br/>
+( ) Always — useCallback alone is enough to prevent any child from re-rendering.
+( ) When the child component uses useState internally.
+(x) When the child is wrapped in React.memo — the stable function reference means memo's shallow comparison sees "same prop" and skips the render.
+( ) When the function has no dependencies and never changes.
+<h4 style="color: #474747; font-weight: 600;">When should you NOT use useMemo?</h4><br/>
+( ) When the computation depends on props.
+( ) When the result is passed to a memoized child component.
+( ) When sorting or filtering large arrays.
+(x) For simple/cheap calculations (like a + b or string concatenation) where the memoization overhead exceeds the computation cost.

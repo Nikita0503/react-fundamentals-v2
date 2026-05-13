@@ -1,0 +1,126 @@
+<h3 style="color: #76cdd8;"><strong>useMemo and useCallback</strong></h3>
+<p><strong>useMemo</strong> — caches the RESULT of a computation between renders.</p>
+<p><strong>useCallback</strong> — caches a FUNCTION reference between renders.</p>
+<p>They solve the same problem: preventing unnecessary recalculations or unstable references.</p>
+
+<h3 style="color: #76cdd8;"><strong>useMemo</strong></h3>
+<p>Syntax: <code>const value = useMemo(() =&gt; computeExpensiveValue(a, b), [a, b])</code></p>
+<p>Only recomputes when dependencies change.</p>
+<p><strong>Realistic example</strong> — filtering and sorting a large list:</p>
+<pre class="prettyprint"><code class="lang-tsx">type Product = { id: number; name: string; price: number; category: string };
+
+const ProductList = ({ products, category, sortBy }: {
+  products: Product[];
+  category: string;
+  sortBy: "price" | "name";
+}) =&gt; {
+  // Without useMemo: filters and sorts on EVERY render (even if unrelated state changes)
+  // With useMemo: only recomputes when products, category, or sortBy change
+  const filteredProducts = useMemo(() =&gt; {
+    const filtered = products.filter(p =&gt; p.category === category);
+    return filtered.sort((a, b) =&gt;
+      sortBy === "price" ? a.price - b.price : a.name.localeCompare(b.name)
+    );
+  }, [products, category, sortBy]);
+
+  return (
+    &lt;ul&gt;
+      {filteredProducts.map(p =&gt; &lt;li key={p.id}&gt;{p.name} — ${p.price}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<p><strong>When to use useMemo:</strong></p>
+<ul>
+<li>Expensive computations (sorting/filtering large arrays, complex math)</li>
+<li>Stabilizing object/array references passed to memoized children</li>
+<li>Avoiding recalculation when unrelated state changes trigger re-render</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>useCallback</strong></h3>
+<p>Syntax: <code>const fn = useCallback((arg) =&gt; { ... }, [dependencies])</code></p>
+<p>It's actually just <code>useMemo(() =&gt; fn, [deps])</code> — a shorthand for memoizing functions.</p>
+<p><strong>Main use case:</strong> stabilizing function references passed to memoized children:</p>
+<pre class="prettyprint"><code class="lang-tsx">type Todo = { id: number; text: string };
+
+const TodoApp = () =&gt; {
+  const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
+  const [filter, setFilter] = useState("");
+
+  // Without useCallback: new function on every render → MemoizedTodoList re-renders
+  // With useCallback: same reference unless todos changes → MemoizedTodoList skips render
+  const handleDelete = useCallback((id: number) =&gt; {
+    setTodos(prev =&gt; prev.filter(t =&gt; t.id !== id));
+  }, []); // no deps needed — uses functional updater
+
+  return (
+    &lt;div&gt;
+      &lt;input value={filter} onChange={e =&gt; setFilter(e.target.value)} /&gt;
+      &lt;MemoizedTodoList todos={todos} onDelete={handleDelete} /&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>The Combo: useCallback + React.memo</strong></h3>
+<p>They work together as a pair:</p>
+<ul>
+<li><code>React.memo</code> on the child → skips render if props are same</li>
+<li><code>useCallback</code> on the parent's handler → keeps function reference stable</li>
+<li>Without both together, neither is effective alone</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>When NOT to Use useMemo/useCallback</strong></h3>
+<ul>
+<li><strong>Simple calculations</strong> (<code>a + b</code>, string concatenation) — overhead of memoization &gt; computation cost</li>
+<li><strong>Functions not passed to memoized children</strong> — if the child isn't wrapped in memo, stabilizing the reference does nothing</li>
+<li><strong>Values that change on every render anyway</strong> — memoization just adds overhead</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

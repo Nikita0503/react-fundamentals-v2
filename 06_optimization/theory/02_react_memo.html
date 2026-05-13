@@ -1,0 +1,107 @@
+<h3 style="color: #76cdd8;"><strong>React.memo</strong></h3>
+<p><strong>React.memo</strong> wraps a component to skip re-renders when props haven't changed.</p>
+<ul>
+<li><strong>Without memo:</strong> component re-renders every time parent re-renders (regardless of props)</li>
+<li><strong>With memo:</strong> component only re-renders when its props actually change (shallow comparison)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Syntax</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { memo } from "react";
+
+type ExpensiveListProps = {
+  items: string[];
+  onItemClick: (item: string) =&gt; void;
+};
+
+const ExpensiveList = memo(({ items, onItemClick }: ExpensiveListProps) =&gt; {
+  console.log("ExpensiveList rendered"); // won't log if props are the same
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item} onClick={() =&gt; onItemClick(item)}&gt;{item}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+});
+
+export { ExpensiveList };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>How It Works</strong></h3>
+<p>Before re-rendering, React does a <strong>shallow comparison</strong> of all props (<code>Object.is</code> for each prop). If all props are the same → skip render.</p>
+
+<h3 style="color: #76cdd8;"><strong>When to Use React.memo</strong></h3>
+<ul>
+<li>Component renders often but its props rarely change</li>
+<li>Component is expensive to render (large list, complex calculations, heavy SVGs)</li>
+<li>Component is deep in the tree and parent re-renders frequently</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>When NOT to Use React.memo</strong></h3>
+<ul>
+<li>Component is cheap to render (simple div with text) — memo's comparison cost &gt; render cost</li>
+<li>Props change on almost every render anyway (memo compares but still re-renders)</li>
+<li>Component receives new objects/arrays/functions as props every render (memo won't help without useMemo/useCallback)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The Trap: Unstable References</strong></h3>
+<p>Memo only does shallow comparison. If parent creates a new object/function on every render, memo sees "new reference" and re-renders anyway:</p>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ memo is useless here — onClick is a new function every render
+const Parent = () =&gt; {
+  return &lt;MemoizedChild onClick={() =&gt; console.log("click")} /&gt;;
+};
+
+// ✅ Fix: stabilize the function with useCallback
+const Parent = () =&gt; {
+  const handleClick = useCallback(() =&gt; console.log("click"), []);
+  return &lt;MemoizedChild onClick={handleClick} /&gt;;
+};</code></pre>
+<p><em>Note: you don't need a custom comparator in 99% of cases. The default shallow comparison is almost always what you want.</em></p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

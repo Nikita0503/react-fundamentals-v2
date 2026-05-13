@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What happens to child components when a parent re-renders?</h4><br/>
+(x) They all re-render too, even if their props didn't change — this is the default React behavior.
+( ) Only children whose props changed will re-render.
+( ) Children never re-render unless their own state changes.
+( ) React automatically memoizes all children to prevent unnecessary re-renders.
+<h4 style="color: #474747; font-weight: 600;">Does a re-render always mean the DOM is updated?</h4><br/>
+( ) Yes — every re-render causes the browser to repaint the entire component.
+(x) No — React diffs the Virtual DOM and only updates the real DOM if something actually changed.
+( ) Yes — React updates the DOM on every render for consistency.
+( ) No — React never updates the DOM; it only works with the Virtual DOM.
+<h4 style="color: #474747; font-weight: 600;">What are the three triggers for a component re-render?</h4><br/>
+( ) Props change, DOM event fires, useEffect runs.
+( ) State change, props change, component mounts.
+(x) State change, parent re-renders, context value changes.
+( ) State change, ref update, key change.
+<h4 style="color: #474747; font-weight: 600;">When should you start optimizing component renders?</h4><br/>
+( ) Always — wrap every component in React.memo from the start.
+( ) When you have more than 10 components in the tree.
+( ) Before writing any business logic — optimization comes first.
+(x) When you've measured and found actual performance problems (e.g., using React DevTools Profiler).
