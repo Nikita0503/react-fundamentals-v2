@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What causes an infinite loop with useEffect?</h4><br/>
+( ) Using an empty dependency array<br/>
+( ) Having multiple useEffects in one component<br/>
+(x) Putting a new object or array in the dependency array — new reference every render triggers re-run<br/>
+( ) Calling setState inside the effect with a dependency array
+<h4 style="color: #474747; font-weight: 600;">Should you compute derived state inside useEffect?</h4><br/>
+( ) Yes — useEffect is the correct place for all data transformations<br/>
+( ) Yes — but only if the computation is expensive<br/>
+(x) No — compute it during render instead (or use useMemo for expensive computations)<br/>
+( ) No — use useState with an initializer function
+<h4 style="color: #474747; font-weight: 600;">What ESLint rule helps catch missing dependencies in useEffect?</h4><br/>
+( ) no-unused-vars<br/>
+( ) react/no-side-effects<br/>
+(x) react-hooks/exhaustive-deps<br/>
+( ) react-hooks/rules-of-hooks
+<h4 style="color: #474747; font-weight: 600;">How do you prevent race conditions in async effects?</h4><br/>
+( ) Use async/await directly in the useEffect callback<br/>
+( ) Add a loading state to prevent multiple fetches<br/>
+(x) Use AbortController or a cancelled flag in the cleanup function<br/>
+( ) Wrap the fetch in a try/catch block

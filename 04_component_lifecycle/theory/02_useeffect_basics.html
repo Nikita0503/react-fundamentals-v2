@@ -1,0 +1,124 @@
+<h3 style="color: #76cdd8;"><strong>useEffect Syntax</strong></h3>
+<p>The <code>useEffect</code> hook takes two parameters: an effect function and a dependency array.</p>
+<pre class="prettyprint"><code class="lang-tsx">useEffect(() => {
+  // effect logic (runs after render)
+  return () => {
+    // cleanup (optional — runs before next effect or unmount)
+  };
+}, [dependencies]);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Three Dependency Patterns</strong></h3>
+
+<h4 style="color: #76cdd8;">1. Empty array <code>[]</code> — run once after mount</h4>
+<pre class="prettyprint"><code class="lang-tsx">useEffect(() => {
+  console.log("Component mounted");
+  // Fetch initial data, set up subscriptions, etc.
+}, []);</code></pre>
+<p><strong>Use for:</strong> initial data fetching, one-time setup.</p>
+
+<h4 style="color: #76cdd8;">2. With dependencies <code>[dep1, dep2]</code> — run when dependencies change</h4>
+<pre class="prettyprint"><code class="lang-tsx">const [userId, setUserId] = useState("1");
+
+useEffect(() => {
+  fetch(`/api/users/${userId}`)
+    .then(res => res.json())
+    .then(data => setUser(data));
+}, [userId]); // re-runs when userId changes</code></pre>
+<p><strong>Use for:</strong> reacting to state/prop changes, re-fetching data.</p>
+
+<h4 style="color: #76cdd8;">3. No array (omitted) — run after EVERY render</h4>
+<pre class="prettyprint"><code class="lang-tsx">useEffect(() => {
+  console.log("Rendered!"); // runs on mount AND every update
+});</code></pre>
+<p><strong>Use for:</strong> rarely needed. Debugging, or effects that truly need to sync on every render.</p>
+
+<h3 style="color: #76cdd8;"><strong>How React Decides When to Run the Effect</strong></h3>
+<ul>
+<li>After every render, React compares current dependencies with previous ones (using <code>Object.is</code>)</li>
+<li>If any dependency changed → run the effect</li>
+<li>If none changed → skip the effect</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Multiple useEffects</strong></h3>
+<p>You can (and should) have multiple <code>useEffect</code> calls in one component, each handling a separate concern:</p>
+<pre class="prettyprint"><code class="lang-tsx">type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+const UserProfile = ({ userId }: { userId: string }) => {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [isOnline, setIsOnline] = useState(false);
+
+  // Effect 1: fetch user data
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => setUser(data));
+  }, [userId]);
+
+  // Effect 2: subscribe to online status
+  useEffect(() => {
+    const ws = new WebSocket(`/ws/status/${userId}`);
+    ws.onmessage = (e) => setIsOnline(JSON.parse(e.data).online);
+    return () => ws.close();
+  }, [userId]);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{user?.name}&lt;/h1&gt;
+      &lt;span&gt;{isOnline ? "Online" : "Offline"}&lt;/span&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>Each effect is independent — easier to understand, test, and maintain. Don't combine unrelated logic into a single <code>useEffect</code>.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

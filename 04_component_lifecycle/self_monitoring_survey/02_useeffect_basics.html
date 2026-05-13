@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What does an empty dependency array <code>[]</code> mean in useEffect?</h4><br/>
+( ) The effect runs after every render<br/>
+( ) The effect never runs<br/>
+(x) The effect runs only once after mount<br/>
+( ) The effect runs only when the component unmounts
+<h4 style="color: #474747; font-weight: 600;">What happens if you omit the dependency array entirely?</h4><br/>
+(x) The effect runs after every render (mount and every update)<br/>
+( ) The effect runs only once after mount<br/>
+( ) The effect never runs<br/>
+( ) React throws an error
+<h4 style="color: #474747; font-weight: 600;">When does React re-run an effect with dependencies?</h4><br/>
+( ) On every render regardless of dependency values<br/>
+( ) Only when the component mounts<br/>
+(x) When any dependency value changes between renders (compared with Object.is)<br/>
+( ) When the user interacts with the component
+<h4 style="color: #474747; font-weight: 600;">Can you have multiple useEffects in one component?</h4><br/>
+( ) No — only one useEffect per component is allowed<br/>
+( ) Yes, but they all share the same dependency array<br/>
+(x) Yes — one per concern is recommended for better separation of logic<br/>
+( ) Yes, but only if they have different dependency arrays

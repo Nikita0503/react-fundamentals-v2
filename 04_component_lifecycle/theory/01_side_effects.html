@@ -1,0 +1,110 @@
+<h3 style="color: #76cdd8;"><strong>What is a Side Effect?</strong></h3>
+<p>A <strong>side effect</strong> is anything that reaches outside the component's rendering logic. When a component function runs, its primary job is to return JSX. Anything else — any interaction with the outside world — is a side effect.</p>
+<p>Common examples of side effects:</p>
+<ul>
+<li><strong>Fetching data from an API</strong> — network requests to load or send data</li>
+<li><strong>Setting up timers</strong> — <code>setTimeout</code>, <code>setInterval</code></li>
+<li><strong>Subscribing to events</strong> — <code>addEventListener</code> on window, document, or other targets</li>
+<li><strong>Directly manipulating the DOM</strong> — reading measurements, focusing inputs, scrolling</li>
+<li><strong>Writing to localStorage</strong> — persisting data in the browser</li>
+<li><strong>Logging</strong> — sending analytics events, console output</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Pure Rendering</strong></h3>
+<p>A component function should be <strong>pure during render</strong> — given the same props and state, it must return the same JSX. No network calls, no subscriptions, no DOM mutations during the render itself.</p>
+<p>Side effects happen <strong>AFTER</strong> rendering. React provides the <code>useEffect</code> hook specifically for this purpose — it lets you say "run this code after the component has rendered, not during."</p>
+
+<h3 style="color: #76cdd8;"><strong>Component Lifecycle Phases</strong></h3>
+<p>Every component goes through three phases during its existence:</p>
+<ul>
+<li><strong>Mount</strong> — the component appears in the DOM for the first time (initial render)</li>
+<li><strong>Update</strong> — the component re-renders due to a state or props change</li>
+<li><strong>Unmount</strong> — the component is removed from the DOM</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Interview Note — Class Lifecycle Methods Parallel</strong></h3>
+<p>In class components, these phases had dedicated methods:</p>
+<ul>
+<li><code>componentDidMount()</code> — runs after the first render</li>
+<li><code>componentDidUpdate(prevProps, prevState)</code> — runs after every re-render</li>
+<li><code>componentWillUnmount()</code> — runs before the component is removed</li>
+</ul>
+<p>In functional components, <code>useEffect</code> handles <strong>ALL</strong> of these. One hook, three phases.</p>
+
+<p><strong>Mapping table:</strong></p>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #2d2d2d; color: #f8f8f8;">
+<th>Class method</th>
+<th>useEffect equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>componentDidMount</code></td>
+<td><code>useEffect(() =&gt; { ... }, [])</code></td>
+</tr>
+<tr>
+<td><code>componentDidUpdate</code></td>
+<td><code>useEffect(() =&gt; { ... }, [dep])</code></td>
+</tr>
+<tr>
+<td><code>componentWillUnmount</code></td>
+<td><code>useEffect(() =&gt; { return () =&gt; { ... } }, [])</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: this mapping is simplified. <code>useEffect</code> is actually a different mental model (synchronize with an external system), but the mapping helps for interviews.</em></p>
+
+<h3 style="color: #76cdd8;"><strong>Why useEffect Exists</strong></h3>
+<p>React needs a way to say <em>"run this code AFTER the component renders, not during."</em> Without <code>useEffect</code>, you'd have no safe place to put side effects — they'd run during render, causing bugs, infinite loops, and unpredictable behavior.</p>
+<p><code>useEffect</code> is React's escape hatch from the pure rendering world into the impure world of side effects.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

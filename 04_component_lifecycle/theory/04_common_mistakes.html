@@ -1,0 +1,131 @@
+<h3 style="color: #76cdd8;"><strong>Mistake 1: Infinite Loop — Object/Array in Dependencies</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Infinite loop! Object is recreated every render → new reference → effect re-runs → re-render → ...
+useEffect(() => {
+  fetchData(filters);
+}, [{ status: "active", page: 1 }]); // new object every render!
+
+// ✅ Fix: use primitive values or memoize
+useEffect(() => {
+  fetchData(status, page);
+}, [status, page]); // primitives — stable references</code></pre>
+<p>Objects and arrays are compared by reference (<code>Object.is</code>). A new object literal <code>{}</code> is always a different reference from the previous render, so the effect re-runs every time, causing an infinite loop.</p>
+
+<h3 style="color: #76cdd8;"><strong>Mistake 2: Missing Dependencies (Lying About Deps)</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Bug: effect uses userId but doesn't list it as dependency
+useEffect(() => {
+  fetch(`/api/users/${userId}`).then(res => res.json()).then(data => setUser(data));
+}, []); // userId changes but effect doesn't re-run!
+
+// ✅ Fix: include all values used inside the effect
+useEffect(() => {
+  fetch(`/api/users/${userId}`).then(res => res.json()).then(data => setUser(data));
+}, [userId]);</code></pre>
+<p><strong>Rule:</strong> never lie about dependencies. If the effect uses a value, include it.</p>
+<p>The ESLint plugin <code>react-hooks/exhaustive-deps</code> catches this automatically — always keep it enabled.</p>
+
+<h3 style="color: #76cdd8;"><strong>Mistake 3: Using useEffect for Things That Don't Need It</strong></h3>
+<p><em>"You Might Not Need an Effect"</em> — common cases where <code>useEffect</code> is wrong:</p>
+
+<h4 style="color: #76cdd8;">Derived state in useEffect</h4>
+<pre class="prettyprint"><code class="lang-tsx">type Item = { id: string; active: boolean; name: string };
+
+// ❌ Unnecessary effect for derived state
+const [items, setItems] = useState&lt;Item[]&gt;([]);
+const [filteredItems, setFilteredItems] = useState&lt;Item[]&gt;([]);
+useEffect(() => {
+  setFilteredItems(items.filter(i => i.active));
+}, [items]);
+
+// ✅ Just compute it during render
+const [items, setItems] = useState&lt;Item[]&gt;([]);
+const filteredItems = items.filter(i => i.active); // no effect needed!</code></pre>
+
+<h4 style="color: #76cdd8;">Resetting state on prop change</h4>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Resetting state on prop change with useEffect
+useEffect(() => {
+  setInput("");
+}, [selectedItem]);
+
+// ✅ Use key prop to reset component entirely
+&lt;InputForm key={selectedItem.id} /&gt;</code></pre>
+
+<p><strong>Use <code>useEffect</code> for:</strong> synchronizing with external systems (APIs, subscriptions, DOM, timers)</p>
+<p><strong>Don't use <code>useEffect</code> for:</strong> transforming data, handling events, derived state</p>
+
+<h3 style="color: #76cdd8;"><strong>Mistake 4: Race Conditions in Fetch</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ If userId changes quickly, responses may arrive out of order
+useEffect(() => {
+  fetch(`/api/users/${userId}`)
+    .then(res => res.json())
+    .then(data => setUser(data)); // might set stale data!
+}, [userId]);
+
+// ✅ Fix with cleanup flag
+useEffect(() => {
+  let cancelled = false;
+  fetch(`/api/users/${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!cancelled) setUser(data);
+    });
+  return () => { cancelled = true; };
+}, [userId]);</code></pre>
+<p>If <code>userId</code> changes rapidly (e.g., user types fast), multiple requests fire. The responses can arrive out of order — the last request might resolve before an earlier one, leaving stale data in state. The cleanup flag (or <code>AbortController</code>) prevents this.</p>
+
+<h3 style="color: #76cdd8;"><strong>Summary of Rules</strong></h3>
+<ol>
+<li><strong>Include all values</strong> used in the effect in the dependency array</li>
+<li><strong>If you set something up, clean it up</strong></li>
+<li><strong>Don't use effects for derived/computed values</strong> — compute during render</li>
+<li><strong>Handle race conditions</strong> for async effects</li>
+<li><strong>Keep effects focused</strong> — one effect per concern</li>
+</ol>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

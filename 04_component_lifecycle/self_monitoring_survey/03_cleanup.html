@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">When does the cleanup function run?</h4><br/>
+( ) Only when the component mounts<br/>
+( ) Only when the component unmounts (is removed from DOM)<br/>
+(x) Before unmount AND before the effect re-runs on dependency change<br/>
+( ) After every render, before the effect runs
+<h4 style="color: #474747; font-weight: 600;">What happens if you don't clean up an event listener added in useEffect?</h4><br/>
+( ) React automatically removes it when the component unmounts<br/>
+( ) The browser garbage collector handles it<br/>
+(x) Memory leak — the listener keeps running after the component is gone<br/>
+( ) Nothing — event listeners are always safe to leave
+<h4 style="color: #474747; font-weight: 600;">How do you cancel a fetch request on unmount?</h4><br/>
+( ) Call <code>fetch.cancel()</code> in the cleanup function<br/>
+( ) Set the response to null in cleanup<br/>
+(x) Use AbortController — call <code>controller.abort()</code> in the cleanup function<br/>
+( ) There is no way to cancel a fetch request
+<h4 style="color: #474747; font-weight: 600;">What is the correct order when a dependency changes?</h4><br/>
+( ) Run new effect → cleanup old effect<br/>
+( ) Unmount component → mount component again<br/>
+(x) Cleanup old effect → run new effect<br/>
+( ) Skip cleanup → run new effect
