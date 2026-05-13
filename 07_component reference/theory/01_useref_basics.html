@@ -1,0 +1,140 @@
+<h3 style="color: #76cdd8;"><strong>What is useRef?</strong></h3>
+<p><code>useRef</code> is a React hook that returns a <strong>mutable object</strong> with a single property: <code>{ current: T }</code>. This object persists across renders — React keeps the same reference between re-renders, so you can store values in it without losing them.</p>
+
+<h3 style="color: #76cdd8;"><strong>Two Main Use Cases</strong></h3>
+<ol>
+<li><strong>Accessing DOM elements directly</strong> — get a reference to an actual DOM node (input, div, etc.) to call imperative methods like <code>.focus()</code>, <code>.scrollIntoView()</code>, or <code>.getBoundingClientRect()</code></li>
+<li><strong>Storing mutable values that don't trigger re-renders</strong> — keep track of timer IDs, previous values, render counts, or any data that should persist between renders but doesn't need to update the UI</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Syntax</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">const ref = useRef&lt;T&gt;(initialValue);</code></pre>
+<p>The generic <code>T</code> defines the type of <code>ref.current</code>. The <code>initialValue</code> is what <code>.current</code> starts as.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Key Property: .current</strong></h3>
+<p>The returned object has one property — <code>.current</code>. You can read and write to it freely:</p>
+<pre class="prettyprint"><code class="lang-tsx">const myRef = useRef&lt;number&gt;(0);
+
+// Read
+console.log(myRef.current); // 0
+
+// Write
+myRef.current = 42;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Critical Difference from State</strong></h3>
+<ul>
+<li>Changing <code>ref.current</code> does <strong>NOT</strong> trigger a re-render</li>
+<li>Changing state (via <code>setState</code>) <strong>DOES</strong> trigger a re-render</li>
+</ul>
+<p>This is the most important thing to understand about refs. If you update <code>ref.current</code>, the component will NOT re-render, and the UI will NOT reflect the new value until something else causes a re-render.</p>
+
+<h3 style="color: #76cdd8;"><strong>Comparison Table</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr style="background-color: #2d2d2d; color: #f8f8f8;">
+<th>Feature</th>
+<th>useState</th>
+<th>useRef</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Triggers re-render on change</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Persists between renders</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Can be displayed in JSX</td>
+<td>Yes</td>
+<td>No (stale until next render)</td>
+</tr>
+<tr>
+<td>Use for</td>
+<td>UI data</td>
+<td>DOM access, timers, previous values</td>
+</tr>
+</tbody>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>When to Use Ref vs State</strong></h3>
+<ul>
+<li><strong>Use state</strong>: when the value should be reflected in the UI. If the user needs to see the value change on screen, it must be state.</li>
+<li><strong>Use ref</strong>: when you need to store something between renders but DON'T want to re-render when it changes. Think of it as a "silent" variable that React doesn't watch.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Example: State vs Ref</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useRef } from "react";
+
+const Counter = () =&gt; {
+  const [stateCount, setStateCount] = useState(0);
+  const refCount = useRef(0);
+
+  const handleClick = () =&gt; {
+    setStateCount(prev =&gt; prev + 1); // triggers re-render, UI updates
+    refCount.current += 1;            // no re-render, UI stays the same
+    console.log("ref:", refCount.current); // always up-to-date in console
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;State count: {stateCount}&lt;/p&gt;     {/* updates on screen */}
+      &lt;p&gt;Ref count: {refCount.current}&lt;/p&gt; {/* only updates when something else causes re-render */}
+      &lt;button onClick={handleClick}&gt;Increment both&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>Click the button multiple times — <code>stateCount</code> updates on screen every time, but <code>refCount.current</code> in the UI only shows the latest value when the state change triggers a re-render (which happens to be every click here). If you removed the <code>setStateCount</code> call, the ref value would change silently with no visual update at all.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,22 @@
+<h4 style="color: #474747; font-weight: 600;">Does changing ref.current trigger a re-render?</h4><br/>
+( ) Yes — React detects the change and re-renders the component
+(x) No — changing ref.current never triggers a re-render
+( ) Only if the ref is attached to a DOM element
+
+<h4 style="color: #474747; font-weight: 600;">What does useRef return?</h4><br/>
+( ) A tuple with the current value and a setter function
+( ) A plain value that persists between renders
+(x) A mutable object with a .current property that persists between renders
+( ) An immutable snapshot of the initial value
+
+<h4 style="color: #474747; font-weight: 600;">When should you use useRef instead of useState?</h4><br/>
+( ) When you need to display the value in JSX
+(x) When you need to store a value between renders but don't want to trigger a re-render
+( ) When you need to share state between multiple components
+( ) When you need to validate form inputs
+
+<h4 style="color: #474747; font-weight: 600;">What is the initial value of useRef&lt;HTMLInputElement&gt;(null).current?</h4><br/>
+( ) undefined — refs are never initialized
+( ) An empty HTMLInputElement object
+(x) null — until the component mounts and React assigns the DOM element
+( ) The first input element found in the DOM

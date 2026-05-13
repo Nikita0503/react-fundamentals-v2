@@ -1,0 +1,144 @@
+<h3 style="color: #76cdd8;"><strong>DOM Refs — Direct Access to DOM Elements</strong></h3>
+<p>The primary use case for <code>useRef</code> is getting direct access to a DOM element. Sometimes you need to interact with the DOM directly — focus an input, scroll to an element, measure dimensions, or integrate with a non-React library that expects a DOM node.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Pattern</strong></h3>
+<ol>
+<li>Create a ref: <code>const myRef = useRef&lt;HTMLElement&gt;(null)</code></li>
+<li>Attach it to an element via the <code>ref</code> attribute: <code>&lt;input ref={myRef} /&gt;</code></li>
+<li>Access the DOM node via <code>myRef.current</code> (after mount)</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>Example 1: Focus an Input</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef } from "react";
+
+const SearchBar = () =&gt; {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  const handleFocus = () =&gt; {
+    inputRef.current?.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} type="text" placeholder="Search..." /&gt;
+      &lt;button onClick={handleFocus}&gt;Focus search&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Example 2: Scroll to Element</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef } from "react";
+
+const ScrollDemo = () =&gt; {
+  const bottomRef = useRef&lt;HTMLDivElement&gt;(null);
+
+  const scrollToBottom = () =&gt; {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={scrollToBottom}&gt;Scroll to bottom&lt;/button&gt;
+      {/* ... lots of content ... */}
+      &lt;div ref={bottomRef}&gt;Bottom of the page&lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Example 3: Measure Element Size</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef, useState, useEffect } from "react";
+
+const MeasuredBox = () =&gt; {
+  const boxRef = useRef&lt;HTMLDivElement&gt;(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() =&gt; {
+    if (boxRef.current) {
+      const { width, height } = boxRef.current.getBoundingClientRect();
+      setDimensions({ width, height });
+    }
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;div ref={boxRef} style={{ padding: 20, border: "1px solid gray" }}&gt;
+        Measure me!
+      &lt;/div&gt;
+      &lt;p&gt;Width: {dimensions.width}px, Height: {dimensions.height}px&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript Generics for Different Elements</strong></h3>
+<p>Use the correct HTML element type as the generic parameter:</p>
+<pre class="prettyprint"><code class="lang-tsx">useRef&lt;HTMLInputElement&gt;(null)    // &lt;input&gt;
+useRef&lt;HTMLDivElement&gt;(null)      // &lt;div&gt;
+useRef&lt;HTMLButtonElement&gt;(null)   // &lt;button&gt;
+useRef&lt;HTMLTextAreaElement&gt;(null) // &lt;textarea&gt;
+useRef&lt;HTMLVideoElement&gt;(null)    // &lt;video&gt;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Important: Ref is null Until Mount</strong></h3>
+<p>The ref starts as <code>null</code> and only gets assigned the DOM element after the component mounts. This means:</p>
+<ul>
+<li>Always use optional chaining (<code>?.</code>) or null checks when accessing <code>ref.current</code></li>
+<li>Don't try to access the ref during the initial render — it won't be set yet</li>
+<li>Inside <code>useEffect</code> is safe because effects run after mount</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>When to Use DOM Refs</strong></h3>
+<ul>
+<li><strong>Focus management</strong> — programmatically focusing inputs for accessibility</li>
+<li><strong>Scrolling to elements</strong> — smooth scroll to sections, chat auto-scroll</li>
+<li><strong>Measuring element dimensions</strong> — responsive layouts, tooltips positioning</li>
+<li><strong>Integrating with third-party DOM libraries</strong> — charts (D3, Chart.js), maps (Leaflet, Google Maps), video players</li>
+<li><strong>Triggering animations</strong> — GSAP, Web Animations API</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

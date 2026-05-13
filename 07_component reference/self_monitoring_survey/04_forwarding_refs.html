@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does forwardRef do?</h4><br/>
+( ) It creates a new ref inside the child component automatically
+( ) It converts a class component to a functional component
+(x) It lets a component receive a ref from its parent and forward it to a DOM element inside
+( ) It prevents refs from being garbage collected
+
+<h4 style="color: #474747; font-weight: 600;">What is the TypeScript syntax for forwardRef?</h4><br/>
+( ) forwardRef&lt;PropsType, RefType&gt;((props, ref) =&gt; ...)
+(x) forwardRef&lt;RefType, PropsType&gt;((props, ref) =&gt; ...)
+( ) forwardRef&lt;PropsType&gt;((props, ref) =&gt; ...)
+( ) forwardRef((props: PropsType, ref: RefType) =&gt; ...)
+
+<h4 style="color: #474747; font-weight: 600;">What does useImperativeHandle do?</h4><br/>
+( ) It forces a component to re-render when the ref changes
+( ) It automatically attaches refs to all child DOM elements
+(x) It customizes what methods or values the ref exposes to the parent component
+( ) It prevents the parent from accessing the child's DOM element
+
+<h4 style="color: #474747; font-weight: 600;">When should you prefer props/callbacks over imperative handles?</h4><br/>
+( ) Never — imperative handles are always better for performance
+( ) Only when building class components
+(x) For most parent-child communication — imperative handles are for cases like focus, scroll, or open/close where declarative patterns don't fit
+( ) Only when the child component has no DOM elements

@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">How do you attach a ref to a DOM element?</h4><br/>
+( ) By passing it as a prop named "domRef"
+( ) By calling ref.attach(element) in useEffect
+(x) Via the ref attribute: &lt;input ref={myRef} /&gt;
+( ) By using document.querySelector inside the component
+
+<h4 style="color: #474747; font-weight: 600;">Why should you use optional chaining (?.) when accessing ref.current?</h4><br/>
+( ) Because ref.current might be a different type than expected
+(x) Because ref is null until the component mounts — the DOM element isn't assigned yet during the first render
+( ) Because React might delete the ref at any time
+( ) Because optional chaining is required by TypeScript for all object access
+
+<h4 style="color: #474747; font-weight: 600;">What TypeScript generic do you use for a div element ref?</h4><br/>
+( ) useRef&lt;DivElement&gt;(null)
+( ) useRef&lt;Element&gt;(null)
+(x) useRef&lt;HTMLDivElement&gt;(null)
+( ) useRef&lt;ReactDiv&gt;(null)
+
+<h4 style="color: #474747; font-weight: 600;">Which of the following is a common use case for DOM refs?</h4><br/>
+( ) Storing API response data
+( ) Managing component state
+(x) Focus management, scrolling to elements, or measuring element size
+( ) Passing data between sibling components

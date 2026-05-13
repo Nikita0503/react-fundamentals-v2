@@ -1,0 +1,151 @@
+<h3 style="color: #76cdd8;"><strong>The Problem: Refs Don't Pass Through Components</strong></h3>
+<p>When you create a custom component (e.g., <code>&lt;CustomInput /&gt;</code>) and want to pass a ref to the underlying DOM element inside it, it won't work by default. The <code>ref</code> prop is special — React handles it differently from regular props and does NOT forward it to child components automatically.</p>
+
+<h3 style="color: #76cdd8;"><strong>forwardRef — Forwarding Refs to Child Components</strong></h3>
+<p><code>forwardRef</code> lets a component receive a ref from its parent and forward it to a DOM element (or another component) inside:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { forwardRef, useRef } from "react";
+
+type CustomInputProps = {
+  label: string;
+  placeholder?: string;
+};
+
+const CustomInput = forwardRef&lt;HTMLInputElement, CustomInputProps&gt;(
+  ({ label, placeholder }, ref) =&gt; {
+    return (
+      &lt;label&gt;
+        {label}
+        &lt;input ref={ref} placeholder={placeholder} /&gt;
+      &lt;/label&gt;
+    );
+  }
+);
+
+CustomInput.displayName = "CustomInput";
+
+// Usage in parent:
+const Form = () =&gt; {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  const focusInput = () =&gt; {
+    inputRef.current?.focus();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;CustomInput ref={inputRef} label="Email" placeholder="you@example.com" /&gt;
+      &lt;button onClick={focusInput}&gt;Focus email input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript with forwardRef</strong></h3>
+<p>The generic signature is <code>forwardRef&lt;RefType, PropsType&gt;</code>:</p>
+<ul>
+<li>First generic — the type of the ref (what <code>.current</code> will be). Usually an HTML element type.</li>
+<li>Second generic — the props type of the component.</li>
+</ul>
+<p>The component function receives <code>(props, ref)</code> — note that <code>ref</code> is the second argument, not part of props.</p>
+
+<h3 style="color: #76cdd8;"><strong>displayName</strong></h3>
+<p>Always set <code>displayName</code> on forwarded ref components. Without it, React DevTools will show the component as "ForwardRef" instead of its actual name, making debugging harder.</p>
+
+<h3 style="color: #76cdd8;"><strong>When to Use forwardRef</strong></h3>
+<ul>
+<li><strong>Building reusable UI components</strong> (Input, Button, Modal) that need to expose DOM access to their parent</li>
+<li><strong>Integrating with libraries</strong> that need DOM refs (focus management, animation libraries)</li>
+<li><strong>Building component libraries</strong> — consumers expect to be able to attach refs to your components</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>useImperativeHandle — Customizing the Exposed Ref</strong></h3>
+<p>Sometimes you don't want to expose the entire DOM element — just specific methods. <code>useImperativeHandle</code> lets you customize what the ref exposes to the parent:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { forwardRef, useRef, useImperativeHandle, useState } from "react";
+
+type ModalHandle = {
+  open: () =&gt; void;
+  close: () =&gt; void;
+};
+
+const Modal = forwardRef&lt;ModalHandle, { title: string }&gt;(({ title }, ref) =&gt; {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useImperativeHandle(ref, () =&gt; ({
+    open: () =&gt; setIsOpen(true),
+    close: () =&gt; setIsOpen(false),
+  }));
+
+  if (!isOpen) return null;
+  return &lt;div className="modal"&gt;&lt;h2&gt;{title}&lt;/h2&gt;&lt;/div&gt;;
+});
+
+Modal.displayName = "Modal";
+
+// Parent:
+const App = () =&gt; {
+  const modalRef = useRef&lt;ModalHandle&gt;(null);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; modalRef.current?.open()}&gt;Open Modal&lt;/button&gt;
+      &lt;Modal ref={modalRef} title="Hello" /&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>When to Use useImperativeHandle</strong></h3>
+<p>Use sparingly. Prefer props and callbacks for most parent-child communication. Imperative handles are for cases where declarative patterns don't fit well:</p>
+<ul>
+<li>Focus management (focus a specific input inside a complex form component)</li>
+<li>Scroll control (scroll to a specific position inside a virtualized list)</li>
+<li>Open/close modals, drawers, or tooltips from a parent</li>
+<li>Play/pause media players</li>
+</ul>
+<p>If you can solve the problem with props and state, do that instead. Imperative handles make the data flow harder to follow.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

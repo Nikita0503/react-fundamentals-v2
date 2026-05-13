@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Why store a timer ID in a ref instead of state?</h4><br/>
+( ) Because state cannot store numbers
+( ) Because refs are faster than state
+(x) Because changing the timer ID shouldn't trigger a re-render — it's not displayed in the UI
+( ) Because clearInterval only accepts ref objects
+
+<h4 style="color: #474747; font-weight: 600;">How can you track the previous value of a state variable?</h4><br/>
+( ) Use useState with a second argument for the previous value
+(x) Store it in a ref and update the ref in useEffect after each render
+( ) Use the usePreviousState hook built into React
+( ) Access it via the event object in the setState callback
+
+<h4 style="color: #474747; font-weight: 600;">What happens if you display ref.current directly in JSX?</h4><br/>
+( ) It throws an error because refs cannot be rendered
+( ) It always shows the latest value in real-time
+(x) It shows a stale value — it only updates visually when something else causes a re-render
+( ) It creates an infinite render loop
+
+<h4 style="color: #474747; font-weight: 600;">What problem does storing the latest value in a ref solve?</h4><br/>
+( ) Memory leaks in large components
+( ) Type errors in TypeScript strict mode
+(x) Stale closures in async code like setTimeout — the closure captures the old state value, but ref.current always has the latest
+( ) Race conditions between multiple API calls

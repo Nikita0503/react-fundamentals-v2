@@ -1,0 +1,149 @@
+<h3 style="color: #76cdd8;"><strong>Mutable Refs — Storing Values Between Renders</strong></h3>
+<p>The second major use case for <code>useRef</code> is storing values between renders <strong>without triggering re-renders</strong>. Think of it as "instance variables" for functional components — a place to keep data that persists across renders but doesn't affect the UI directly.</p>
+
+<h3 style="color: #76cdd8;"><strong>Example 1: Storing a Timer ID</strong></h3>
+<p>This is the most common real-world use case. You need to store the interval/timeout ID so you can clear it later, but changing the ID shouldn't cause a re-render:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef, useState, useEffect } from "react";
+
+const Stopwatch = () =&gt; {
+  const [seconds, setSeconds] = useState(0);
+  const intervalRef = useRef&lt;ReturnType&lt;typeof setInterval&gt; | null&gt;(null);
+
+  const start = () =&gt; {
+    if (intervalRef.current) return; // already running
+    intervalRef.current = setInterval(() =&gt; {
+      setSeconds(prev =&gt; prev + 1);
+    }, 1000);
+  };
+
+  const stop = () =&gt; {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  useEffect(() =&gt; {
+    return () =&gt; stop(); // cleanup on unmount
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{seconds}s&lt;/p&gt;
+      &lt;button onClick={start}&gt;Start&lt;/button&gt;
+      &lt;button onClick={stop}&gt;Stop&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>Why not use state for the timer ID? Because changing it shouldn't re-render the component — it's not displayed in the UI. Using state would cause unnecessary re-renders every time you start or stop the timer.</p>
+
+<h3 style="color: #76cdd8;"><strong>Example 2: Tracking Previous Value</strong></h3>
+<p>A common pattern is to remember the previous value of a state variable. This is useful for comparisons, animations, or showing "changed from X to Y" messages:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef, useEffect, useState } from "react";
+
+const usePrevious = &lt;T,&gt;(value: T): T | undefined =&gt; {
+  const ref = useRef&lt;T | undefined&gt;(undefined);
+  useEffect(() =&gt; {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+// Usage:
+const Counter = () =&gt; {
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count);
+
+  return (
+    &lt;p&gt;Now: {count}, Before: {prevCount ?? "none"}&lt;/p&gt;
+  );
+};</code></pre>
+<p>How it works: <code>useEffect</code> runs <em>after</em> render, so during render <code>ref.current</code> still holds the old value. After render, the effect updates it to the new value — ready for the next render.</p>
+
+<h3 style="color: #76cdd8;"><strong>Example 3: Render Count (Debugging)</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">const RenderCounter = () =&gt; {
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+
+  return &lt;p&gt;This component rendered {renderCount.current} times&lt;/p&gt;;
+};</code></pre>
+<p>This works because the ref persists between renders, and incrementing it doesn't cause another render (which would create an infinite loop if you used state).</p>
+
+<h3 style="color: #76cdd8;"><strong>Example 4: Preventing Stale Closures in Async Code</strong></h3>
+<p>One of the trickiest bugs in React: closures in <code>setTimeout</code>, event listeners, or async callbacks capture the value of state at the time they were created. If state changes later, the closure still sees the old value. Refs solve this:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useRef } from "react";
+
+const LatestValue = () =&gt; {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(count);
+  countRef.current = count; // always keep ref in sync
+
+  const handleDelayedLog = () =&gt; {
+    setTimeout(() =&gt; {
+      // count would be stale here (closure captures old value)
+      // countRef.current is always the latest
+      console.log("Latest count:", countRef.current);
+    }, 3000);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(prev =&gt; prev + 1)}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={handleDelayedLog}&gt;Log after 3s&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>Click "Increment" a few times, then click "Log after 3s" — the logged value will be the latest count, not the count at the time you clicked the button.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Rule</strong></h3>
+<p>If you need the value to show in the UI → use <strong>state</strong>. If you just need to "remember" something between renders → use <strong>ref</strong>.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
