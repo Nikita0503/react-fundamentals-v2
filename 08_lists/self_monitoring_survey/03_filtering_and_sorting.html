@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">Should you store filtered results in a separate useState?</h4><br/>
+( ) Yes, because it improves performance by caching the filtered results.
+( ) Yes, because React requires separate state for any derived data.
+(x) No — derive them with useMemo or compute during render to avoid sync issues between source and filtered data.
+( ) It depends on the size of the list — use separate state for lists over 1000 items.
+<h4 style="color: #474747; font-weight: 600;">Why spread before sorting ([...arr].sort(...))?</h4><br/>
+( ) Because sort() returns a new array and the spread creates a backup copy.
+(x) Because .sort() mutates the original array — and you must never mutate React state directly.
+( ) Because TypeScript requires spreading arrays before calling sort().
+( ) Because sort() does not work on state arrays without spreading first.
+<h4 style="color: #474747; font-weight: 600;">When is useMemo necessary for filtering/sorting?</h4><br/>
+( ) Always, because filtering and sorting without useMemo causes bugs.
+( ) Never, because React already optimizes array operations internally.
+(x) For large lists where recalculation on every render would be expensive — for small lists it is optional.
+( ) Only when using TypeScript, because JavaScript handles memoization automatically.
+<h4 style="color: #474747; font-weight: 600;">What is the common pattern for displaying a processed list?</h4><br/>
+( ) sort → filter → map — sort first, then filter out unwanted items, then render.
+( ) map → filter → sort — render all items first, then hide the ones that don't match.
+(x) filter → sort → map — first narrow down the data, then order it, then render the result.
+( ) reduce → map — combine all processing into reduce, then render with map.

@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">What method is used to render a list of items in React?</h4><br/>
+( ) The forEach method, because it iterates over array elements and can render them directly.
+(x) The .map() method, because it transforms a data array into an array of JSX elements that React can render.
+( ) The reduce method, because it accumulates all elements into a single rendered output.
+( ) The filter method, because it selects which elements should be displayed.
+<h4 style="color: #474747; font-weight: 600;">Why is the key prop required for list items?</h4><br/>
+( ) It is used for styling purposes to apply unique CSS to each list element.
+( ) It provides accessibility information to screen readers about list order.
+(x) React uses it to identify which items changed, were added, or removed during re-renders, enabling efficient DOM updates.
+( ) It is optional and only needed when the list has more than 100 items.
+<h4 style="color: #474747; font-weight: 600;">When is it acceptable to use array index as key?</h4><br/>
+( ) Always, because the index is guaranteed to be unique within the array.
+( ) When the list has fewer than 10 items, since performance impact is negligible.
+(x) Only for static lists that never reorder, filter, or have items added/removed.
+( ) Never, because using index as key always causes bugs in React.
+<h4 style="color: #474747; font-weight: 600;">What should you render when a list is empty?</h4><br/>
+( ) Nothing — just return null and let the user figure out the list is empty.
+( ) An empty &lt;ul&gt; element to maintain the DOM structure.
+(x) An empty state message — never leave the user without feedback about why no items are shown.
+( ) A loading spinner, because an empty list always means data is still loading.

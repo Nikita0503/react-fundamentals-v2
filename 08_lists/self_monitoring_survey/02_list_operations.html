@@ -1,0 +1,20 @@
+<h4 style="color: #474747; font-weight: 600;">How do you add an item to a state array?</h4><br/>
+( ) By using push: prev.push(newItem) and then calling setState.
+(x) By using spread: [...prev, newItem] to create a new array with the added item.
+( ) By using concat and mutating the original array in place.
+( ) By directly assigning to the array index: prev[prev.length] = newItem.
+<h4 style="color: #474747; font-weight: 600;">How do you remove an item from a state array by id?</h4><br/>
+( ) By using splice: prev.splice(index, 1) to remove the item in place.
+( ) By using delete: delete prev[index] to remove the item.
+(x) By using filter: prev.filter(item => item.id !== id) to create a new array without the item.
+( ) By setting the item to null: prev.map(item => item.id === id ? null : item).
+<h4 style="color: #474747; font-weight: 600;">Why extract a list item into its own component?</h4><br/>
+( ) It is required by React — you cannot render list items inline.
+( ) It makes the code longer and more complex, which is always better.
+(x) It results in cleaner code, allows memoization with React.memo, makes items easier to test, and enables reuse across different lists.
+( ) It is only needed when the list has more than 50 items for performance reasons.
+<h4 style="color: #474747; font-weight: 600;">How do you update one item in a state array?</h4><br/>
+( ) By finding the item and directly modifying its properties: prev.find(item => item.id === id).field = value.
+(x) By using map: prev.map(item => item.id === id ? { ...item, field: value } : item) to create a new array with the updated item.
+( ) By using forEach to iterate and change the matching item in place.
+( ) By removing the old item with filter and adding the updated item with spread.

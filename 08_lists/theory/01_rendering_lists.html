@@ -1,0 +1,121 @@
+<h3 style="color: #76cdd8;"><strong>Rendering Lists</strong></h3>
+<p>Rendering dynamic lists is one of the most common tasks in React. Almost every application displays collections of data — users, products, messages, notifications — and React provides a clean pattern for this.</p>
+
+<h3 style="color: #76cdd8;"><strong>The Pattern: .map()</strong></h3>
+<p>Use the <strong>.map()</strong> array method to transform an array of data into an array of JSX elements:</p>
+<pre class="prettyprint"><code class="lang-tsx">type User = { id: number; name: string };
+
+const UserList = ({ users }: { users: User[] }) =&gt; {
+  return (
+    &lt;ul&gt;
+      {users.map(user =&gt; (
+        &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+<p>The <strong>.map()</strong> method iterates over each item in the array and returns a new array of JSX elements that React renders to the DOM.</p>
+
+<h3 style="color: #76cdd8;"><strong>The key Prop</strong></h3>
+<p>The <strong>key</strong> prop is required for every element in a list. React uses keys to identify which items changed, were added, or removed during re-renders.</p>
+<p>Rules for keys:</p>
+<ul>
+<li>Keys must be <strong>unique among siblings</strong> (not globally unique)</li>
+<li>Keys must be <strong>stable</strong> — the same item should always have the same key</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What to Use as key</strong></h3>
+<ul>
+<li>✅ Database ID (<code>user.id</code>, <code>post.id</code>) — best option</li>
+<li>✅ Unique business identifier (<code>email</code>, <code>slug</code>)</li>
+<li>⚠️ Index (<code>i</code>) — only acceptable for static lists that never reorder/filter</li>
+<li>❌ Random values (<code>Math.random()</code>, <code>crypto.randomUUID()</code> on each render) — breaks React's diffing</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Why NOT Index as key</strong></h3>
+<p>When items are added, removed, or reordered, indices shift. React thinks the item at index 0 is the same component as before — but it's actually a different item. The result: wrong state attached to wrong items, input values "jump" between items.</p>
+<p><strong>Rule:</strong> if the list can be reordered, filtered, or items can be added/removed — don't use index as key.</p>
+
+<h3 style="color: #76cdd8;"><strong>Empty State</strong></h3>
+<p>Always handle the case when the list is empty. Never leave the user without feedback:</p>
+<pre class="prettyprint"><code class="lang-tsx">type User = { id: number; name: string };
+
+const UserList = ({ users }: { users: User[] }) =&gt; {
+  if (users.length === 0) {
+    return &lt;p&gt;No users found.&lt;/p&gt;;
+  }
+
+  return (
+    &lt;ul&gt;
+      {users.map(user =&gt; (
+        &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Rendering Different Types</strong></h3>
+<p>You can use conditional rendering inside <strong>.map()</strong> to display items differently based on their data:</p>
+<pre class="prettyprint"><code class="lang-tsx">type Item = { id: number; text: string; completed: boolean };
+
+const ItemList = ({ items }: { items: Item[] }) =&gt; {
+  return (
+    &lt;ul&gt;
+      {items.map(item =&gt; (
+        &lt;li key={item.id} className={item.completed ? "done" : ""}&gt;
+          {item.completed ? "✅" : "⬜"} {item.text}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

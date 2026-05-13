@@ -1,0 +1,159 @@
+<h3 style="color: #76cdd8;"><strong>Filtering and Sorting</strong></h3>
+<p>In real applications, lists are almost always filtered and/or sorted before rendering. The key principle: <strong>derive the displayed list from the source data</strong> — don't store filtered results in separate state.</p>
+
+<h3 style="color: #76cdd8;"><strong>Filtering</strong></h3>
+<p>Use <strong>useMemo</strong> to compute filtered results only when the source data or filter criteria change:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useMemo } from "react";
+
+type Product = { id: number; name: string; category: string; price: number };
+
+const ProductList = ({ products }: { products: Product[] }) =&gt; {
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState&lt;string&gt;("all");
+
+  const filteredProducts = useMemo(() =&gt; {
+    return products
+      .filter(p =&gt; category === "all" || p.category === category)
+      .filter(p =&gt; p.name.toLowerCase().includes(search.toLowerCase()));
+  }, [products, category, search]);
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        value={search}
+        onChange={e =&gt; setSearch(e.target.value)}
+        placeholder="Search products..."
+      /&gt;
+      &lt;select value={category} onChange={e =&gt; setCategory(e.target.value)}&gt;
+        &lt;option value="all"&gt;All categories&lt;/option&gt;
+        &lt;option value="electronics"&gt;Electronics&lt;/option&gt;
+        &lt;option value="clothing"&gt;Clothing&lt;/option&gt;
+      &lt;/select&gt;
+
+      {filteredProducts.length === 0 ? (
+        &lt;p&gt;No products match your filters.&lt;/p&gt;
+      ) : (
+        &lt;ul&gt;
+          {filteredProducts.map(p =&gt; (
+            &lt;li key={p.id}&gt;{p.name} — ${p.price}&lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+
+      &lt;p&gt;{filteredProducts.length} of {products.length} products shown&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Sorting</strong></h3>
+<p>Sorting follows the same derived-data pattern. Important: always spread before sorting (<code>[...arr].sort(...)</code>) because <strong>.sort() mutates the original array</strong>!</p>
+<pre class="prettyprint"><code class="lang-ts">type SortField = "name" | "price";
+type SortDirection = "asc" | "desc";
+
+const [sortBy, setSortBy] = useState&lt;SortField&gt;("name");
+const [sortDir, setSortDir] = useState&lt;SortDirection&gt;("asc");
+
+const sortedProducts = useMemo(() =&gt; {
+  return [...filteredProducts].sort((a, b) =&gt; {
+    const modifier = sortDir === "asc" ? 1 : -1;
+    if (sortBy === "price") return (a.price - b.price) * modifier;
+    return a.name.localeCompare(b.name) * modifier;
+  });
+}, [filteredProducts, sortBy, sortDir]);</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why useMemo Here</strong></h3>
+<ul>
+<li>Filtering/sorting can be expensive for large lists (1000+ items)</li>
+<li>Without useMemo: recalculates on <strong>every</strong> render (even unrelated state changes)</li>
+<li>With useMemo: only recalculates when source data or filter/sort criteria change</li>
+<li>For small lists (&lt;100 items): useMemo is optional — computation is fast enough</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Common Pattern: filter → sort → map</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">type Item = { id: number; name: string; price: number; active: boolean };
+
+const ItemList = ({ items }: { items: Item[] }) =&gt; {
+  const [filterCriteria, setFilterCriteria] = useState("");
+  const [sortCriteria, setSortCriteria] = useState&lt;"name" | "price"&gt;("name");
+
+  const displayedItems = useMemo(() =&gt; {
+    return items
+      .filter(item =&gt; item.name.toLowerCase().includes(filterCriteria.toLowerCase()))
+      .sort((a, b) =&gt; a[sortCriteria] &gt; b[sortCriteria] ? 1 : -1);
+  }, [items, filterCriteria, sortCriteria]);
+
+  return (
+    &lt;ul&gt;
+      {displayedItems.map(item =&gt; (
+        &lt;li key={item.id}&gt;{item.name} — ${item.price}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Don't Store Derived Data in State</strong></h3>
+<p>A common mistake is storing filtered results in a separate useState and syncing them with useEffect. This creates unnecessary complexity and potential bugs:</p>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Wrong — storing filtered results in separate state
+const [products, setProducts] = useState&lt;Product[]&gt;([]);
+const [filteredProducts, setFilteredProducts] = useState&lt;Product[]&gt;([]);
+useEffect(() =&gt; {
+  setFilteredProducts(products.filter(p =&gt; p.name.includes(search)));
+}, [products, search]);
+
+// ✅ Right — derive during render (or with useMemo)
+const [products, setProducts] = useState&lt;Product[]&gt;([]);
+const filteredProducts = useMemo(
+  () =&gt; products.filter(p =&gt; p.name.includes(search)),
+  [products, search]
+);</code></pre>
+<p>The correct approach computes the filtered list directly from the source data. This eliminates the possibility of the filtered list getting out of sync with the source data.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>

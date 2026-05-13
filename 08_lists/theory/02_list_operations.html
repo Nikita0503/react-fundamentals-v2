@@ -1,0 +1,158 @@
+<h3 style="color: #76cdd8;"><strong>List Operations (CRUD)</strong></h3>
+<p>Real applications need full CRUD on lists: <strong>Create</strong>, <strong>Read</strong>, <strong>Update</strong>, <strong>Delete</strong>. All operations follow the immutability principle — never mutate state directly, always create new arrays.</p>
+
+<h3 style="color: #76cdd8;"><strong>Full Todo App Example</strong></h3>
+<p>This example demonstrates all four operations in a single component:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+
+type Todo = {
+  id: number;
+  text: string;
+  completed: boolean;
+};
+
+const TodoApp = () =&gt; {
+  const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
+  const [input, setInput] = useState("");
+
+  // CREATE — add new item
+  const addTodo = () =&gt; {
+    if (!input.trim()) return;
+    const newTodo: Todo = { id: Date.now(), text: input, completed: false };
+    setTodos(prev =&gt; [...prev, newTodo]);
+    setInput("");
+  };
+
+  // UPDATE — toggle completed
+  const toggleTodo = (id: number) =&gt; {
+    setTodos(prev =&gt;
+      prev.map(todo =&gt;
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  // DELETE — remove item
+  const deleteTodo = (id: number) =&gt; {
+    setTodos(prev =&gt; prev.filter(todo =&gt; todo.id !== id));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;input value={input} onChange={e =&gt; setInput(e.target.value)} placeholder="New todo..." /&gt;
+        &lt;button onClick={addTodo}&gt;Add&lt;/button&gt;
+      &lt;/div&gt;
+
+      {todos.length === 0 ? (
+        &lt;p&gt;No todos yet. Add one above!&lt;/p&gt;
+      ) : (
+        &lt;ul&gt;
+          {todos.map(todo =&gt; (
+            &lt;TodoItem
+              key={todo.id}
+              todo={todo}
+              onToggle={toggleTodo}
+              onDelete={deleteTodo}
+            /&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Extracting List Items into a Component</strong></h3>
+<p>When list items have their own logic or complexity, extract them into a separate component:</p>
+<pre class="prettyprint"><code class="lang-tsx">type TodoItemProps = {
+  todo: Todo;
+  onToggle: (id: number) =&gt; void;
+  onDelete: (id: number) =&gt; void;
+};
+
+const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) =&gt; {
+  return (
+    &lt;li&gt;
+      &lt;input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={() =&gt; onToggle(todo.id)}
+      /&gt;
+      &lt;span style={{ textDecoration: todo.completed ? "line-through" : "none" }}&gt;
+        {todo.text}
+      &lt;/span&gt;
+      &lt;button onClick={() =&gt; onDelete(todo.id)}&gt;Delete&lt;/button&gt;
+    &lt;/li&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Why Extract?</strong></h3>
+<ul>
+<li>Each item can be wrapped in <strong>React.memo</strong> for optimization</li>
+<li>Cleaner parent component — list logic stays in parent, item rendering in child</li>
+<li>Easier to test individual items</li>
+<li>Reusable — same item component can be used in different lists</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Pattern Summary</strong></h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr><th>Operation</th><th>Method</th><th>Pattern</th></tr>
+</thead>
+<tbody>
+<tr><td>Add</td><td>spread</td><td><code>[...prev, newItem]</code></td></tr>
+<tr><td>Remove</td><td>filter</td><td><code>prev.filter(item =&gt; item.id !== id)</code></td></tr>
+<tr><td>Update one</td><td>map</td><td><code>prev.map(item =&gt; item.id === id ? { ...item, field: value } : item)</code></td></tr>
+<tr><td>Replace all</td><td>direct set</td><td><code>setItems(newArray)</code></td></tr>
+</tbody>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+    @media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
+<p></p>
