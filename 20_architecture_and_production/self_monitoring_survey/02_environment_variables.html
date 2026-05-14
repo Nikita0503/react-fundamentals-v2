@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Why is the VITE_ prefix required for frontend env vars?</h4><br/>
+( ) It's a naming convention with no technical purpose
+( ) Vite can't read variables without a prefix
+(x) Security measure — without it, the variable is not exposed to client code
+( ) It enables TypeScript autocomplete
+
+<h4 style="color: #474747; font-weight: 600;">Can you put API secret keys in frontend environment variables?</h4><br/>
+( ) Yes — environment variables are always hidden from users
+( ) Yes — but only in production builds
+(x) No — frontend code is visible to anyone via View Source or DevTools
+( ) Yes — if you use the VITE_ prefix they are encrypted
+
+<h4 style="color: #474747; font-weight: 600;">When are Vite environment variables replaced with actual values?</h4><br/>
+( ) At runtime when the page loads in the browser
+( ) When the dev server starts
+(x) At build time — they're baked into the JavaScript bundle during npm run build
+( ) When the user first visits the page
+
+<h4 style="color: #474747; font-weight: 600;">What file should you gitignore?</h4><br/>
+( ) .env — it contains all configuration
+( ) All .env files without exception
+(x) .env.local with real values — .env with defaults can be committed
+( ) Only .env.production

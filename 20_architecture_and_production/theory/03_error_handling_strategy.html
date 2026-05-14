@@ -1,0 +1,198 @@
+<h3 style="color: #76cdd8;"><strong>The Goal</strong></h3>
+<p>Users see helpful messages, developers get debugging info, the app doesn't crash entirely. A good error handling strategy has multiple layers — each one catches what the previous one missed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Multi-Level Error Handling Strategy</strong></h3>
+
+<h4 style="color: #76cdd8;">Level 1 — Global Error Boundary (app-level)</h4>
+<pre class="prettyprint"><code class="lang-tsx">// Catches any unhandled rendering error in the entire app
+&lt;ErrorBoundary fallback={&lt;FullPageError /&gt;}&gt;
+  &lt;App /&gt;
+&lt;/ErrorBoundary&gt;</code></pre>
+<ul>
+<li>Last resort — catches anything that slipped through all other layers</li>
+<li>Shows a "something went wrong, refresh" page</li>
+<li>Remember from the Advanced React module: Error Boundaries are class components that use <code>getDerivedStateFromError</code></li>
+</ul>
+
+<h4 style="color: #76cdd8;">Level 2 — Route-Level Error Boundaries</h4>
+<pre class="prettyprint"><code class="lang-tsx">&lt;Route path="/dashboard" element={
+  &lt;ErrorBoundary fallback={&lt;p&gt;Dashboard failed to load&lt;/p&gt;}&gt;
+    &lt;Dashboard /&gt;
+  &lt;/ErrorBoundary&gt;
+} /&gt;</code></pre>
+<ul>
+<li>One page crashes → other pages still work</li>
+<li>User can navigate away without refreshing the entire app</li>
+</ul>
+
+<h4 style="color: #76cdd8;">Level 3 — API Error Handling (TanStack Query / Axios interceptors)</h4>
+<pre class="prettyprint"><code class="lang-tsx">// Global handler for all API errors
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+    },
+    mutations: {
+      onError: (error) =&gt; {
+        logger.error("Mutation failed", { error });
+        toast.error("Something went wrong. Please try again.");
+      },
+    },
+  },
+});</code></pre>
+<ul>
+<li>Handles: network errors, 4xx/5xx responses, timeouts</li>
+<li>Shows toast notifications for recoverable errors</li>
+</ul>
+
+<h4 style="color: #76cdd8;">Level 4 — Component-Level try/catch (event handlers)</h4>
+<pre class="prettyprint"><code class="lang-tsx">const handleSubmit = async (data: FormData) =&gt; {
+  try {
+    await submitForm(data);
+    toast.success("Saved!");
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      setFieldErrors(error.fields);
+    } else {
+      toast.error("Failed to save. Please try again.");
+      logger.error("Form submission failed", { error, data });
+    }
+  }
+};</code></pre>
+<ul>
+<li>For specific user actions where you need custom error handling</li>
+<li>Note: Error Boundaries don't catch errors in event handlers — only in render. That's why we need try/catch here.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What to Show the User vs What to Log</strong></h3>
+<table>
+<tr><th></th><th>User sees</th><th>Developer logs</th></tr>
+<tr><td>Network error</td><td>"Connection lost. Check your internet."</td><td>Full error object, URL, timestamp</td></tr>
+<tr><td>404</td><td>"This page doesn't exist"</td><td>Route path, referrer</td></tr>
+<tr><td>500</td><td>"Something went wrong. Try again."</td><td>Status, response body, request payload</td></tr>
+<tr><td>Validation</td><td>Specific field errors</td><td>Full validation result</td></tr>
+<tr><td>Render crash</td><td>Fallback UI with retry button</td><td>Component stack, error message</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Graceful Degradation</strong></h3>
+<p>When part of the app fails, the rest should keep working. Don't let a broken sidebar kill the entire page. Each independent section should have its own error boundary so failures are isolated.</p>
+
+<h3 style="color: #76cdd8;"><strong>Logging Strategy</strong></h3>
+<p>In production, you can't open DevTools on the user's browser. Logs are your only window into what happened when something goes wrong.</p>
+
+<h4 style="color: #76cdd8;">Log Levels</h4>
+<table>
+<tr><th>Level</th><th>When to use</th><th>Example</th></tr>
+<tr><td><code>error</code></td><td>Something broke, needs attention</td><td>API call failed, render crash, payment error</td></tr>
+<tr><td><code>warn</code></td><td>Suspicious but not broken</td><td>Deprecated API used, slow response, retry succeeded</td></tr>
+<tr><td><code>info</code></td><td>Important business events</td><td>User logged in, order placed, feature flag activated</td></tr>
+<tr><td><code>debug</code></td><td>Development details</td><td>State changes, re-renders, cache hits (dev only)</td></tr>
+</table>
+
+<h4 style="color: #76cdd8;">Logger Utility Pattern</h4>
+<pre class="prettyprint"><code class="lang-ts">// lib/logger.ts
+type LogContext = Record&lt;string, unknown&gt;;
+
+const isProd = import.meta.env.PROD;
+
+export const logger = {
+  error: (message: string, context?: LogContext) =&gt; {
+    if (isProd) {
+      // Send to error tracking service (Sentry, Datadog)
+      // errorTracker.captureException(message, context);
+    }
+    console.error(`[ERROR] ${message}`, context);
+  },
+
+  warn: (message: string, context?: LogContext) =&gt; {
+    if (isProd) {
+      // Send to monitoring
+    }
+    console.warn(`[WARN] ${message}`, context);
+  },
+
+  info: (message: string, context?: LogContext) =&gt; {
+    console.info(`[INFO] ${message}`, context);
+  },
+
+  debug: (message: string, context?: LogContext) =&gt; {
+    if (!isProd) {
+      console.debug(`[DEBUG] ${message}`, context);
+    }
+  },
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>What to Log</strong></h3>
+<ul>
+<li>✅ API errors (status, URL, method, response time)</li>
+<li>✅ Unhandled exceptions (error message, component stack)</li>
+<li>✅ Critical user actions (login, logout, purchase)</li>
+<li>✅ Performance issues (slow renders, long API calls)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What NOT to Log</strong></h3>
+<ul>
+<li>❌ Personal data (names, emails, addresses, phone numbers)</li>
+<li>❌ Authentication tokens or passwords</li>
+<li>❌ Full request/response bodies with sensitive data</li>
+<li>❌ Every state change or re-render (too noisy)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>console.log in Production — Antipattern</strong></h3>
+<ul>
+<li>Clutters the browser console</li>
+<li>Can accidentally expose sensitive information</li>
+<li>Not structured (can't search/filter/alert on it)</li>
+<li>Replace with the logger utility — it's the same effort to write but infinitely more useful</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Error Tracking Services</strong></h3>
+<ul>
+<li><strong>Sentry</strong> — most popular, captures errors with full stack trace + user context</li>
+<li><strong>Datadog</strong> — monitoring + logging + APM in one platform</li>
+<li><strong>LogRocket</strong> — session replay + error tracking (see exactly what user did before the error)</li>
+<li>These integrate with your logger utility — in production, <code>logger.error()</code> sends to the service automatically</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,140 @@
+<h3 style="color: #76cdd8;"><strong>Why Structure Matters</strong></h3>
+<p>A 5-file project doesn't need architecture. A 500-file project without structure is unmaintainable. Good structure means: easy to find code, easy to add features, easy to onboard new developers.</p>
+<p>Structure is not about "the right way" — it's about consistency and scalability. Pick a pattern and stick with it across the team.</p>
+
+<h3 style="color: #76cdd8;"><strong>Two Main Approaches</strong></h3>
+
+<h4 style="color: #76cdd8;">Layer-Based (by type)</h4>
+<pre class="prettyprint"><code class="lang-ts">src/
+├── components/     // ALL components
+├── hooks/          // ALL hooks
+├── utils/          // ALL utilities
+├── types/          // ALL types
+├── services/       // ALL API calls
+└── pages/          // ALL pages</code></pre>
+<ul>
+<li><strong>Pros:</strong> simple, clear where to put things — every file type has one home</li>
+<li><strong>Cons:</strong> at scale, folders become huge (50+ components in one folder). Related files are far apart — <code>UserCard</code> component, <code>useUser</code> hook, <code>userApi</code> service all live in different folders</li>
+</ul>
+
+<h4 style="color: #76cdd8;">Feature-Based (by domain)</h4>
+<pre class="prettyprint"><code class="lang-ts">src/
+├── features/
+│   ├── auth/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── api/
+│   │   ├── types.ts
+│   │   └── index.ts
+│   ├── products/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── api/
+│   │   ├── types.ts
+│   │   └── index.ts
+│   └── cart/
+│       └── ...
+├── components/     // shared/reusable components (Button, Modal, Input)
+├── hooks/          // shared hooks (useDebounce, useLocalStorage)
+├── utils/          // shared utilities
+├── lib/            // third-party config (axios instance, query client)
+└── pages/          // route-level page components</code></pre>
+<ul>
+<li><strong>Pros:</strong> related code lives together, easy to find everything about a feature, features are independent (can delete a feature folder without breaking others)</li>
+<li><strong>Cons:</strong> more upfront decisions, shared vs feature-specific can be ambiguous</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Practical Recommendation</strong></h3>
+<ul>
+<li><strong>Small project (&lt;20 components):</strong> layer-based is fine</li>
+<li><strong>Medium/large project (20+ components):</strong> feature-based scales better</li>
+<li>Most real-world projects use a <strong>hybrid</strong>: feature folders + shared folder for reusable pieces</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Barrel Exports (index.ts)</strong></h3>
+<p>A barrel export is a file that re-exports the public API of a folder — it acts as a single entry point so consumers don't need to know the internal file structure:</p>
+<pre class="prettyprint"><code class="lang-ts">// features/auth/index.ts
+export { LoginForm } from "./components/LoginForm";
+export { useAuth } from "./hooks/useAuth";
+export type { User, AuthState } from "./types";</code></pre>
+<ul>
+<li><strong>Pros:</strong> clean imports (<code>from "@/features/auth"</code> instead of deep paths)</li>
+<li><strong>Cons:</strong> can cause circular dependencies, can slow down bundling if barrel re-exports everything</li>
+<li><strong>Rule:</strong> use barrels for the public API of a feature. Don't barrel internal implementation files.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Path Aliases (Absolute Imports)</strong></h3>
+<p>Path aliases let you use short, absolute-style imports instead of long relative paths with <code>../../../</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+
+// vite.config.ts
+resolve: {
+  alias: {
+    "@": path.resolve(__dirname, "./src")
+  }
+}
+
+// Usage:
+import { Button } from "@/components/Button";  // instead of "../../../components/Button"</code></pre>
+<p>Always use absolute imports in projects with more than 2 levels of nesting.</p>
+
+<h3 style="color: #76cdd8;"><strong>Naming Conventions</strong></h3>
+<table>
+<tr><th>Type</th><th>Convention</th><th>Example</th></tr>
+<tr><td>Components</td><td>PascalCase</td><td><code>UserCard.tsx</code></td></tr>
+<tr><td>Hooks</td><td>camelCase with <code>use</code> prefix</td><td><code>useAuth.ts</code></td></tr>
+<tr><td>Utilities</td><td>camelCase</td><td><code>formatDate.ts</code></td></tr>
+<tr><td>Types</td><td>PascalCase</td><td><code>User</code>, <code>AuthState</code></td></tr>
+<tr><td>Constants</td><td>UPPER_SNAKE_CASE or camelCase</td><td><code>API_BASE_URL</code> or <code>apiRoutes</code></td></tr>
+<tr><td>Folders</td><td>kebab-case or camelCase</td><td><code>user-profile/</code> or <code>userProfile/</code></td></tr>
+</table>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

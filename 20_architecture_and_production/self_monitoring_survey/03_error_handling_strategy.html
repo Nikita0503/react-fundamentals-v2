@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What are the levels of error handling in a React app (from broadest to most specific)?</h4><br/>
+( ) try/catch everywhere → Error Boundary as backup
+( ) Only Error Boundaries — they catch all errors
+(x) Global Error Boundary → route-level boundaries → API error handling → component-level try/catch
+( ) Axios interceptors → Error Boundary → console.error
+
+<h4 style="color: #474747; font-weight: 600;">Why is console.log in production an antipattern?</h4><br/>
+( ) It slows down the application significantly
+( ) It's removed by the bundler anyway
+(x) Not structured, can expose sensitive info, can't search/filter/alert on it
+( ) It only works in development mode
+
+<h4 style="color: #474747; font-weight: 600;">What should you NEVER log?</h4><br/>
+( ) API error status codes
+( ) Component names that crashed
+(x) Personal data, authentication tokens, passwords, sensitive request/response bodies
+( ) Timestamps and request URLs
+
+<h4 style="color: #474747; font-weight: 600;">What is graceful degradation?</h4><br/>
+( ) Slowly reducing app features as the user's session expires
+( ) Showing a loading spinner instead of content
+(x) When part of the app fails, the rest keeps working — a broken sidebar doesn't kill the entire page
+( ) Redirecting to a static HTML page when JavaScript fails

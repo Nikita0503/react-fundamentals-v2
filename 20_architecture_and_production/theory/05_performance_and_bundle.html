@@ -1,0 +1,126 @@
+<h3 style="color: #76cdd8;"><strong>Code Splitting (Recap)</strong></h3>
+<p>Use <code>React.lazy</code> + <code>Suspense</code> to split your app into chunks that load on demand. Instead of shipping one massive JavaScript file, the browser downloads only what's needed for the current page. Covered in detail in the Advanced React module.</p>
+
+<h3 style="color: #76cdd8;"><strong>Bundle Analysis — What's Making Your App Heavy?</strong></h3>
+<p>A "bundle" is the final JavaScript file(s) that the browser downloads. Bundle analysis tools show you exactly which packages contribute to the file size:</p>
+<pre class="prettyprint"><code class="lang-ts"># Vite
+npx vite-bundle-visualizer
+
+# Or install rollup-plugin-visualizer
+npm install -D rollup-plugin-visualizer</code></pre>
+<ul>
+<li>Generates a visual treemap showing which packages take the most space</li>
+<li>Common culprits: moment.js (use date-fns instead), lodash (import specific functions), large icon libraries (import only used icons)</li>
+<li><strong>Rule:</strong> if a dependency adds &gt;50KB and you only use one function from it — find a lighter alternative or import selectively</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Tree Shaking</strong></h3>
+<p>"Tree shaking" is a bundler optimization that removes unused code from your final bundle — like shaking a tree and letting dead leaves fall off. Only the code you actually import ends up in the output.</p>
+<ul>
+<li>Only works with ES modules (<code>import/export</code>, not <code>require</code>)</li>
+<li>Named imports enable tree shaking:</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">// ✅ Only debounce is included in the bundle, not all of lodash
+import { debounce } from "lodash-es";
+
+// ✅ Named imports — bundler can remove unused exports
+import { Button } from "./components";
+
+// ❌ Default import of large object — bundler can't determine what's unused
+import components from "./components";</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Image Optimization</strong></h3>
+<p>Images are often the heaviest assets on a page. Optimize them to reduce load time:</p>
+<p><strong>Lazy load images below the fold</strong> (content not visible without scrolling):</p>
+<pre class="prettyprint"><code class="lang-tsx">&lt;img src="photo.jpg" loading="lazy" alt="Product photo" /&gt;</code></pre>
+<p><strong>Use modern formats:</strong> WebP (30% smaller than JPEG), AVIF (50% smaller)</p>
+<p><strong>Responsive images with srcset</strong> — serve different sizes based on screen width:</p>
+<pre class="prettyprint"><code class="lang-tsx">&lt;img
+  src="photo-800.jpg"
+  srcSet="photo-400.jpg 400w, photo-800.jpg 800w, photo-1200.jpg 1200w"
+  sizes="(max-width: 600px) 400px, 800px"
+  alt="Product"
+/&gt;</code></pre>
+<p>For React: use <code>&lt;img loading="lazy"&gt;</code> or a library like <code>react-lazy-load-image-component</code></p>
+
+<h3 style="color: #76cdd8;"><strong>Web Vitals — What Google Measures</strong></h3>
+<p>Web Vitals are metrics that Google uses to measure real-world user experience. They affect search ranking and correlate with user satisfaction:</p>
+<table>
+<tr><th>Metric</th><th>What it measures</th><th>Good threshold</th></tr>
+<tr><td>LCP (Largest Contentful Paint)</td><td>How fast the main content appears</td><td>&lt; 2.5s</td></tr>
+<tr><td>INP (Interaction to Next Paint)</td><td>How fast the app responds to user input</td><td>&lt; 200ms</td></tr>
+<tr><td>CLS (Cumulative Layout Shift)</td><td>How much the page layout jumps around</td><td>&lt; 0.1</td></tr>
+</table>
+<ul>
+<li><strong>Why it matters:</strong> Google uses these for search ranking. Users leave slow/janky sites.</li>
+<li><strong>How to measure:</strong> Chrome DevTools → Lighthouse tab, or web.dev/measure</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>React DevTools Profiler (Recap)</strong></h3>
+<ul>
+<li>Shows which components re-render and how long they take</li>
+<li>Identify: components rendering &gt;16ms (blocking a frame), components rendering unnecessarily</li>
+<li>Fix with: <code>React.memo</code>, <code>useMemo</code>, <code>useCallback</code>, moving state down</li>
+<li>Covered in detail in the Performance module</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Lighthouse</strong></h3>
+<ul>
+<li>Built into Chrome DevTools (Lighthouse tab)</li>
+<li>Audits: Performance, Accessibility, Best Practices, SEO</li>
+<li>Gives actionable recommendations with priority</li>
+<li><strong>Run on production build</strong> (<code>npm run build</code>, not dev server) — dev mode is slower and gives misleading scores</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Quick Wins Checklist</strong></h3>
+<ol>
+<li>Lazy load routes (<code>React.lazy</code>)</li>
+<li>Lazy load images (<code>loading="lazy"</code>)</li>
+<li>Analyze bundle (find heavy dependencies)</li>
+<li>Use production build for deployment (<code>npm run build</code>, not dev server)</li>
+<li>Enable gzip/brotli compression on server</li>
+<li>Cache static assets (long cache headers for JS/CSS/images)</li>
+</ol>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

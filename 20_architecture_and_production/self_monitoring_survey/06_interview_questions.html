@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What is the difference between useEffect and useLayoutEffect?</h4><br/>
+( ) useEffect runs on mount, useLayoutEffect runs on every render
+( ) useLayoutEffect is for layout CSS, useEffect is for data fetching
+(x) useEffect runs after paint asynchronously; useLayoutEffect runs before paint synchronously — for DOM measurements
+( ) They are identical but useLayoutEffect is deprecated
+
+<h4 style="color: #474747; font-weight: 600;">How does React batching work in React 18+?</h4><br/>
+( ) React batches renders across different event handlers
+( ) Batching only works inside useEffect
+(x) Multiple setState calls in the same handler are grouped into one re-render automatically
+( ) You must manually opt-in to batching with useBatch()
+
+<h4 style="color: #474747; font-weight: 600;">What is React Fiber?</h4><br/>
+( ) A lightweight CSS-in-JS library built into React
+( ) The virtual DOM diffing algorithm
+(x) The internal reconciliation engine that breaks rendering into pausable, prioritizable units of work
+( ) A state management solution introduced in React 18
+
+<h4 style="color: #474747; font-weight: 600;">What is the first step when optimizing a slow React app?</h4><br/>
+( ) Add React.memo to every component
+( ) Switch to a faster state management library
+( ) Rewrite components as class components
+(x) Measure with React DevTools Profiler — don't guess, find the actual bottleneck

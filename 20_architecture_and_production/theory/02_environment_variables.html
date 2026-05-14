@@ -1,0 +1,117 @@
+<h3 style="color: #76cdd8;"><strong>What Are Environment Variables</strong></h3>
+<p>Environment variables are configuration values that change between environments (development, staging, production) without changing code. Examples: API URL, feature flags, analytics keys.</p>
+<p>They let you deploy the same codebase to different environments with different behavior — without editing a single line of source code.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why Not Hardcode?</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Hardcoded — breaks when you deploy to production
+const API_URL = "http://localhost:3001/api";
+
+// ✅ Environment variable — different value per environment
+const API_URL = import.meta.env.VITE_API_URL;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>How It Works in Vite</strong></h3>
+<p>Create <code>.env</code> files in your project root:</p>
+<pre class="prettyprint"><code class="lang-ts"># .env (default, all environments)
+VITE_APP_NAME=MyApp
+
+# .env.development (only in dev)
+VITE_API_URL=http://localhost:3001/api
+
+# .env.production (only in production build)
+VITE_API_URL=https://api.myapp.com</code></pre>
+<p>Access in code: <code>import.meta.env.VITE_API_URL</code></p>
+<p><strong>VITE_ prefix is required</strong> — without it, the variable is NOT exposed to client code. This is a security measure: it prevents accidentally leaking server-side secrets to the browser.</p>
+
+<h3 style="color: #76cdd8;"><strong>Runtime vs Build-Time</strong></h3>
+<ul>
+<li>Environment variables in Vite are <strong>build-time</strong> — they're replaced with actual values during <code>npm run build</code></li>
+<li>After build, you can't change them without rebuilding</li>
+<li>This is different from server-side env vars (which can change at runtime without redeployment)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript Typing for Env Vars</strong></h3>
+<p>By default, TypeScript doesn't know what environment variables exist. You can add type definitions so you get autocomplete and type checking:</p>
+<pre class="prettyprint"><code class="lang-ts">// src/env.d.ts
+/// &lt;reference types="vite/client" /&gt;
+
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string;
+  readonly VITE_APP_NAME: string;
+  readonly VITE_FEATURE_DARK_MODE: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}</code></pre>
+<p>This gives you autocomplete and type checking for env vars — no more typos in variable names.</p>
+
+<h3 style="color: #76cdd8;"><strong>Security Rules</strong></h3>
+<p>✅ OK to put in frontend env:</p>
+<ul>
+<li>API URLs</li>
+<li>Public keys (Stripe publishable key)</li>
+<li>Feature flags</li>
+<li>App name / version</li>
+</ul>
+<p>❌ NEVER put in frontend env:</p>
+<ul>
+<li>Secret keys</li>
+<li>Database passwords</li>
+<li>API secrets</li>
+<li>Private tokens</li>
+</ul>
+<p><strong>Why:</strong> frontend code is visible to anyone (View Source, DevTools). Environment variables in the browser are NOT secret — they're baked into the JavaScript bundle. Anyone can open DevTools and see them.</p>
+<p>Secret operations (payment processing, auth token generation) must happen on the backend.</p>
+
+<h3 style="color: #76cdd8;"><strong>.gitignore</strong></h3>
+<pre class="prettyprint"><code class="lang-ts"># .gitignore
+.env.local
+.env.*.local</code></pre>
+<ul>
+<li><code>.env</code> (with defaults) can be committed — it has no secrets</li>
+<li><code>.env.local</code> (with real values) should be gitignored</li>
+<li>Share real values via team password manager or CI/CD secrets</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

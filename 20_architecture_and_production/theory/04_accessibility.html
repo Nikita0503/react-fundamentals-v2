@@ -1,0 +1,133 @@
+<h3 style="color: #76cdd8;"><strong>What Is Accessibility (a11y)</strong></h3>
+<p>Accessibility (abbreviated "a11y" — "a", 11 letters, "y") means making your app usable by everyone, including people with disabilities — visual, motor, cognitive, and hearing impairments.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why It Matters</strong></h3>
+<ul>
+<li>15%+ of the world's population has some form of disability</li>
+<li>Legal requirements in many countries (ADA in US, EAA in EU)</li>
+<li>Better SEO (search engines read semantic HTML the same way screen readers do)</li>
+<li>Better UX for everyone (keyboard users, slow connections, small screens)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Semantic HTML — The Foundation</strong></h3>
+<p>Semantic HTML means using elements that describe their purpose, not just their appearance. Screen readers (software that reads the page aloud for blind users) rely on semantic elements to understand page structure:</p>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Div soup — screen readers can't understand this
+&lt;div onClick={handleClick}&gt;Click me&lt;/div&gt;
+&lt;div className="heading"&gt;Page Title&lt;/div&gt;
+
+// ✅ Semantic — screen readers understand structure and purpose
+&lt;button onClick={handleClick}&gt;Click me&lt;/button&gt;
+&lt;h1&gt;Page Title&lt;/h1&gt;</code></pre>
+<p>Use the right element for the job:</p>
+<ul>
+<li><code>&lt;button&gt;</code> for actions</li>
+<li><code>&lt;a&gt;</code> for navigation</li>
+<li><code>&lt;h1&gt;</code>-<code>&lt;h6&gt;</code> for headings</li>
+<li><code>&lt;nav&gt;</code> for navigation sections</li>
+<li><code>&lt;main&gt;</code> for main content</li>
+<li><code>&lt;form&gt;</code> for forms</li>
+</ul>
+<p><strong>Rule:</strong> if it does something on click → <code>&lt;button&gt;</code>. If it goes somewhere → <code>&lt;a&gt;</code>. Never <code>&lt;div onClick&gt;</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>Heading Hierarchy</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ✅ Correct — logical hierarchy
+&lt;h1&gt;Page Title&lt;/h1&gt;
+  &lt;h2&gt;Section&lt;/h2&gt;
+    &lt;h3&gt;Subsection&lt;/h3&gt;
+  &lt;h2&gt;Another Section&lt;/h2&gt;
+
+// ❌ Wrong — skipping levels
+&lt;h1&gt;Title&lt;/h1&gt;
+  &lt;h4&gt;Subsection&lt;/h4&gt;  // skipped h2 and h3!</code></pre>
+<p>Screen readers use headings to build a page outline. Skipping levels breaks that outline and confuses users who navigate by headings.</p>
+
+<h3 style="color: #76cdd8;"><strong>ARIA Basics</strong></h3>
+<p>ARIA (Accessible Rich Internet Applications) is a set of HTML attributes that provide extra information to screen readers when semantic HTML alone isn't enough:</p>
+<ul>
+<li><code>aria-label</code> — provides a label when visible text isn't enough:
+<pre class="prettyprint"><code class="lang-tsx">&lt;button aria-label="Close dialog" onClick={onClose}&gt;✕&lt;/button&gt;</code></pre>
+</li>
+<li><code>aria-hidden="true"</code> — hides decorative elements from screen readers:
+<pre class="prettyprint"><code class="lang-tsx">&lt;span aria-hidden="true"&gt;🎉&lt;/span&gt; Congratulations!</code></pre>
+</li>
+<li><code>role</code> — when you can't use semantic HTML (rare):
+<pre class="prettyprint"><code class="lang-tsx">&lt;div role="alert"&gt;Error: Invalid email&lt;/div&gt;</code></pre>
+</li>
+</ul>
+<p><strong>Rule:</strong> prefer semantic HTML over ARIA. ARIA is a last resort when HTML doesn't have the right element. The first rule of ARIA is: don't use ARIA if you can use a native HTML element instead.</p>
+
+<h3 style="color: #76cdd8;"><strong>Keyboard Navigation</strong></h3>
+<ul>
+<li>All interactive elements must be reachable via Tab key</li>
+<li><code>&lt;button&gt;</code> and <code>&lt;a&gt;</code> are focusable by default. <code>&lt;div&gt;</code> is not.</li>
+<li>Focus order should follow visual order (don't use tabIndex &gt; 0)</li>
+<li><strong>Focus trap in modals</strong> — Tab should cycle within the modal, not escape to background content. This prevents users from accidentally interacting with content behind the modal.</li>
+<li>Visible focus indicator — never remove <code>outline</code> without providing an alternative:</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">/* ❌ Never do this */
+*:focus { outline: none; }
+
+/* ✅ Custom focus style */
+button:focus-visible { outline: 2px solid blue; }</code></pre>
+<p><code>:focus-visible</code> only shows the outline for keyboard users, not mouse clicks — best of both worlds.</p>
+
+<h3 style="color: #76cdd8;"><strong>Color Contrast</strong></h3>
+<ul>
+<li>Text must have sufficient contrast against its background</li>
+<li>WCAG AA standard: 4.5:1 ratio for normal text, 3:1 for large text (18px+ bold or 24px+ regular)</li>
+<li>Don't rely on color alone to convey information — add icons, text, or patterns (colorblind users can't distinguish red from green)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Developer Checklist</strong></h3>
+<ol>
+<li>Can you use the entire app with only a keyboard? (no mouse)</li>
+<li>Does every interactive element have a visible focus state?</li>
+<li>Do all images have alt text (or <code>aria-hidden</code> if decorative)?</li>
+<li>Is the heading hierarchy logical (h1 → h2 → h3)?</li>
+<li>Do form inputs have associated labels?</li>
+<li>Are error messages announced to screen readers?</li>
+<li>Does color contrast meet WCAG AA (4.5:1)?</li>
+</ol>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

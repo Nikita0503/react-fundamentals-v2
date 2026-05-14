@@ -1,0 +1,111 @@
+<h3 style="color: #76cdd8;"><strong>Top 15 React Interview Questions</strong></h3>
+<p>Concise answers you can use as a reference. Each answer covers the "what" and "why" — interviewers care about understanding, not memorization.</p>
+
+<h4 style="color: #76cdd8;">1. What is the Virtual DOM and how does it work?</h4>
+<p>A lightweight JavaScript representation of the real DOM. When state changes, React creates a new Virtual DOM tree, diffs it with the previous one (reconciliation), and applies only the minimal changes to the real DOM. This is faster than manipulating the real DOM directly for every change.</p>
+
+<h4 style="color: #76cdd8;">2. What are the rules of hooks?</h4>
+<p>1) Only call hooks at the top level (not inside conditions, loops, or nested functions). 2) Only call hooks from React components or custom hooks. This ensures hooks are called in the same order every render — React relies on call order to match state to the correct hook.</p>
+
+<h4 style="color: #76cdd8;">3. What is the difference between useEffect and useLayoutEffect?</h4>
+<p><code>useEffect</code> runs asynchronously after the browser paints. <code>useLayoutEffect</code> runs synchronously before the browser paints. Use <code>useLayoutEffect</code> only when you need to measure or mutate DOM before the user sees it (rare — e.g., tooltip positioning, preventing visual flicker).</p>
+
+<h4 style="color: #76cdd8;">4. Explain React.memo, useMemo, and useCallback.</h4>
+<ul>
+<li><code>React.memo</code>: wraps a component, skips re-render if props didn't change (shallow comparison)</li>
+<li><code>useMemo</code>: caches a computed value, recomputes only when dependencies change</li>
+<li><code>useCallback</code>: caches a function reference, useful when passing callbacks to memoized children</li>
+<li>They work together: <code>useCallback</code> stabilizes the function → <code>memo</code> sees same reference → skips render</li>
+</ul>
+
+<h4 style="color: #76cdd8;">5. What is the key prop and why is it important?</h4>
+<p>A unique identifier for list items. React uses it to track which items changed/added/removed during reconciliation. Without stable keys, React may reuse wrong component instances, causing bugs with state (e.g., input values appearing in the wrong list item).</p>
+
+<h4 style="color: #76cdd8;">6. Controlled vs uncontrolled components?</h4>
+<p><strong>Controlled:</strong> React state drives the input value (<code>value</code> + <code>onChange</code>). <strong>Uncontrolled:</strong> DOM owns the value, accessed via ref. Controlled gives you full control (validation, formatting, conditional logic). Uncontrolled is simpler for basic cases where you only need the value on submit.</p>
+
+<h4 style="color: #76cdd8;">7. What is lifting state up?</h4>
+<p>Moving shared state to the nearest common parent of components that need it. Parent owns the state, passes it down via props. Enables sibling communication without global state. We covered this in the State Management module.</p>
+
+<h4 style="color: #76cdd8;">8. What are the limitations of Context?</h4>
+<p>All consumers re-render when the context value changes (no selectors — you can't subscribe to just one field). Not suitable for frequently changing data (like mouse position or animation frames). For complex or frequently updating state, use Zustand or Redux.</p>
+
+<h4 style="color: #76cdd8;">9. How does React handle batching?</h4>
+<p>React 18+ automatically batches multiple <code>setState</code> calls in the same event handler into one re-render. This means calling <code>setState</code> 3 times doesn't cause 3 re-renders — just one. Before React 18, batching only worked in React event handlers (not in setTimeout or promises).</p>
+
+<h4 style="color: #76cdd8;">10. What is React Fiber?</h4>
+<p>The internal reconciliation engine (React 16+). It breaks rendering work into small units that can be paused, prioritized, and resumed. Enables features like Suspense, <code>useTransition</code>, and concurrent rendering. Before Fiber, rendering was synchronous and couldn't be interrupted.</p>
+
+<h4 style="color: #76cdd8;">11. What is a custom hook?</h4>
+<p>A function starting with "use" that encapsulates reusable logic using other hooks. Extracts complex <code>useState</code>/<code>useEffect</code> patterns into a shareable, testable unit. Each component that uses the hook gets its own independent state — hooks don't share state between components.</p>
+
+<h4 style="color: #76cdd8;">12. How do you optimize a slow React app?</h4>
+<ol>
+<li>Measure first (React DevTools Profiler) — don't guess</li>
+<li>Move state down / lift content up</li>
+<li><code>React.memo</code> for expensive children</li>
+<li><code>useMemo</code> for expensive computations</li>
+<li>Code split with <code>React.lazy</code></li>
+<li>Virtualize long lists (<code>react-window</code> or <code>@tanstack/react-virtual</code>)</li>
+</ol>
+
+<h4 style="color: #76cdd8;">13. What is an Error Boundary?</h4>
+<p>A class component that catches rendering errors in its child tree and shows a fallback UI instead of crashing the whole app. Uses <code>getDerivedStateFromError</code> + <code>componentDidCatch</code>. The only remaining use case for class components in modern React.</p>
+
+<h4 style="color: #76cdd8;">14. Explain useReducer vs useState.</h4>
+<p><code>useState</code>: simple state (counter, toggle, single value). <code>useReducer</code>: complex state with many related fields and complex update logic (multi-step forms, state machines). Same dispatch/action pattern as Redux but local to the component.</p>
+
+<h4 style="color: #76cdd8;">15. What is Suspense?</h4>
+<p>A component that shows a fallback while its children are loading (lazy components, or data in frameworks like Next.js). Enables code splitting and streaming SSR. Wraps async boundaries so the rest of the app doesn't need to handle loading states manually.</p>
+
+<h3 style="color: #76cdd8;"><strong>Tips for React Interviews</strong></h3>
+<ul>
+<li>Show you understand <strong>WHY</strong>, not just HOW (why does React use keys? why is memo needed?)</li>
+<li>Mention trade-offs (memo has comparison cost, Context re-renders all consumers)</li>
+<li>Give real examples from your experience</li>
+<li>It's OK to say "I'd need to look up the exact API, but the concept is..."</li>
+<li>Ask clarifying questions — interviewers appreciate it</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
