@@ -1,0 +1,24 @@
+<h4 style="color: #474747; font-weight: 600;">Why should you use a selector function when accessing the store?</h4><br/> 
+( ) It makes the code more readable
+( ) It is required by TypeScript for type inference
+(x) To subscribe only to specific state — prevents unnecessary re-renders
+( ) It enables server-side rendering support
+
+<h4 style="color: #474747; font-weight: 600;">What does the <code>persist</code> middleware do?</h4><br/> 
+( ) Keeps the store in memory even after the component unmounts
+( ) Sends state changes to a backend API automatically
+(x) Automatically saves state to localStorage and restores it on page reload
+( ) Prevents state from being reset during hot module replacement
+
+<h4 style="color: #474747; font-weight: 600;">Can Zustand actions be async?</h4><br/> 
+( ) No — you need a separate middleware like redux-thunk
+( ) Only with the async middleware installed
+(x) Yes — use async/await and call set when the data is ready
+( ) Only inside useEffect hooks
+
+<h4 style="color: #474747; font-weight: 600;">What is the correct order when combining middleware?</h4><br/> 
+( ) devtools → persist → immer (outside in)
+( ) persist → immer → devtools (alphabetical)
+(x) Inside out: immer → persist → devtools
+( ) The order doesn't matter — Zustand handles it automatically
+

@@ -1,0 +1,180 @@
+<h3 style="color: #76cdd8;"><strong>The <code>create</code> Function</strong></h3>
+<p>The <code>create</code> function creates a store and returns a hook:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
+
+type Store = {
+  // state
+  // actions
+};
+
+const useStore = create&lt;Store&gt;((set, get) =&gt; ({
+  // initial state + action implementations
+}));</code></pre>
+<ul>
+<li><code>set</code> — updates state (merges by default, like setState in class components)</li>
+<li><code>get</code> — reads current state inside actions (useful when action depends on current state)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>State + Actions Together</strong></h3>
+<p>Zustand keeps state and actions in one place (like a slice):</p>
+<pre class="prettyprint"><code class="lang-tsx">type Todo = { id: number; text: string; done: boolean };
+
+type TodoStore = {
+  todos: Todo[];
+  addTodo: (text: string) =&gt; void;
+  toggleTodo: (id: number) =&gt; void;
+  removeTodo: (id: number) =&gt; void;
+};
+
+const useTodoStore = create&lt;TodoStore&gt;((set) =&gt; ({
+  todos: [],
+
+  addTodo: (text) =&gt;
+    set((state) =&gt; ({
+      todos: [...state.todos, { id: Date.now(), text, done: false }],
+    })),
+
+  toggleTodo: (id) =&gt;
+    set((state) =&gt; ({
+      todos: state.todos.map((t) =&gt;
+        t.id === id ? { ...t, done: !t.done } : t
+      ),
+    })),
+
+  removeTodo: (id) =&gt;
+    set((state) =&gt; ({
+      todos: state.todos.filter((t) =&gt; t.id !== id),
+    })),
+}));</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Using in Components</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">const TodoList = () =&gt; {
+  const todos = useTodoStore((state) =&gt; state.todos);
+  const toggleTodo = useTodoStore((state) =&gt; state.toggleTodo);
+  const removeTodo = useTodoStore((state) =&gt; state.removeTodo);
+
+  return (
+    &lt;ul&gt;
+      {todos.map((todo) =&gt; (
+        &lt;li key={todo.id}&gt;
+          &lt;input
+            type="checkbox"
+            checked={todo.done}
+            onChange={() =&gt; toggleTodo(todo.id)}
+          /&gt;
+          &lt;span&gt;{todo.text}&lt;/span&gt;
+          &lt;button onClick={() =&gt; removeTodo(todo.id)}&gt;Delete&lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};
+
+const AddTodo = () =&gt; {
+  const addTodo = useTodoStore((state) =&gt; state.addTodo);
+  const [text, setText] = useState("");
+
+  const handleSubmit = () =&gt; {
+    if (text.trim()) {
+      addTodo(text);
+      setText("");
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input value={text} onChange={(e) =&gt; setText(e.target.value)} /&gt;
+      &lt;button onClick={handleSubmit}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<ul>
+<li>No Provider wrapping. Components just import and use the hook.</li>
+<li>Each component selects only what it needs — <code>AddTodo</code> doesn't subscribe to <code>todos</code>, so it won't re-render when todos change.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Multiple Stores</strong></h3>
+<p>Separate concerns into different stores:</p>
+<pre class="prettyprint"><code class="lang-tsx">const useAuthStore = create&lt;AuthStore&gt;((set) =&gt; ({ ... }));
+const useCartStore = create&lt;CartStore&gt;((set) =&gt; ({ ... }));
+const useUIStore = create&lt;UIStore&gt;((set) =&gt; ({ ... }));</code></pre>
+<ul>
+<li>Each store is independent</li>
+<li>Recommended: one store per domain/feature (auth, cart, UI preferences)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Using <code>get</code> for Actions That Read Current State</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">type CartItem = { id: string; name: string; qty: number };
+
+type CartStore = {
+  items: CartItem[];
+  addItem: (product: { id: string; name: string }) =&gt; void;
+};
+
+const useCartStore = create&lt;CartStore&gt;((set, get) =&gt; ({
+  items: [],
+
+  addItem: (product) =&gt; {
+    const existing = get().items.find((i) =&gt; i.id === product.id);
+    if (existing) {
+      // increment quantity
+      set((state) =&gt; ({
+        items: state.items.map((i) =&gt;
+          i.id === product.id ? { ...i, qty: i.qty + 1 } : i
+        ),
+      }));
+    } else {
+      set((state) =&gt; ({ items: [...state.items, { ...product, qty: 1 }] }));
+    }
+  },
+}));</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>File Structure Recommendation</strong></h3>
+<pre class="prettyprint"><code class="lang-ts">src/
+├── stores/
+│   ├── useAuthStore.ts
+│   ├── useTodoStore.ts
+│   └── useCartStore.ts</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

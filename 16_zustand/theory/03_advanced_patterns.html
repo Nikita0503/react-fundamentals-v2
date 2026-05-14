@@ -1,0 +1,224 @@
+<h3 style="color: #76cdd8;"><strong>Selectors — Why They Matter for Performance</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Bad — component re-renders on ANY store change
+const Component = () =&gt; {
+  const store = useTodoStore(); // subscribes to entire store
+  return &lt;p&gt;{store.todos.length}&lt;/p&gt;;
+};
+
+// ✅ Good — component only re-renders when todos.length changes
+const Component = () =&gt; {
+  const todoCount = useTodoStore((state) =&gt; state.todos.length);
+  return &lt;p&gt;{todoCount}&lt;/p&gt;;
+};</code></pre>
+<ul>
+<li>The function you pass to the hook IS the selector</li>
+<li>Zustand uses <code>Object.is</code> to compare previous and next selected value</li>
+<li>If the selected value didn't change → no re-render</li>
+<li><strong>Rule:</strong> always select the minimum data your component needs</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Selecting Multiple Values</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">// Option 1: multiple selectors (each triggers re-render independently)
+const todos = useTodoStore((state) =&gt; state.todos);
+const addTodo = useTodoStore((state) =&gt; state.addTodo);
+
+// Option 2: shallow comparison for objects (use when selecting multiple fields)
+import { useShallow } from "zustand/react/shallow";
+
+const { todos, addTodo } = useTodoStore(
+  useShallow((state) =&gt; ({ todos: state.todos, addTodo: state.addTodo }))
+);</code></pre>
+<p><code>useShallow</code> does shallow comparison on the returned object — prevents re-render if individual fields didn't change.</p>
+
+<h3 style="color: #76cdd8;"><strong>Persist Middleware — Save State to localStorage</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+type ThemeStore = {
+  theme: "light" | "dark";
+  toggleTheme: () =&gt; void;
+};
+
+const useThemeStore = create&lt;ThemeStore&gt;()(
+  persist(
+    (set) =&gt; ({
+      theme: "light",
+      toggleTheme: () =&gt;
+        set((state) =&gt; ({ theme: state.theme === "light" ? "dark" : "light" })),
+    }),
+    { name: "theme-storage" } // key in localStorage
+  )
+);</code></pre>
+<ul>
+<li>State automatically saved to localStorage on every change</li>
+<li>On page reload, state is restored from localStorage</li>
+<li><code>name</code> is the localStorage key</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Immer Middleware — Mutable Syntax</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+
+type Todo = { id: number; text: string; done: boolean };
+
+type TodoStore = {
+  todos: Todo[];
+  toggleTodo: (id: number) =&gt; void;
+};
+
+const useTodoStore = create&lt;TodoStore&gt;()(
+  immer((set) =&gt; ({
+    todos: [],
+    toggleTodo: (id) =&gt;
+      set((state) =&gt; {
+        const todo = state.todos.find((t) =&gt; t.id === id);
+        if (todo) todo.done = !todo.done; // direct mutation — Immer handles immutability
+      }),
+  }))
+);</code></pre>
+<ul>
+<li>Install: <code>npm install immer</code></li>
+<li>Same concept as in Redux Toolkit — write mutations, Immer produces immutable updates</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Async Actions — Fetching Data</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useEffect } from "react";
+import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
+
+type User = { id: string; name: string; email: string };
+
+type UserStore = {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  fetchUser: (id: string) =&gt; Promise&lt;void&gt;;
+};
+
+const useUserStore = create&lt;UserStore&gt;((set) =&gt; ({
+  user: null,
+  loading: false,
+  error: null,
+
+  fetchUser: async (id) =&gt; {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(`/api/users/${id}`);
+      const user = await res.json();
+      set({ user, loading: false });
+    } catch (err) {
+      set({ error: "Failed to fetch user", loading: false });
+    }
+  },
+}));
+
+// Usage:
+const Profile = ({ userId }: { userId: string }) =&gt; {
+  const { user, loading, fetchUser } = useUserStore(
+    useShallow((s) =&gt; ({ user: s.user, loading: s.loading, fetchUser: s.fetchUser }))
+  );
+
+  useEffect(() =&gt; {
+    fetchUser(userId);
+  }, [userId, fetchUser]);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  return &lt;p&gt;{user?.name}&lt;/p&gt;;
+};</code></pre>
+<ul>
+<li>Actions can be async — just use async/await and call <code>set</code> when ready</li>
+<li>Note: for server state with caching/refetching, TanStack Query is better. Zustand async is for simple cases or client-side async logic.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>DevTools Middleware</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+
+type MyStore = {
+  count: number;
+  increment: () =&gt; void;
+};
+
+const useStore = create&lt;MyStore&gt;()(
+  devtools(
+    (set) =&gt; ({
+      count: 0,
+      increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 })),
+    }),
+    { name: "MyStore" }
+  )
+);</code></pre>
+<ul>
+<li>Works with Redux DevTools browser extension</li>
+<li>See state changes, time-travel debug</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Combining Middleware</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
+
+type MyStore = {
+  count: number;
+  increment: () =&gt; void;
+};
+
+const useStore = create&lt;MyStore&gt;()(
+  devtools(
+    persist(
+      immer((set) =&gt; ({
+        count: 0,
+        increment: () =&gt;
+          set((state) =&gt; {
+            state.count += 1;
+          }),
+      })),
+      { name: "my-storage" }
+    ),
+    { name: "MyStore" }
+  )
+);</code></pre>
+<p>Middleware composes from inside out: <strong>immer → persist → devtools</strong></p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
