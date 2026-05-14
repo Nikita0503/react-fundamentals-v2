@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">How do you trigger a mutation?</h4><br/> 
+( ) It runs automatically when the component mounts
+( ) By changing the mutationKey array
+(x) Call the `mutate()` function returned by useMutation — it doesn't run automatically
+( ) By setting enabled to true in the mutation options
+
+<h4 style="color: #474747; font-weight: 600;">What does `queryClient.invalidateQueries({ queryKey: ["posts"] })` do?</h4><br/> 
+( ) Permanently deletes the posts data from the cache
+( ) Prevents any future fetches for the posts query
+(x) Marks cached posts as stale, triggering automatic refetch
+( ) Cancels any in-flight requests for the posts query
+
+<h4 style="color: #474747; font-weight: 600;">When does the onSuccess callback run?</h4><br/> 
+( ) Before the mutation request is sent to the server
+( ) Every time the component re-renders
+(x) After the mutation completes successfully
+( ) When the cache is invalidated
+
+<h4 style="color: #474747; font-weight: 600;">What is an optimistic update?</h4><br/> 
+( ) A mutation that always succeeds regardless of server response
+( ) Caching data before the first fetch completes
+(x) Updating the UI immediately before the server responds, rolling back on failure
+( ) Prefetching data that the user might need in the future

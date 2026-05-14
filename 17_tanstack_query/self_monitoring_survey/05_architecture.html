@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What should Zustand manage vs TanStack Query?</h4><br/> 
+( ) Zustand for all state, TanStack Query only for caching
+( ) TanStack Query for everything, Zustand is unnecessary
+(x) Zustand = client state like UI/filters; TanStack Query = server state like API data
+( ) Zustand for async state, TanStack Query for synchronous state
+
+<h4 style="color: #474747; font-weight: 600;">Why create custom query hooks (like usePosts)?</h4><br/> 
+( ) TanStack Query requires hooks to be wrapped in custom functions
+( ) To avoid importing useQuery in every component
+(x) Abstract API details, reusable across components, single place to change query config
+( ) Custom hooks are faster than using useQuery directly
+
+<h4 style="color: #474747; font-weight: 600;">When should you choose RTK Query over TanStack Query?</h4><br/> 
+( ) Always — RTK Query is newer and better
+( ) When you need TypeScript support
+(x) When the project already uses Redux Toolkit and the team is standardized on Redux
+( ) When you need caching and background refetching
+
+<h4 style="color: #474747; font-weight: 600;">What happens when a Zustand filter value changes that's used in a queryKey?</h4><br/> 
+( ) Nothing — you must manually call refetch()
+( ) The component unmounts and remounts with new data
+(x) The queryKey changes → TanStack Query automatically fetches new data
+( ) An error is thrown because queryKeys must be static

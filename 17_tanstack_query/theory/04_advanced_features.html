@@ -1,0 +1,138 @@
+<h3 style="color: #76cdd8;"><strong>Pagination</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">const PostList = ({ page }: { page: number }) =&gt; {
+  const { data, isLoading, isPlaceholderData } = useQuery({
+    queryKey: ["posts", { page }],
+    queryFn: () =&gt; fetch(`/api/posts?page=${page}`).then(r =&gt; r.json()),
+    placeholderData: (previousData) =&gt; previousData, // keep showing old data while new page loads
+  });
+
+  return (
+    &lt;div&gt;
+      {isLoading ? &lt;p&gt;Loading...&lt;/p&gt; : (
+        &lt;ul style={{ opacity: isPlaceholderData ? 0.5 : 1 }}&gt;
+          {data?.map((post: Post) =&gt; &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;)}
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<ul>
+<li><code>placeholderData: (prev) =&gt; prev</code> — shows previous page data while new page loads (no loading flash)</li>
+<li><code>isPlaceholderData</code> — true when showing placeholder (useful for dimming UI)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Infinite Scroll with useInfiniteQuery</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useInfiniteQuery } from "@tanstack/react-query";
+
+type PostsResponse = { posts: Post[]; nextCursor: number | null };
+
+const InfinitePostList = () =&gt; {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery&lt;PostsResponse&gt;({
+    queryKey: ["posts", "infinite"],
+    queryFn: ({ pageParam }) =&gt;
+      fetch(`/api/posts?cursor=${pageParam}`).then(r =&gt; r.json()),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =&gt; lastPage.nextCursor,
+  });
+
+  if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      {data?.pages.map((page, i) =&gt; (
+        &lt;div key={i}&gt;
+          {page.posts.map(post =&gt; &lt;p key={post.id}&gt;{post.title}&lt;/p&gt;)}
+        &lt;/div&gt;
+      ))}
+      &lt;button onClick={() =&gt; fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}&gt;
+        {isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "No more posts"}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<ul>
+<li><code>getNextPageParam</code> — tells TQ how to get the next page (cursor, offset, page number)</li>
+<li><code>data.pages</code> — array of all loaded pages</li>
+<li><code>fetchNextPage()</code> — loads the next page</li>
+<li><code>hasNextPage</code> — false when getNextPageParam returns null/undefined</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Polling (Auto-Refetch on Interval)</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">useQuery({
+  queryKey: ["notifications"],
+  queryFn: fetchNotifications,
+  refetchInterval: 30000, // refetch every 30 seconds
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Prefetching — Load Data Before User Needs It</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">const queryClient = useQueryClient();
+
+// Prefetch on hover (e.g., link hover → prefetch that page's data)
+const handleMouseEnter = () =&gt; {
+  queryClient.prefetchQuery({
+    queryKey: ["post", postId],
+    queryFn: () =&gt; fetchPost(postId),
+  });
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Select — Transform Data</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">const { data: postTitles } = useQuery({
+  queryKey: ["posts"],
+  queryFn: fetchPosts,
+  select: (posts) =&gt; posts.map(p =&gt; p.title), // only re-renders when titles change
+});</code></pre>
+
+<ul>
+<li><code>select</code> transforms cached data before returning to component</li>
+<li>Component only re-renders when the selected (transformed) value changes</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

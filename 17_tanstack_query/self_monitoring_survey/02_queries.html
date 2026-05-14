@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What is the queryKey used for?</h4><br/> 
+( ) It's the URL path for the API endpoint
+( ) It names the React component that owns the data
+(x) Unique identifier for cached data — same key = same cache entry
+( ) It's a secret key for authenticating API requests
+
+<h4 style="color: #474747; font-weight: 600;">What does `enabled: false` do on a query?</h4><br/> 
+( ) Disables caching for that query
+( ) Makes the query run only once and never refetch
+(x) Prevents the query from running until the condition becomes true
+( ) Removes the query from the cache entirely
+
+<h4 style="color: #474747; font-weight: 600;">What is the difference between isLoading and isFetching?</h4><br/> 
+( ) They are the same — both are true during any fetch
+( ) isLoading is for mutations, isFetching is for queries
+(x) isLoading = first load with no cache; isFetching = any fetch including background refetch
+( ) isLoading is deprecated in favor of isFetching
+
+<h4 style="color: #474747; font-weight: 600;">What does staleTime control?</h4><br/> 
+( ) How long before cached data is deleted from memory
+( ) The timeout before a request is considered failed
+(x) How long data is considered fresh — no background refetch while fresh
+( ) The interval between automatic polling requests

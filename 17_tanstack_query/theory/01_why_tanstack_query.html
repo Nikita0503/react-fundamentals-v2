@@ -1,0 +1,133 @@
+<h3 style="color: #76cdd8;"><strong>The Problem</strong></h3>
+
+<p>A typical "correct" fetch implementation with useState + useEffect:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const PostList = () =&gt; {
+  const [posts, setPosts] = useState&lt;Post[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() =&gt; {
+    const controller = new AbortController();
+    setLoading(true);
+    fetch("/api/posts", { signal: controller.signal })
+      .then(res =&gt; res.json())
+      .then(data =&gt; { setPosts(data); setLoading(false); })
+      .catch(err =&gt; { if (err.name !== "AbortError") setError(err.message); setLoading(false); });
+    return () =&gt; controller.abort();
+  }, []);
+
+  // What about: caching? refetching on focus? retry on error? stale data? deduplication?
+  // You'd need 50+ more lines...
+};</code></pre>
+
+<p>This is 15 lines and it doesn't handle many real-world challenges. Let's understand what those challenges are:</p>
+
+<h3 style="color: #76cdd8;"><strong>The Challenges of Server State</strong></h3>
+
+<ul>
+<li><strong>Loading state</strong> — the user needs feedback while data is being fetched. Without it, the UI feels broken or frozen.</li>
+<li><strong>Error handling</strong> — network requests can fail (server down, no internet, timeout). You need to catch errors and show meaningful messages.</li>
+<li><strong>Caching</strong> — if the user navigates away and comes back, should you fetch again? Or show the data you already have? Caching stores previously fetched data so you don't make redundant requests.</li>
+<li><strong>Stale data</strong> — cached data can become outdated. If another user edited a post, your cached version is "stale" (old). You need a strategy: when to show cached data and when to refetch fresh data.</li>
+<li><strong>Refetching</strong> — when should data be refreshed? On page focus? On interval? After a mutation? Manual trigger? Each scenario needs different logic.</li>
+<li><strong>Race conditions</strong> — if the user changes a filter quickly (A → B → C), three requests fire. Response for B might arrive after C, overwriting newer data with older data. You need to cancel or ignore outdated responses.</li>
+<li><strong>Deduplication</strong> — if 10 components on the same page need the same user data, you don't want 10 separate API calls. One request should serve all of them.</li>
+<li><strong>Retry</strong> — if a request fails due to a temporary network issue, should you retry automatically? How many times? With what delay?</li>
+</ul>
+
+<p>Implementing all of this manually for every API call would require hundreds of lines of boilerplate. <strong>TanStack Query handles all of these out of the box.</strong></p>
+
+<h3 style="color: #76cdd8;"><strong>Server State vs Client State</strong></h3>
+
+<p>Different problems need different tools:</p>
+
+<table>
+<tr><th></th><th>Client State</th><th>Server State</th></tr>
+<tr><td><strong>Examples</strong></td><td>Theme, filters, modal open/closed, form input</td><td>User profile, posts list, product data</td></tr>
+<tr><td><strong>Owned by</strong></td><td>The frontend app</td><td>The backend/database</td></tr>
+<tr><td><strong>Synchronous</strong></td><td>Yes</td><td>No (async, latency)</td></tr>
+<tr><td><strong>Challenges</strong></td><td>Sharing between components</td><td>Caching, staleness, sync, deduplication</td></tr>
+<tr><td><strong>Tool</strong></td><td>Zustand, Context, Redux</td><td>TanStack Query, RTK Query</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>What TanStack Query Gives You for Free</strong></h3>
+
+<ul>
+<li><strong>Automatic caching</strong> — same query = same cached data</li>
+<li><strong>Background refetching</strong> — data stays fresh</li>
+<li><strong>Deduplication</strong> — 10 components request same data = 1 network call</li>
+<li><strong>Stale-while-revalidate</strong> — show cached data immediately, refetch in background</li>
+<li><strong>Automatic retry on failure</strong></li>
+<li><strong>Window focus refetching</strong></li>
+<li><strong>Pagination and infinite scroll support</strong></li>
+<li><strong>Optimistic updates</strong></li>
+<li><strong>DevTools</strong></li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Installation and Setup</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">npm install @tanstack/react-query
+npm install @tanstack/react-query-devtools  # optional, for development</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// main.tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient();
+
+const App = () =&gt; (
+  &lt;QueryClientProvider client={queryClient}&gt;
+    &lt;YourApp /&gt;
+    &lt;ReactQueryDevtools initialIsOpen={false} /&gt;
+  &lt;/QueryClientProvider&gt;
+);</code></pre>
+
+<ul>
+<li><code>QueryClient</code> — the cache manager (one per app)</li>
+<li><code>QueryClientProvider</code> — makes the client available to all components</li>
+<li><code>ReactQueryDevtools</code> — visual tool to inspect cache, queries, mutations (dev only)</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does useInfiniteQuery's getNextPageParam return?</h4><br/> 
+( ) The total number of pages available
+( ) A boolean indicating if more pages exist
+(x) The parameter for the next page — null/undefined means no more pages
+( ) The full URL for the next API request
+
+<h4 style="color: #474747; font-weight: 600;">What does refetchInterval do?</h4><br/> 
+( ) Sets the minimum time between manual refetch calls
+( ) Controls how long to wait before retrying a failed request
+(x) Automatically refetches the query at the specified interval — polling
+( ) Determines how often the cache is garbage collected
+
+<h4 style="color: #474747; font-weight: 600;">What does the select option do?</h4><br/> 
+( ) Chooses which fields to request from the API
+( ) Filters which components can access the cached data
+(x) Transforms cached data before returning to the component — component only re-renders when transformed value changes
+( ) Selects which cache entry to use when multiple exist
+
+<h4 style="color: #474747; font-weight: 600;">What is prefetching useful for?</h4><br/> 
+( ) Fetching data during server-side rendering only
+( ) Downloading the entire API response set on app startup
+(x) Loading data before the user needs it — e.g., on link hover
+( ) Caching data permanently so it never needs to be refetched

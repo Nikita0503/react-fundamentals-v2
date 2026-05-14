@@ -1,0 +1,136 @@
+<h3 style="color: #76cdd8;"><strong>useQuery — The Main Hook for Fetching Data</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useQuery } from "@tanstack/react-query";
+
+type Post = { id: number; title: string; body: string };
+
+const PostList = () =&gt; {
+  const { data, isLoading, isError, error } = useQuery&lt;Post[]&gt;({
+    queryKey: ["posts"],
+    queryFn: () =&gt; fetch("/api/posts").then(res =&gt; res.json()),
+  });
+
+  if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (isError) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {data?.map(post =&gt; &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>queryKey — Unique Identifier for Cached Data</strong></h3>
+
+<ul>
+<li>It's an array: <code>["posts"]</code>, <code>["posts", postId]</code>, <code>["posts", { status: "published" }]</code></li>
+<li>Same key = same cached data (deduplication)</li>
+<li>When key changes, TQ fetches new data automatically</li>
+<li>Think of it as the "address" in the cache</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-tsx">// Different keys = different cache entries
+useQuery({ queryKey: ["posts"], ... })           // all posts
+useQuery({ queryKey: ["posts", 42], ... })       // post with id 42
+useQuery({ queryKey: ["posts", { page: 2 }], ... }) // posts page 2</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>queryFn — The Function That Fetches Data</strong></h3>
+
+<p>Can be any async function that returns data or throws:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">// With fetch
+queryFn: () =&gt; fetch("/api/posts").then(res =&gt; {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+})
+
+// With axios
+queryFn: () =&gt; axios.get&lt;Post[]&gt;("/api/posts").then(res =&gt; res.data)</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Return Values</strong></h3>
+
+<table>
+<tr><th>Property</th><th>Type</th><th>Description</th></tr>
+<tr><td>data</td><td>T | undefined</td><td>The fetched data (undefined while loading)</td></tr>
+<tr><td>isLoading</td><td>boolean</td><td>True on first load (no cached data yet)</td></tr>
+<tr><td>isFetching</td><td>boolean</td><td>True whenever a fetch is in progress (including background refetch)</td></tr>
+<tr><td>isError</td><td>boolean</td><td>True if the query failed</td></tr>
+<tr><td>error</td><td>Error | null</td><td>The error object</td></tr>
+<tr><td>isSuccess</td><td>boolean</td><td>True if data is available</td></tr>
+<tr><td>refetch</td><td>function</td><td>Manually trigger a refetch</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Dependent Queries</strong></h3>
+
+<p>A query that depends on another query's result:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const { data: user } = useQuery({
+  queryKey: ["user", userId],
+  queryFn: () =&gt; fetchUser(userId),
+});
+
+const { data: posts } = useQuery({
+  queryKey: ["posts", user?.id],
+  queryFn: () =&gt; fetchPostsByUser(user!.id),
+  enabled: !!user, // only runs when user is available
+});</code></pre>
+
+<p><code>enabled: false</code> — query won't run until condition is true.</p>
+
+<h3 style="color: #76cdd8;"><strong>Stale Time and Cache Time</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">useQuery({
+  queryKey: ["posts"],
+  queryFn: fetchPosts,
+  staleTime: 5 * 60 * 1000, // data is "fresh" for 5 minutes (no refetch)
+  gcTime: 30 * 60 * 1000,   // cached data kept for 30 minutes after last use
+});</code></pre>
+
+<ul>
+<li><code>staleTime</code> — how long data is considered fresh (default: 0 = immediately stale)</li>
+<li><code>gcTime</code> (garbage collection time) — how long unused cache entries are kept (default: 5 min)</li>
+<li>Fresh data → no background refetch. Stale data → refetch in background on mount/focus.</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

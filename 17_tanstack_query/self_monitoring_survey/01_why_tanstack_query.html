@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What type of state does TanStack Query manage?</h4><br/> 
+( ) Client state — UI toggles, form inputs, theme preferences
+( ) Both client and server state equally
+(x) Server state — data from APIs that is cached and synchronized
+( ) Only local component state that needs persistence
+
+<h4 style="color: #474747; font-weight: 600;">What does "stale-while-revalidate" mean?</h4><br/> 
+( ) Always show a loading spinner while fetching fresh data
+( ) Never use cached data — always fetch from the server
+(x) Show cached data immediately, refetch fresh data in the background
+( ) Mark data as invalid and force the user to refresh the page
+
+<h4 style="color: #474747; font-weight: 600;">What component must wrap your app to use TanStack Query?</h4><br/> 
+( ) ReactQueryProvider with a cache object
+( ) QueryProvider with default options
+(x) QueryClientProvider with a QueryClient instance
+( ) TanStackProvider with a configuration object
+
+<h4 style="color: #474747; font-weight: 600;">What happens if 10 components request the same query key simultaneously?</h4><br/> 
+( ) 10 separate network requests are made in parallel
+( ) An error is thrown due to duplicate requests
+(x) Only 1 network request — results are shared via cache deduplication
+( ) The requests are queued and executed one by one

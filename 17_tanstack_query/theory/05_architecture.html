@@ -1,0 +1,160 @@
+<h3 style="color: #76cdd8;"><strong>The Modern React Data Architecture</strong></h3>
+
+<ul>
+<li><strong>Client state</strong> (UI state, user preferences, filters) → <strong>Zustand</strong></li>
+<li><strong>Server state</strong> (API data, cached responses) → <strong>TanStack Query</strong></li>
+<li>They don't overlap — each handles what it's best at</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Example: Zustand + TanStack Query Working Together</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">// stores/useFilterStore.ts — client state (Zustand)
+import { create } from "zustand";
+
+type FilterStore = {
+  category: string;
+  sortBy: "date" | "price";
+  setCategory: (category: string) =&gt; void;
+  setSortBy: (sort: "date" | "price") =&gt; void;
+};
+
+export const useFilterStore = create&lt;FilterStore&gt;((set) =&gt; ({
+  category: "all",
+  sortBy: "date",
+  setCategory: (category) =&gt; set({ category }),
+  setSortBy: (sortBy) =&gt; set({ sortBy }),
+}));</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// hooks/useProducts.ts — server state (TanStack Query)
+import { useQuery } from "@tanstack/react-query";
+import { useFilterStore } from "../stores/useFilterStore";
+
+export const useProducts = () =&gt; {
+  const category = useFilterStore((s) =&gt; s.category);
+  const sortBy = useFilterStore((s) =&gt; s.sortBy);
+
+  return useQuery&lt;Product[]&gt;({
+    queryKey: ["products", { category, sortBy }],
+    queryFn: () =&gt; fetch(`/api/products?category=${category}&amp;sort=${sortBy}`).then(r =&gt; r.json()),
+  });
+};</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// components/ProductPage.tsx — uses both
+const ProductPage = () =&gt; {
+  const { category, setCategory, sortBy, setSortBy } = useFilterStore();
+  const { data: products, isLoading } = useProducts();
+
+  return (
+    &lt;div&gt;
+      &lt;select value={category} onChange={e =&gt; setCategory(e.target.value)}&gt;...&lt;/select&gt;
+      &lt;select value={sortBy} onChange={e =&gt; setSortBy(e.target.value as "date" | "price")}&gt;...&lt;/select&gt;
+      {isLoading ? &lt;p&gt;Loading...&lt;/p&gt; : &lt;ProductList products={products ?? []} /&gt;}
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<p>Filter changes → queryKey changes → TanStack Query auto-fetches new data → UI updates. No manual useEffect, no manual loading state, no manual cache management.</p>
+
+<h3 style="color: #76cdd8;"><strong>Custom Query Hooks — Abstract API Details</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">// hooks/queries/usePosts.ts
+export const usePosts = () =&gt; useQuery&lt;Post[]&gt;({
+  queryKey: ["posts"],
+  queryFn: () =&gt; httpClient.get("/posts").then(r =&gt; r.data),
+});
+
+// hooks/queries/usePost.ts
+export const usePost = (id: number) =&gt; useQuery&lt;Post&gt;({
+  queryKey: ["posts", id],
+  queryFn: () =&gt; httpClient.get(`/posts/${id}`).then(r =&gt; r.data),
+  enabled: !!id,
+});
+
+// hooks/mutations/useCreatePost.ts
+export const useCreatePost = () =&gt; {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreatePostDto) =&gt; httpClient.post("/posts", data),
+    onSuccess: () =&gt; queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>File Structure</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">src/
+├── api/
+│   └── httpClient.ts          // axios instance
+├── hooks/
+│   ├── queries/
+│   │   ├── usePosts.ts
+│   │   ├── usePost.ts
+│   │   └── useUser.ts
+│   └── mutations/
+│       ├── useCreatePost.ts
+│       └── useDeletePost.ts
+├── stores/
+│   ├── useFilterStore.ts      // Zustand
+│   └── useUIStore.ts          // Zustand
+└── components/</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>RTK Query vs TanStack Query — When to Choose Which</strong></h3>
+
+<table>
+<tr><th>Criteria</th><th>RTK Query</th><th>TanStack Query</th></tr>
+<tr><td>Dependency</td><td>Part of @reduxjs/toolkit</td><td>Standalone package</td></tr>
+<tr><td>Client state pairing</td><td>Redux (same store)</td><td>Any (Zustand, Context, etc.)</td></tr>
+<tr><td>Infinite scroll</td><td>Manual implementation</td><td>useInfiniteQuery built-in</td></tr>
+<tr><td>Cache invalidation</td><td>Tag-based (declarative)</td><td>queryKey-based (imperative)</td></tr>
+<tr><td>Code generation (OpenAPI)</td><td>Official codegen</td><td>Community plugins</td></tr>
+<tr><td>DevTools</td><td>Redux DevTools</td><td>React Query DevTools</td></tr>
+<tr><td>Bundle size</td><td>Larger (entire RTK)</td><td>Smaller (~13KB)</td></tr>
+<tr><td>Learning curve</td><td>Higher (need Redux knowledge)</td><td>Lower (standalone)</td></tr>
+</table>
+
+<ul>
+<li><strong>Use RTK Query</strong> when: project already uses Redux Toolkit, team standardized on Redux, need OpenAPI codegen</li>
+<li><strong>Use TanStack Query</strong> when: no Redux in project, want lighter setup, need infinite scroll, pairing with Zustand</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

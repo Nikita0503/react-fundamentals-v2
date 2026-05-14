@@ -1,0 +1,168 @@
+<h3 style="color: #76cdd8;"><strong>useMutation — For Creating, Updating, or Deleting Data</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+type CreatePostDto = { title: string; body: string };
+
+const CreatePostForm = () =&gt; {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: (newPost: CreatePostDto) =&gt;
+      fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPost),
+      }).then(res =&gt; res.json()),
+
+    onSuccess: () =&gt; {
+      // Invalidate the posts cache — triggers automatic refetch
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+
+  const handleSubmit = (data: CreatePostDto) =&gt; {
+    mutate(data);
+  };
+
+  return (
+    &lt;form onSubmit={...}&gt;
+      {/* form fields */}
+      &lt;button type="submit" disabled={isPending}&gt;
+        {isPending ? "Creating..." : "Create Post"}
+      &lt;/button&gt;
+      {isError &amp;&amp; &lt;p&gt;Error: {error.message}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Key Difference from useQuery</strong></h3>
+
+<ul>
+<li><strong>useQuery</strong> runs automatically (on mount, on key change)</li>
+<li><strong>useMutation</strong> runs manually (when you call <code>mutate()</code>)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Cache Invalidation — The Key Concept</strong></h3>
+
+<ul>
+<li>After a mutation succeeds, the related cached data is stale</li>
+<li><code>queryClient.invalidateQueries({ queryKey: ["posts"] })</code> marks all queries with that key as stale</li>
+<li>Stale queries automatically refetch → UI updates with fresh data</li>
+<li>This is how "add post → list updates automatically" works</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Callbacks</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">useMutation({
+  mutationFn: ...,
+  onSuccess: (data, variables) =&gt; {
+    // Runs after successful mutation
+    // data = response from server
+    // variables = what you passed to mutate()
+  },
+  onError: (error) =&gt; {
+    // Runs if mutation fails
+  },
+  onSettled: () =&gt; {
+    // Runs after success OR error (like finally)
+  },
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full CRUD Example — Posts List with Add and Delete</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">const PostsPage = () =&gt; {
+  const queryClient = useQueryClient();
+
+  // READ
+  const { data: posts, isLoading } = useQuery&lt;Post[]&gt;({
+    queryKey: ["posts"],
+    queryFn: () =&gt; fetch("/api/posts").then(r =&gt; r.json()),
+  });
+
+  // CREATE
+  const addMutation = useMutation({
+    mutationFn: (newPost: CreatePostDto) =&gt;
+      fetch("/api/posts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPost) }).then(r =&gt; r.json()),
+    onSuccess: () =&gt; queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
+
+  // DELETE
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) =&gt;
+      fetch(`/api/posts/${id}`, { method: "DELETE" }),
+    onSuccess: () =&gt; queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
+
+  if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; addMutation.mutate({ title: "New Post", body: "Content" })}&gt;
+        Add Post
+      &lt;/button&gt;
+      &lt;ul&gt;
+        {posts?.map(post =&gt; (
+          &lt;li key={post.id}&gt;
+            {post.title}
+            &lt;button onClick={() =&gt; deleteMutation.mutate(post.id)}&gt;Delete&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<p>Add or delete a post → cache invalidates → list refetches → UI updates. No manual state management.</p>
+
+<h3 style="color: #76cdd8;"><strong>Optimistic Updates (Brief Mention)</strong></h3>
+
+<ul>
+<li>Instead of waiting for server response, update the UI immediately</li>
+<li>If the server fails, roll back to previous state</li>
+<li>TanStack Query has built-in support via <code>onMutate</code> + <code>onError</code> rollback</li>
+<li>Advanced pattern — useful for real-time feel (likes, toggles, reordering)</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
