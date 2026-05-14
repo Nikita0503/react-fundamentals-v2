@@ -1,0 +1,89 @@
+<h3 style="color: #76cdd8;"><strong>What is TypeScript?</strong></h3>
+<p><strong>TypeScript</strong> is a programming language built on top of JavaScript. It's called a <em>"superset"</em> — which means all valid JavaScript code is also valid TypeScript code. TypeScript adds one major feature on top: a <strong>type system</strong>.</p>
+<p>A <strong>type system</strong> lets you describe what shape your data has (is this a number? a string? an object with specific fields?) — and the TypeScript compiler checks that you're using data correctly <em>before</em> your code ever runs.</p>
+<p>TypeScript code lives in <code>.ts</code> and <code>.tsx</code> files. It gets <strong>compiled</strong> (translated) into regular JavaScript (<code>.js</code>) — because browsers and Node.js don't understand TypeScript directly. They only run JavaScript.</p>
+<p>In React projects using Vite or Webpack, this compilation happens automatically — you just write <code>.tsx</code> files and the build tool handles the rest.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why TypeScript?</strong></h3>
+<p><strong>1. Catches bugs before you run the code:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// JavaScript — this crashes at RUNTIME (in the browser)
+function greet(user) {
+  return "Hello, " + user.name.toUpperCase();
+}
+greet(null); // 💥 TypeError: Cannot read properties of null
+
+// TypeScript — this is caught at COMPILE TIME (in your editor, before you even save)
+function greet(user: { name: string }) {
+  return "Hello, " + user.name.toUpperCase();
+}
+greet(null); // ❌ Error: Argument of type 'null' is not assignable
+</code></pre>
+<p><strong>2. Autocomplete and IntelliSense</strong> — your editor knows what properties and methods are available on every variable. No more guessing or checking documentation.</p>
+<p><strong>3. Self-documenting code</strong> — types describe what a function expects and returns. You can understand a function's contract without reading its implementation.</p>
+<p><strong>4. Safe refactoring</strong> — rename a property and TypeScript shows every place in your codebase that needs updating. No more "find and replace" and hoping you didn't miss one.</p>
+<p><strong>5. Team collaboration</strong> — types act as a contract between developers. "This function expects X and returns Y" — no ambiguity, no surprises.</p>
+
+<h3 style="color: #76cdd8;"><strong>How It Works (Simplified)</strong></h3>
+<ol>
+<li>You write TypeScript code (<code>.ts</code> / <code>.tsx</code>)</li>
+<li>The TypeScript compiler checks for type errors</li>
+<li>If no errors → compiles to JavaScript</li>
+<li>JavaScript runs in the browser</li>
+</ol>
+<p>In React projects with Vite: this all happens automatically when you run <code>npm run dev</code>. You write TypeScript, Vite compiles it, and the browser gets JavaScript.</p>
+
+<h3 style="color: #76cdd8;"><strong>TypeScript is NOT</strong></h3>
+<ul>
+<li><strong>A different language from JavaScript</strong> — it's JavaScript WITH types added on top</li>
+<li><strong>Required at runtime</strong> — types are completely erased during compilation. The JavaScript that runs in the browser has zero TypeScript in it. This means zero runtime performance cost.</li>
+<li><strong>All-or-nothing</strong> — you can gradually add types to an existing JavaScript project. You don't have to convert everything at once.</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

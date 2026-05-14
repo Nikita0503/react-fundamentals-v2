@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">How do you type a component's props?</h4><br/>
+( ) Use React.FC and pass the type as a generic parameter
+( ) Add types directly inside the JSX template
+(x) Define a type and use it in the function parameter: `({ name }: Props)`
+( ) Props don't need types — React handles them automatically
+
+<h4 style="color: #474747; font-weight: 600;">When do you need the generic on useState?</h4><br/>
+( ) Always — every useState call needs an explicit generic
+( ) Never — TypeScript always infers the correct type
+(x) When the initial value doesn't reveal the full type — e.g., `useState&lt;User | null&gt;(null)`
+( ) Only when using useState with arrays
+
+<h4 style="color: #474747; font-weight: 600;">What type do you use for the children prop?</h4><br/>
+( ) React.Children
+( ) JSX.Element
+(x) ReactNode
+( ) string | React.Component
+
+<h4 style="color: #474747; font-weight: 600;">What is the pattern for typing React events?</h4><br/>
+( ) Use the `any` type for all event handlers
+( ) `HTMLEvent&lt;ElementType&gt;`
+(x) `React.{EventType}Event&lt;HTMLElementType&gt;` — e.g., React.ChangeEvent&lt;HTMLInputElement&gt;
+( ) `Event&lt;React.ElementType&gt;`

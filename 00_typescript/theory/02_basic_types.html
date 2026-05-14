@@ -1,0 +1,133 @@
+<h3 style="color: #76cdd8;"><strong>Primitive Types</strong></h3>
+<p>Primitives are the most basic building blocks of data. TypeScript has three main primitive types that you'll use constantly:</p>
+<pre class="prettyprint"><code class="lang-ts">const name: string = "Alice";
+const age: number = 25;
+const isActive: boolean = true;
+</code></pre>
+<p>The syntax is: <code>variableName: type = value</code>. The part after the colon (<code>: string</code>) is the <strong>type annotation</strong> — it tells TypeScript what kind of value this variable holds.</p>
+
+<h3 style="color: #76cdd8;"><strong>Type Inference</strong></h3>
+<p><strong>Type inference</strong> means TypeScript is smart enough to figure out types automatically based on the value you assign:</p>
+<pre class="prettyprint"><code class="lang-ts">const name = "Alice";     // TS infers: string
+const age = 25;           // TS infers: number
+const isActive = true;    // TS infers: boolean
+
+// You DON'T need to write types when TS can infer them!
+// Only add explicit types when inference isn't enough.
+</code></pre>
+<p>This is important — you don't need to annotate everything. Let TypeScript do the work when it can. Your code stays cleaner and less verbose.</p>
+
+<h3 style="color: #76cdd8;"><strong>Arrays</strong></h3>
+<p>An array type is written as the element type followed by <code>[]</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">const names: string[] = ["Alice", "Bob", "Charlie"];
+const scores: number[] = [95, 87, 92];
+const flags: boolean[] = [true, false, true];
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Objects</strong></h3>
+<p>You can describe the shape of an object inline — listing each property and its type:</p>
+<pre class="prettyprint"><code class="lang-ts">const user: { name: string; age: number; email: string } = {
+  name: "Alice",
+  age: 25,
+  email: "alice@example.com",
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Function Types</strong></h3>
+<p>Functions need types for their <strong>parameters</strong> (inputs) and optionally their <strong>return value</strong> (output):</p>
+<pre class="prettyprint"><code class="lang-ts">// Parameters must be typed. Return type is usually inferred.
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow function
+const multiply = (a: number, b: number): number =&gt; a * b;
+
+// Function that returns nothing (void = "no return value")
+const logMessage = (message: string): void =&gt; {
+  console.log(message);
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Special Types</strong></h3>
+<p>TypeScript has several special types for specific situations:</p>
+<table>
+<tr><th>Type</th><th>Meaning</th><th>Use when</th></tr>
+<tr><td><code>any</code></td><td>Disables type checking entirely</td><td>AVOID — defeats the purpose of TS</td></tr>
+<tr><td><code>unknown</code></td><td>Could be anything, but must check before using</td><td>Safer alternative to <code>any</code></td></tr>
+<tr><td><code>void</code></td><td>Function returns nothing</td><td>Event handlers, side effects</td></tr>
+<tr><td><code>null</code></td><td>Intentionally empty</td><td>Value explicitly set to "nothing"</td></tr>
+<tr><td><code>undefined</code></td><td>Not yet assigned</td><td>Variable declared but not initialized</td></tr>
+<tr><td><code>never</code></td><td>Function never returns (throws or infinite loop)</td><td>Rare — error functions</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>any vs unknown</strong></h3>
+<p>Both represent "could be anything" — but they behave very differently:</p>
+<pre class="prettyprint"><code class="lang-ts">// any — no checking (dangerous!)
+const data: any = fetchSomething();
+data.whatever(); // TS doesn't complain, but might crash at runtime
+
+// unknown — must check before using (safe)
+const data: unknown = fetchSomething();
+data.whatever(); // ❌ Error: Object is of type 'unknown'
+
+if (typeof data === "string") {
+  data.toUpperCase(); // ✅ Now TS knows it's a string
+}
+</code></pre>
+<p><strong>Rule of thumb:</strong> if you're tempted to use <code>any</code>, use <code>unknown</code> instead and add a type check.</p>
+
+<h3 style="color: #76cdd8;"><strong>When to Add Explicit Types vs Rely on Inference</strong></h3>
+<ul>
+<li><strong>Let TS infer:</strong> variable assignments, return types of simple functions</li>
+<li><strong>Add explicitly:</strong> function parameters (always!), complex objects, when inference gives the wrong type</li>
+</ul>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

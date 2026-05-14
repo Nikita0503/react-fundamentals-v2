@@ -1,0 +1,146 @@
+<h3 style="color: #76cdd8;"><strong>TypeScript + React Overview</strong></h3>
+<p>This file connects everything you've learned to React. These patterns appear throughout the rest of the course. The goal here is to recognize the syntax so nothing looks unfamiliar when you encounter it later.</p>
+
+<h3 style="color: #76cdd8;"><strong>Typing Component Props</strong></h3>
+<p>Every React component receives data through <strong>props</strong>. You define a type for those props and use it in the function parameter:</p>
+<pre class="prettyprint"><code class="lang-tsx">type ButtonProps = {
+  label: string;
+  onClick: () =&gt; void;
+  variant?: "primary" | "secondary";
+  disabled?: boolean;
+};
+
+const Button = ({ label, onClick, variant = "primary", disabled = false }: ButtonProps) =&gt; (
+  &lt;button className={`btn-${variant}`} onClick={onClick} disabled={disabled}&gt;
+    {label}
+  &lt;/button&gt;
+);
+</code></pre>
+<p>The props type acts as a contract: anyone using <code>&lt;Button /&gt;</code> knows exactly what it accepts. TypeScript will error if required props are missing or wrong types are passed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Typing useState</strong></h3>
+<p><code>useState</code> is a React hook that holds a value that can change over time. TypeScript usually infers the type from the initial value:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Inferred — no generic needed
+const [count, setCount] = useState(0);           // number
+const [name, setName] = useState("");            // string
+
+// Explicit generic — when initial value doesn't reveal full type
+const [user, setUser] = useState&lt;User | null&gt;(null);
+const [items, setItems] = useState&lt;string[]&gt;([]);
+const [status, setStatus] = useState&lt;"idle" | "loading" | "error"&gt;("idle");
+</code></pre>
+<p>You need the generic (<code>&lt;User | null&gt;</code>) when the initial value is <code>null</code> or an empty array — because TypeScript can't infer the full type from those alone.</p>
+
+<h3 style="color: #76cdd8;"><strong>Typing Events</strong></h3>
+<p>React provides typed event objects. The pattern is <code>React.{EventType}Event&lt;HTMLElementType&gt;</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
+  console.log(e.target.value);
+};
+
+const handleClick = (e: React.MouseEvent&lt;HTMLButtonElement&gt;) =&gt; {
+  e.preventDefault();
+};
+
+const handleSubmit = (e: React.FormEvent&lt;HTMLFormElement&gt;) =&gt; {
+  e.preventDefault();
+};
+</code></pre>
+<p>The first part is the event type (Change, Mouse, Form, Keyboard, etc.) and the generic is the HTML element it's attached to.</p>
+
+<h3 style="color: #76cdd8;"><strong>Typing Children</strong></h3>
+<p>When a component wraps other content (like a layout), use <code>ReactNode</code> for the children prop — it accepts any renderable content (strings, numbers, elements, arrays, fragments):</p>
+<pre class="prettyprint"><code class="lang-tsx">import { ReactNode } from "react";
+
+type LayoutProps = {
+  children: ReactNode;  // accepts any renderable content
+};
+
+const Layout = ({ children }: LayoutProps) =&gt; (
+  &lt;div className="layout"&gt;{children}&lt;/div&gt;
+);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Typing Refs</strong></h3>
+<p>Refs give you direct access to DOM elements. The generic tells TypeScript what kind of element the ref points to:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef } from "react";
+
+const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+const divRef = useRef&lt;HTMLDivElement&gt;(null);
+const timerRef = useRef&lt;ReturnType&lt;typeof setInterval&gt; | null&gt;(null);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Typing Context</strong></h3>
+<p>React Context lets you share data across components without passing props manually. You type the context value:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { createContext, useContext } from "react";
+
+type ThemeContextValue = {
+  theme: "light" | "dark";
+  toggleTheme: () =&gt; void;
+};
+
+const ThemeContext = createContext&lt;ThemeContextValue | undefined&gt;(undefined);
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Typing Callback Props</strong></h3>
+<p>Components often receive functions as props (callbacks). Type them with arrow function syntax:</p>
+<pre class="prettyprint"><code class="lang-tsx">type TodoItemProps = {
+  id: number;
+  text: string;
+  onDelete: (id: number) =&gt; void;        // function with argument
+  onToggle: () =&gt; void;                   // function without arguments
+  onChange: (value: string) =&gt; void;      // function with string argument
+};
+</code></pre>
+<p>The pattern is: <code>(parameterName: parameterType) =&gt; returnType</code>. Most callbacks return <code>void</code> (they do something but don't return a value).</p>
+
+<h3 style="color: #76cdd8;"><strong>This is a Preview</strong></h3>
+<p>You'll see all of these patterns in detail throughout the course. The goal here is to recognize the syntax so nothing looks unfamiliar when you encounter it in later modules.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

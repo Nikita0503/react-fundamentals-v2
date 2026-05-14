@@ -1,0 +1,128 @@
+<h3 style="color: #76cdd8;"><strong>Why Named Types?</strong></h3>
+<p>When objects get complex, inline type annotations become unreadable. Imagine typing <code>{ id: number; name: string; email: string; isActive: boolean }</code> every time you use a user object. The solution: <strong>named types</strong> — you define the shape once and reuse it by name.</p>
+<p>TypeScript gives you two ways to create named types: <code>type</code> and <code>interface</code>.</p>
+
+<h3 style="color: #76cdd8;"><strong>type — A Type Alias</strong></h3>
+<p>A <strong>type alias</strong> gives a name to any type. You define it once, then use the name everywhere:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+};
+
+const user: User = { id: 1, name: "Alice", email: "alice@test.com", isActive: true };
+</code></pre>
+<p><code>type</code> can describe ANY type — not just objects:</p>
+<pre class="prettyprint"><code class="lang-ts">type Status = "idle" | "loading" | "success" | "error";  // union of literal values
+type Point = [number, number];                             // tuple (fixed-length array)
+type Callback = (value: string) =&gt; void;                   // function signature
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>interface — Describes the Shape of an Object</strong></h3>
+<p>An <strong>interface</strong> is another way to describe object shapes. The syntax is slightly different (no <code>=</code> sign):</p>
+<pre class="prettyprint"><code class="lang-ts">interface User {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
+const user: User = { id: 1, name: "Alice", email: "alice@test.com", isActive: true };
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Extending / Combining Types</strong></h3>
+<p>Both <code>type</code> and <code>interface</code> let you build new types from existing ones:</p>
+<pre class="prettyprint"><code class="lang-ts">// interface extends interface
+interface Animal { name: string; }
+interface Dog extends Animal { breed: string; }
+
+// type intersection (combining with &amp;)
+type Animal = { name: string };
+type Dog = Animal &amp; { breed: string };
+
+// Both result in: { name: string; breed: string }
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Optional Properties</strong></h3>
+<p>Add <code>?</code> after a property name to make it optional — it may or may not be present:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = {
+  id: number;
+  name: string;
+  email?: string;  // optional — type is string | undefined
+};
+
+const user: User = { id: 1, name: "Alice" }; // ✅ valid — email is optional
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Readonly Properties</strong></h3>
+<p>Mark properties as <code>readonly</code> to prevent reassignment after creation:</p>
+<pre class="prettyprint"><code class="lang-ts">type Config = {
+  readonly apiUrl: string;
+  readonly timeout: number;
+};
+
+const config: Config = { apiUrl: "https://api.example.com", timeout: 5000 };
+config.apiUrl = "other"; // ❌ Error: Cannot assign to 'apiUrl' because it is a read-only property
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>type vs interface — When to Use Which</strong></h3>
+<table>
+<tr><th>Feature</th><th>type</th><th>interface</th></tr>
+<tr><td>Objects</td><td>✅</td><td>✅</td></tr>
+<tr><td>Unions (<code>A | B</code>)</td><td>✅</td><td>❌</td></tr>
+<tr><td>Tuples</td><td>✅</td><td>❌</td></tr>
+<tr><td>Extending</td><td><code>&amp;</code> intersection</td><td><code>extends</code> keyword</td></tr>
+<tr><td>Declaration merging</td><td>❌</td><td>✅ (same name = merged)</td></tr>
+<tr><td>Function types</td><td>✅</td><td>✅ (but type is cleaner)</td></tr>
+</table>
+<p><strong>Practical advice:</strong> pick one style for your project and be consistent. Both work. Many teams use <code>type</code> for everything (simpler, more flexible). Some prefer <code>interface</code> for object shapes. Either is fine — consistency matters more than the choice itself.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

@@ -1,0 +1,135 @@
+<h3 style="color: #76cdd8;"><strong>Union Types</strong></h3>
+<p>A <strong>union type</strong> means a value can be one of several types. You write it with the pipe symbol <code>|</code> (read it as "or"):</p>
+<pre class="prettyprint"><code class="lang-ts">type Status = "idle" | "loading" | "success" | "error";
+
+let currentStatus: Status = "idle";
+currentStatus = "loading"; // ✅
+currentStatus = "unknown"; // ❌ Error: not assignable to type Status
+</code></pre>
+<pre class="prettyprint"><code class="lang-ts">// A function that accepts string OR number
+function formatId(id: string | number): string {
+  return `ID: ${id}`;
+}
+formatId(123);     // ✅
+formatId("abc");   // ✅
+formatId(true);    // ❌ Error: boolean is not string | number
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Literal Types</strong></h3>
+<p><strong>Literal types</strong> are exact values used as types — not just "any string" but a specific string:</p>
+<pre class="prettyprint"><code class="lang-ts">type Direction = "up" | "down" | "left" | "right";
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+type Size = "sm" | "md" | "lg";
+</code></pre>
+<p>This is extremely useful for component props in React. For example, <code>&lt;Button size="lg" /&gt;</code> — TypeScript ensures only valid sizes are passed. If you typo <code>"large"</code> instead of <code>"lg"</code>, you get an error immediately.</p>
+
+<h3 style="color: #76cdd8;"><strong>Type Narrowing</strong></h3>
+<p><strong>Type narrowing</strong> is the process of telling TypeScript which specific type a value is within a union. When you have <code>string | number</code>, you need to narrow it down before using type-specific methods:</p>
+<pre class="prettyprint"><code class="lang-ts">function printValue(value: string | number) {
+  // TS doesn't know if it's string or number here
+  console.log(value.toUpperCase()); // ❌ Error: toUpperCase doesn't exist on number
+
+  // Narrow with typeof
+  if (typeof value === "string") {
+    console.log(value.toUpperCase()); // ✅ TS knows it's string here
+  } else {
+    console.log(value.toFixed(2)); // ✅ TS knows it's number here
+  }
+}
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Narrowing Techniques</strong></h3>
+<p>There are several ways to narrow types:</p>
+<ul>
+<li><code>typeof</code> — for primitives (<code>"string"</code>, <code>"number"</code>, <code>"boolean"</code>)</li>
+<li><code>in</code> — check if a property exists in an object</li>
+<li><code>instanceof</code> — check if something is an instance of a class</li>
+<li><strong>Discriminated unions</strong> — a shared field that identifies which type it is:</li>
+</ul>
+<pre class="prettyprint"><code class="lang-ts">type SuccessResponse = { status: "success"; data: User };
+type ErrorResponse = { status: "error"; message: string };
+type ApiResponse = SuccessResponse | ErrorResponse;
+
+function handleResponse(response: ApiResponse) {
+  if (response.status === "success") {
+    console.log(response.data.name); // ✅ TS knows it's SuccessResponse
+  } else {
+    console.log(response.message); // ✅ TS knows it's ErrorResponse
+  }
+}
+</code></pre>
+<p>A <strong>discriminated union</strong> is a union where each member has a shared property (here: <code>status</code>) with a unique literal value. TypeScript uses that property to figure out which type you're dealing with.</p>
+
+<h3 style="color: #76cdd8;"><strong>Nullable Types</strong></h3>
+<p>In real applications, values are often missing — a user might not be loaded yet, a search might return no results. You represent this with <code>null</code>:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = { name: string; email: string };
+
+// User might not exist (e.g., not loaded yet)
+let currentUser: User | null = null;
+
+// Must check before using
+if (currentUser) {
+  console.log(currentUser.name); // ✅ TS knows it's not null here
+}
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Optional Chaining and Nullish Coalescing</strong></h3>
+<p>Two operators that make working with nullable values much cleaner:</p>
+<pre class="prettyprint"><code class="lang-ts">const user: User | null = getUser();
+
+// Optional chaining (?.) — returns undefined if user is null (instead of crashing)
+const name = user?.name; // type: string | undefined
+
+// Nullish coalescing (??) — provide a default when value is null or undefined
+const displayName = user?.name ?? "Anonymous"; // type: always string
+</code></pre>
+<p><code>?.</code> says "if the thing before me is null/undefined, stop here and return undefined." <code>??</code> says "if the thing before me is null/undefined, use this default value instead."</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

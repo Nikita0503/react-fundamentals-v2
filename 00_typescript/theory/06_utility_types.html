@@ -1,0 +1,129 @@
+<h3 style="color: #76cdd8;"><strong>What Are Utility Types?</strong></h3>
+<p>TypeScript provides built-in <strong>utility types</strong> — type transformations that save you from writing repetitive types manually. They take an existing type and produce a new one by modifying it in some way (making properties optional, picking specific fields, etc.).</p>
+
+<h3 style="color: #76cdd8;"><strong>Partial&lt;T&gt;</strong></h3>
+<p>Makes <strong>all properties optional</strong>:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = { name: string; email: string; age: number };
+
+type UpdateUserDto = Partial&lt;User&gt;;
+// Result: { name?: string; email?: string; age?: number }
+
+// Use case: update functions where you only send changed fields
+function updateUser(id: number, updates: Partial&lt;User&gt;) { /* ... */ }
+updateUser(1, { name: "Bob" }); // ✅ only updating name
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Required&lt;T&gt;</strong></h3>
+<p>Makes <strong>all properties required</strong> (the opposite of Partial):</p>
+<pre class="prettyprint"><code class="lang-ts">type Config = { theme?: string; locale?: string };
+type FullConfig = Required&lt;Config&gt;;
+// Result: { theme: string; locale: string } — no more optional
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Pick&lt;T, Keys&gt;</strong></h3>
+<p><strong>Selects specific properties</strong> from a type — creates a new type with only the fields you list:</p>
+<pre class="prettyprint"><code class="lang-ts">type User = { id: number; name: string; email: string; password: string };
+
+type PublicUser = Pick&lt;User, "id" | "name" | "email"&gt;;
+// Result: { id: number; name: string; email: string } — no password
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Omit&lt;T, Keys&gt;</strong></h3>
+<p><strong>Removes specific properties</strong> (the opposite of Pick):</p>
+<pre class="prettyprint"><code class="lang-ts">type User = { id: number; name: string; email: string; password: string };
+
+type CreateUserDto = Omit&lt;User, "id"&gt;;
+// Result: { name: string; email: string; password: string } — no id (server generates it)
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Record&lt;K, V&gt;</strong></h3>
+<p>Creates an <strong>object type with specific key and value types</strong> — useful for dictionaries and lookup maps:</p>
+<pre class="prettyprint"><code class="lang-ts">type Status = "idle" | "loading" | "error";
+type StatusMessages = Record&lt;Status, string&gt;;
+// Result: { idle: string; loading: string; error: string }
+
+const messages: StatusMessages = {
+  idle: "Ready",
+  loading: "Please wait...",
+  error: "Something went wrong",
+};
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>ReturnType&lt;T&gt;</strong></h3>
+<p><strong>Extracts the return type</strong> of a function:</p>
+<pre class="prettyprint"><code class="lang-ts">function createUser() {
+  return { id: 1, name: "Alice", createdAt: new Date() };
+}
+
+type NewUser = ReturnType&lt;typeof createUser&gt;;
+// Result: { id: number; name: string; createdAt: Date }
+</code></pre>
+<p>Useful when you don't want to manually define a type that matches a function's output. <code>typeof</code> here gets the type of the function itself, and <code>ReturnType</code> extracts what it returns.</p>
+
+<h3 style="color: #76cdd8;"><strong>Parameters&lt;T&gt;</strong></h3>
+<p><strong>Extracts parameter types</strong> of a function as a tuple (ordered array of types):</p>
+<pre class="prettyprint"><code class="lang-ts">function search(query: string, page: number, limit: number) { /* ... */ }
+
+type SearchParams = Parameters&lt;typeof search&gt;;
+// Result: [string, number, number]
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Summary — When to Use Each</strong></h3>
+<table>
+<tr><th>Utility</th><th>Use case</th></tr>
+<tr><td><code>Partial&lt;T&gt;</code></td><td>Update/patch operations (only some fields)</td></tr>
+<tr><td><code>Required&lt;T&gt;</code></td><td>Ensure all optional fields are provided</td></tr>
+<tr><td><code>Pick&lt;T, K&gt;</code></td><td>Select subset of fields (public API, DTOs)</td></tr>
+<tr><td><code>Omit&lt;T, K&gt;</code></td><td>Remove fields (hide password, remove id for creation)</td></tr>
+<tr><td><code>Record&lt;K, V&gt;</code></td><td>Dictionaries, lookup maps, config objects</td></tr>
+<tr><td><code>ReturnType&lt;T&gt;</code></td><td>Derive type from function output</td></tr>
+</table>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

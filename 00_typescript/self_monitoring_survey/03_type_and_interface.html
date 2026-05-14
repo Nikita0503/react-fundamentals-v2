@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What can `type` do that `interface` cannot?</h4><br/>
+( ) Define object shapes with properties
+( ) Extend other types
+(x) Define unions, tuples, and mapped types
+( ) Be used as a type annotation for variables
+
+<h4 style="color: #474747; font-weight: 600;">How do you make a property optional?</h4><br/>
+( ) Wrap it in Optional&lt;&gt; utility type
+( ) Set its value to undefined in the type definition
+(x) Add `?` after the property name: `email?: string`
+( ) Use the `maybe` keyword before the type
+
+<h4 style="color: #474747; font-weight: 600;">How do you extend an interface?</h4><br/>
+( ) Using the `&` operator: `interface Dog = Animal & { breed: string }`
+( ) Using the `implements` keyword
+(x) Using the `extends` keyword: `interface Dog extends Animal { ... }`
+( ) Interfaces cannot be extended — only types can
+
+<h4 style="color: #474747; font-weight: 600;">Should you always use `type` or always use `interface`?</h4><br/>
+( ) Always use `type` — interfaces are deprecated
+( ) Always use `interface` — types are less performant
+( ) Use `type` for small objects and `interface` for large ones
+(x) Either works — pick one style and be consistent in your project

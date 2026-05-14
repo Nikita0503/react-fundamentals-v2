@@ -1,0 +1,127 @@
+<h3 style="color: #76cdd8;"><strong>The Problem</strong></h3>
+<p>Imagine you want to write a function that returns the first element of an array. Without generics, you'd need a separate function for each type:</p>
+<pre class="prettyprint"><code class="lang-ts">// Without generics — you'd need a separate function for each type:
+function firstString(arr: string[]): string | undefined { return arr[0]; }
+function firstNumber(arr: number[]): number | undefined { return arr[0]; }
+// ... this doesn't scale
+</code></pre>
+<p>The logic is identical — only the types differ. <strong>Generics</strong> solve this problem.</p>
+
+<h3 style="color: #76cdd8;"><strong>Generics — Type Parameters</strong></h3>
+<p>A <strong>generic</strong> is a type parameter — a placeholder for a type that gets filled in when you use the function or type. Think of it like a function parameter, but for types:</p>
+<pre class="prettyprint"><code class="lang-ts">// One function that works with ANY type
+function first&lt;T&gt;(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+first&lt;string&gt;(["a", "b", "c"]); // returns string
+first&lt;number&gt;([1, 2, 3]);       // returns number
+first([true, false]);            // TS infers T = boolean automatically
+</code></pre>
+<p><code>&lt;T&gt;</code> is the type parameter — a placeholder that gets filled in when you call the function. By convention, single uppercase letters are used: <code>T</code> (Type), <code>K</code> (Key), <code>V</code> (Value), <code>E</code> (Element) — but any name works.</p>
+
+<h3 style="color: #76cdd8;"><strong>Generic Types</strong></h3>
+<p>You can also make types generic — creating reusable type templates:</p>
+<pre class="prettyprint"><code class="lang-ts">// A reusable API response wrapper
+type ApiResponse&lt;T&gt; = {
+  data: T;
+  error: string | null;
+  loading: boolean;
+};
+
+// Use with different data types:
+type UserResponse = ApiResponse&lt;User&gt;;       // { data: User; error: ...; loading: ... }
+type PostsResponse = ApiResponse&lt;Post[]&gt;;    // { data: Post[]; error: ...; loading: ... }
+</code></pre>
+<p>You define the shape once, and the <code>T</code> placeholder gets replaced with whatever type you pass in.</p>
+
+<h3 style="color: #76cdd8;"><strong>Constraints — Limiting What T Can Be</strong></h3>
+<p>Sometimes you need <code>T</code> to have certain properties. Use <code>extends</code> to add a <strong>constraint</strong>:</p>
+<pre class="prettyprint"><code class="lang-ts">// T must have an 'id' property
+function findById&lt;T extends { id: number }&gt;(items: T[], id: number): T | undefined {
+  return items.find(item =&gt; item.id === id);
+}
+
+findById([{ id: 1, name: "Alice" }], 1); // ✅ has 'id' property
+findById([{ title: "Post" }], 1);         // ❌ Error: missing 'id' property
+</code></pre>
+<p><code>T extends { id: number }</code> means "T can be any type, as long as it has at least an <code>id</code> property of type <code>number</code>."</p>
+
+<h3 style="color: #76cdd8;"><strong>Multiple Type Parameters</strong></h3>
+<p>You can have more than one type parameter:</p>
+<pre class="prettyprint"><code class="lang-ts">function merge&lt;A, B&gt;(obj1: A, obj2: B): A &amp; B {
+  return { ...obj1, ...obj2 };
+}
+
+const result = merge({ name: "Alice" }, { age: 25 });
+// result type: { name: string } &amp; { age: number }
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Default Type Parameters</strong></h3>
+<p>You can provide a default type that's used when no type argument is specified:</p>
+<pre class="prettyprint"><code class="lang-ts">type Container&lt;T = string&gt; = {
+  value: T;
+};
+
+const strContainer: Container = { value: "hello" };       // T defaults to string
+const numContainer: Container&lt;number&gt; = { value: 42 };    // T is number
+</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Where You'll See Generics in React</strong></h3>
+<p>You don't need to master generics to use React — but you'll encounter the <code>&lt;T&gt;</code> syntax constantly:</p>
+<pre class="prettyprint"><code class="lang-ts">useState&lt;User | null&gt;(null);           // generic hook — T is the state type
+useRef&lt;HTMLInputElement&gt;(null);         // generic hook — T is the element type
+createContext&lt;ThemeContextValue&gt;();     // generic function
+Array&lt;Todo&gt;                            // generic type (same as Todo[])
+Promise&lt;User&gt;                          // generic type — resolves to User
+</code></pre>
+<p>Understanding the <code>&lt;T&gt;</code> syntax lets you read library types and write typed hooks. You'll get comfortable with it naturally as you use React with TypeScript.</p>
+<p></p>
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .row {
+        display: flex;	
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      
+      	.img-row {
+        	width: 90%;
+        }
+      
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ 
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
