@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does an Error Boundary do?</h4><br/>
+( ) Prevents errors from happening in the first place by validating props
+( ) Catches all JavaScript errors anywhere in the application
+(x) Catches rendering errors in child components and shows a fallback UI instead of crashing the app
+( ) Logs errors to the console and continues rendering normally
+
+<h4 style="color: #474747; font-weight: 600;">Why does an Error Boundary require a class component?</h4><br/>
+( ) Class components are faster at catching errors than function components
+( ) React hooks can't handle errors at all
+(x) It uses getDerivedStateFromError and componentDidCatch — no hook equivalents exist yet
+( ) Function components don't have access to the children prop
+
+<h4 style="color: #474747; font-weight: 600;">What does an Error Boundary NOT catch?</h4><br/>
+( ) Errors thrown during the render phase of child components
+( ) Errors in deeply nested components three levels down
+(x) Event handler errors, async errors, errors in the boundary itself
+( ) Errors caused by invalid props or missing required props
+
+<h4 style="color: #474747; font-weight: 600;">Where should you place Error Boundaries?</h4><br/>
+( ) Around every single component for maximum safety
+( ) Only at the very top of the app (one boundary for everything)
+(x) Around route-level components and risky/independent sections — not around every single component
+( ) Only around third-party library components

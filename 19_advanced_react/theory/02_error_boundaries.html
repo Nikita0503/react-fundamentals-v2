@@ -1,0 +1,150 @@
+<h3 style="color: #76cdd8;"><strong>The Problem</strong></h3>
+
+<p>If a component throws an error during rendering, the entire React app crashes — you get a white screen. There's no graceful degradation. One broken component takes down everything.</p>
+
+<h3 style="color: #76cdd8;"><strong>What is an Error Boundary?</strong></h3>
+
+<p>An Error Boundary is a component that catches JavaScript errors anywhere in its child component tree and displays a fallback UI instead of crashing the whole app. Think of it as a <code>try/catch</code>, but for React rendering.</p>
+
+<h3 style="color: #76cdd8;"><strong>Why It Requires a Class Component</strong></h3>
+
+<p>Error Boundaries use two lifecycle methods that don't have hook equivalents (as of React 19):</p>
+
+<ul>
+<li><code>static getDerivedStateFromError(error)</code> — called when a child throws during render. Used to update state so the next render shows a fallback UI.</li>
+<li><code>componentDidCatch(error, errorInfo)</code> — called after an error is caught. Used to log the error to an external service (Sentry, Datadog, etc.).</li>
+</ul>
+
+<p>This is the <strong>only remaining use case</strong> for class components in modern React. Everything else can (and should) be done with function components and hooks.</p>
+
+<h3 style="color: #76cdd8;"><strong>Implementation</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { Component, ReactNode } from "react";
+
+type Props = {
+  children: ReactNode;
+  fallback?: ReactNode;
+};
+
+type State = {
+  hasError: boolean;
+};
+
+class ErrorBoundary extends Component&lt;Props, State&gt; {
+  state: State = { hasError: false };
+
+  static getDerivedStateFromError(): State {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Error caught by boundary:", error, errorInfo);
+    // In production: send to error tracking service (Sentry, Datadog)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? &lt;h2&gt;Something went wrong.&lt;/h2&gt;;
+    }
+    return this.props.children;
+  }
+}
+
+export { ErrorBoundary };</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Usage</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">&lt;ErrorBoundary fallback={&lt;p&gt;This section failed to load.&lt;/p&gt;}&gt;
+  &lt;UserProfile /&gt;
+&lt;/ErrorBoundary&gt;</code></pre>
+
+<p>If <code>UserProfile</code> throws during render → the fallback shows. The rest of the app keeps working normally.</p>
+
+<h3 style="color: #76cdd8;"><strong>The react-error-boundary Library — What Real Projects Use</strong></h3>
+
+<p>In practice, you don't write the class yourself. The <code>react-error-boundary</code> library provides a battle-tested implementation with extra features:</p>
+
+<pre class="prettyprint"><code class="lang-ts">npm install react-error-boundary</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">import { ErrorBoundary } from "react-error-boundary";
+
+const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () =&gt; void }) =&gt; (
+  &lt;div&gt;
+    &lt;p&gt;Something went wrong: {error.message}&lt;/p&gt;
+    &lt;button onClick={resetErrorBoundary}&gt;Try again&lt;/button&gt;
+  &lt;/div&gt;
+);
+
+const App = () =&gt; (
+  &lt;ErrorBoundary FallbackComponent={ErrorFallback}&gt;
+    &lt;Dashboard /&gt;
+  &lt;/ErrorBoundary&gt;
+);</code></pre>
+
+<p>What it provides over a manual implementation:</p>
+<ul>
+<li>Reset functionality — user can retry without refreshing the page</li>
+<li><code>onError</code> callback — for logging without writing componentDidCatch</li>
+<li>Functional API — no class component in your code</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Where to Place Error Boundaries</strong></h3>
+
+<ul>
+<li><strong>Around route-level components</strong> — each page gets its own boundary, so one page crashing doesn't kill the whole app</li>
+<li><strong>Around risky/third-party components</strong> — libraries you don't control might throw</li>
+<li><strong>Around independent sections</strong> (sidebar, widget) — so one crash doesn't kill the whole page</li>
+<li><strong>NOT around every single component</strong> — too granular, adds complexity without benefit</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What Error Boundaries DON'T Catch</strong></h3>
+
+<ul>
+<li><strong>Event handlers</strong> — use regular <code>try/catch</code> inside the handler</li>
+<li><strong>Async code</strong> — promises, <code>setTimeout</code> callbacks</li>
+<li><strong>Server-side rendering errors</strong></li>
+<li><strong>Errors in the boundary itself</strong> — if the boundary throws, it can't catch its own error</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

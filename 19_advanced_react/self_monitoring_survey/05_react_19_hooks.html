@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does useTransition do?</h4><br/>
+( ) Animates a component when it mounts or unmounts
+( ) Delays rendering until the next animation frame
+(x) Marks a state update as non-urgent — keeps the UI responsive while heavy updates process in the background
+( ) Transitions between two different components with a fade effect
+
+<h4 style="color: #474747; font-weight: 600;">What is the difference between useTransition and useDeferredValue?</h4><br/>
+( ) useTransition is for animations, useDeferredValue is for data fetching
+( ) They do the same thing — useDeferredValue is just the newer API
+(x) useTransition wraps a setState call you control; useDeferredValue defers a value you receive from props
+( ) useTransition works with arrays, useDeferredValue works with strings
+
+<h4 style="color: #474747; font-weight: 600;">What does useId generate?</h4><br/>
+( ) A random UUID that changes on every render
+( ) A numeric counter that increments per component instance
+(x) A unique, stable ID that's consistent between server and client — for accessibility attributes
+( ) A hash of the component's props for memoization
+
+<h4 style="color: #474747; font-weight: 600;">Why not use Math.random() for IDs?</h4><br/>
+( ) Math.random() is too slow for React's rendering cycle
+( ) Random numbers can collide if you have many components
+(x) Random IDs differ between server and client rendering, causing hydration warnings
+( ) Math.random() is not available in strict mode

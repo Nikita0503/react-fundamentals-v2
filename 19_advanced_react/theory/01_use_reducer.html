@@ -1,0 +1,146 @@
+<h3 style="color: #76cdd8;"><strong>What is useReducer?</strong></h3>
+
+<p><code>useReducer</code> is a React hook — an alternative to <code>useState</code> for managing complex state logic. Instead of calling <code>setState</code> directly, you "dispatch" an action (a plain object that describes what happened), and a "reducer" function decides how the state should change based on that action.</p>
+
+<p>Think of it like a command pattern: your component says "this happened" (dispatches an action), and the reducer decides "here's the new state."</p>
+
+<h3 style="color: #76cdd8;"><strong>The Pattern</strong></h3>
+
+<p>The useReducer pattern has four parts:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const [state, dispatch] = useReducer(reducer, initialState);</code></pre>
+
+<ul>
+<li><code>state</code> — the current state value (like what <code>useState</code> returns)</li>
+<li><code>dispatch</code> — a function to send actions to the reducer (instead of calling setState directly)</li>
+<li><code>reducer</code> — a pure function with signature <code>(state, action) =&gt; newState</code>. It takes the current state and an action, and returns the new state. "Pure" means it has no side effects — given the same inputs, it always returns the same output.</li>
+<li><code>initialState</code> — the starting value for your state</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Full Example — Multi-Step Form</strong></h3>
+
+<p>Here's a practical example: a signup form with multiple steps, where several state fields are related and update together.</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useReducer } from "react";
+
+type FormState = {
+  step: number;
+  name: string;
+  email: string;
+  plan: "free" | "pro" | "";
+  isSubmitting: boolean;
+};
+
+type FormAction =
+  | { type: "NEXT_STEP" }
+  | { type: "PREV_STEP" }
+  | { type: "SET_FIELD"; field: keyof FormState; value: string }
+  | { type: "SUBMIT" }
+  | { type: "SUBMIT_SUCCESS" };
+
+const initialState: FormState = {
+  step: 1,
+  name: "",
+  email: "",
+  plan: "",
+  isSubmitting: false,
+};
+
+const formReducer = (state: FormState, action: FormAction): FormState =&gt; {
+  switch (action.type) {
+    case "NEXT_STEP":
+      return { ...state, step: state.step + 1 };
+    case "PREV_STEP":
+      return { ...state, step: state.step - 1 };
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value };
+    case "SUBMIT":
+      return { ...state, isSubmitting: true };
+    case "SUBMIT_SUCCESS":
+      return { ...state, isSubmitting: false };
+    default:
+      return state;
+  }
+};
+
+const SignupForm = () =&gt; {
+  const [state, dispatch] = useReducer(formReducer, initialState);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Step {state.step} of 3&lt;/p&gt;
+      {state.step === 1 &amp;&amp; (
+        &lt;input
+          value={state.name}
+          onChange={(e) =&gt; dispatch({ type: "SET_FIELD", field: "name", value: e.target.value })}
+          placeholder="Name"
+        /&gt;
+      )}
+      &lt;button onClick={() =&gt; dispatch({ type: "NEXT_STEP" })}&gt;Next&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: "PREV_STEP" })} disabled={state.step === 1}&gt;Back&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>useState vs useReducer — When to Use Which</strong></h3>
+
+<table>
+<tr><th>Scenario</th><th>useState</th><th>useReducer</th></tr>
+<tr><td>Simple value (counter, toggle, input)</td><td>✅</td><td>Overkill</td></tr>
+<tr><td>Few independent state variables</td><td>✅</td><td>Overkill</td></tr>
+<tr><td>Many related state variables that update together</td><td>Messy</td><td>✅</td></tr>
+<tr><td>Complex update logic (state machine, multi-step)</td><td>Hard to read</td><td>✅</td></tr>
+<tr><td>Need to pass dispatch to deep children</td><td>—</td><td>✅ (stable reference)</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Practical Advice</strong></h3>
+
+<ul>
+<li>For most React components, <code>useState</code> is enough — don't reach for useReducer by default</li>
+<li>For complex shared state across many components, state management libraries like Zustand or Redux Toolkit are better than useReducer</li>
+<li>useReducer is useful for: local complex state (forms, wizards), and understanding Redux (same pattern — actions, reducers, dispatch)</li>
+<li><strong>Interview question:</strong> "When would you use useReducer?" — answer: when state updates are complex and interdependent, e.g., a multi-step form where going to the next step also resets validation errors</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

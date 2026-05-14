@@ -1,0 +1,151 @@
+<h3 style="color: #76cdd8;"><strong>New Hooks in React 18 &amp; 19</strong></h3>
+
+<p>React 18 and 19 introduced new hooks for performance and accessibility. These are specialized — you won't use them in every component, but they solve specific problems elegantly.</p>
+
+<h3 style="color: #76cdd8;"><strong>useTransition — Mark a State Update as "Not Urgent"</strong></h3>
+
+<p><code>useTransition</code> tells React: "this state update can wait — keep the UI responsive for the user." It splits updates into urgent (user sees immediately) and non-urgent (can be interrupted and processed in the background).</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useTransition } from "react";
+
+const SearchPage = () =&gt; {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState&lt;string[]&gt;([]);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
+    const value = e.target.value;
+    setQuery(value); // urgent — update input immediately
+
+    startTransition(() =&gt; {
+      // non-urgent — can be interrupted if user keeps typing
+      const filtered = hugeList.filter(item =&gt; item.includes(value));
+      setResults(filtered);
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input value={query} onChange={handleChange} /&gt;
+      {isPending &amp;&amp; &lt;p&gt;Updating results...&lt;/p&gt;}
+      &lt;ul&gt;
+        {results.map(r =&gt; &lt;li key={r}&gt;{r}&lt;/li&gt;)}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<ul>
+<li><strong>What it does</strong>: tells React "this update can wait — keep the UI responsive"</li>
+<li><strong>When to use</strong>: filtering/sorting large lists, search-as-you-type, tab switching with heavy content</li>
+<li><strong>isPending</strong>: a boolean that's <code>true</code> while the transition is processing — use it to show loading indicators</li>
+<li><strong>Without useTransition</strong>: typing in the input would feel laggy because React tries to re-render the huge list synchronously with every keystroke</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>useDeferredValue — Defer a Value Update</strong></h3>
+
+<p><code>useDeferredValue</code> returns a "lagging" version of a value. React updates it only when it has idle time, keeping urgent updates (like typing) smooth.</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useDeferredValue, useMemo } from "react";
+
+const SearchResults = ({ query }: { query: string }) =&gt; {
+  const deferredQuery = useDeferredValue(query);
+
+  // Only recomputes when deferredQuery changes (not on every keystroke)
+  const results = useMemo(() =&gt; {
+    return hugeList.filter(item =&gt; item.includes(deferredQuery));
+  }, [deferredQuery]);
+
+  return (
+    &lt;ul style={{ opacity: query !== deferredQuery ? 0.5 : 1 }}&gt;
+      {results.map(r =&gt; &lt;li key={r}&gt;{r}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+};</code></pre>
+
+<ul>
+<li><strong>What it does</strong>: returns a "lagging" version of a value — updates are deferred until React has time</li>
+<li><strong>When to use</strong>: same scenarios as useTransition, but when you don't control the state update (e.g., the value comes from props)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>useTransition vs useDeferredValue</strong></h3>
+
+<table>
+<tr><th>Hook</th><th>Use when</th><th>How it works</th></tr>
+<tr><td>useTransition</td><td>You control the setState call</td><td>Wrap the setState in <code>startTransition()</code></td></tr>
+<tr><td>useDeferredValue</td><td>You receive a value (from props)</td><td>Pass the value to <code>useDeferredValue()</code> — React defers its effect</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>useId — Generate Unique IDs for Accessibility</strong></h3>
+
+<p><code>useId</code> generates a unique, stable ID that's consistent between server and client rendering. It's designed for connecting accessibility attributes like <code>htmlFor</code>/<code>id</code> and <code>aria-describedby</code>.</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useId } from "react";
+
+const FormField = ({ label }: { label: string }) =&gt; {
+  const id = useId();
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor={id}&gt;{label}&lt;/label&gt;
+      &lt;input id={id} type="text" /&gt;
+    &lt;/div&gt;
+  );
+};
+
+// Each instance gets a unique ID:
+// &lt;FormField label="Name" /&gt;   → id=":r1:"
+// &lt;FormField label="Email" /&gt;  → id=":r2:"</code></pre>
+
+<ul>
+<li><strong>What it does</strong>: generates a unique, stable ID that's consistent between server and client (SSR-safe)</li>
+<li><strong>When to use</strong>: connecting <code>&lt;label&gt;</code> to <code>&lt;input&gt;</code> (htmlFor/id), ARIA attributes (<code>aria-describedby</code>, <code>aria-labelledby</code>)</li>
+<li><strong>Why not Math.random()?</strong>: random IDs differ between server render and client hydration — React throws warnings because the HTML doesn't match. <code>useId</code> is deterministic and produces the same ID on both server and client.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What About useOptimistic, useFormStatus, use()?</strong></h3>
+
+<p>React 19 also adds hooks for server-side patterns (<code>useOptimistic</code>, <code>useFormStatus</code>, <code>use</code>). You'll encounter these when working with frameworks like Next.js. They're designed for Server Components and Server Actions, which are beyond the scope of this SPA-focused course.</p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

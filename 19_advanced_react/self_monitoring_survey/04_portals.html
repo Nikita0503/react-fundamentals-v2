@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does createPortal do?</h4><br/>
+( ) Creates a new React root for rendering an independent app
+( ) Teleports a component's state to a different part of the React tree
+(x) Renders children into a different DOM node outside the parent's DOM hierarchy
+( ) Opens a new browser window and renders the component there
+
+<h4 style="color: #474747; font-weight: 600;">Why use a portal for modals?</h4><br/>
+( ) Portals make modals render faster than normal components
+( ) Modals can't use useState without portals
+(x) To avoid clipping from overflow:hidden or z-index issues on parent elements
+( ) React requires all modals to use portals
+
+<h4 style="color: #474747; font-weight: 600;">Do React events still work normally with portals?</h4><br/>
+( ) No — events don't work at all inside portals
+( ) No — you need to manually attach event listeners to the portal DOM node
+(x) Yes — events bubble through the React component tree, not the DOM tree
+( ) Yes — but only onClick, other events are lost
+
+<h4 style="color: #474747; font-weight: 600;">What do you need in index.html for portals?</h4><br/>
+( ) A special React portal script tag
+( ) Nothing — portals create their own DOM nodes automatically
+(x) A separate DOM element as the portal target — e.g., &lt;div id="modal-root"&gt;
+( ) A CSS rule that enables portal rendering

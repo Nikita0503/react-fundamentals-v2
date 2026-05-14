@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What does React.lazy() do?</h4><br/>
+( ) Makes a component render slower to save CPU resources
+( ) Delays the component's first render by a specified timeout
+(x) Dynamically imports a component — it loads from the server only when first rendered
+( ) Caches a component so it doesn't re-render unnecessarily
+
+<h4 style="color: #474747; font-weight: 600;">What does Suspense's fallback prop show?</h4><br/>
+( ) An error message when the lazy component fails to load
+( ) The previous version of the component while the new one loads
+(x) A loading UI displayed while the lazy component's code is being downloaded
+( ) Nothing — it hides the area until the component is ready
+
+<h4 style="color: #474747; font-weight: 600;">When should you use lazy loading?</h4><br/>
+( ) For every component to minimize bundle size
+( ) For small utility components like buttons and icons
+(x) For route-level pages, heavy rarely-used components, modals, admin panels
+( ) Only for components that make API calls
+
+<h4 style="color: #474747; font-weight: 600;">What must a lazily-loaded file have?</h4><br/>
+( ) A named export matching the component name
+( ) An async function as the component body
+(x) A default export — React.lazy requires it
+( ) A special "lazy" flag in the file header

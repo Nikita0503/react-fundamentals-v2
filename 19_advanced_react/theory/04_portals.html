@@ -1,0 +1,133 @@
+<h3 style="color: #76cdd8;"><strong>The Problem</strong></h3>
+
+<p>Sometimes you need to render a component outside its parent's DOM hierarchy. Common situations:</p>
+
+<ul>
+<li>A modal inside a deeply nested component gets clipped by <code>overflow: hidden</code> on a parent element</li>
+<li>A tooltip needs to appear above everything but is rendered inside a card with a low <code>z-index</code></li>
+<li>A dropdown menu gets cut off by a scrollable container</li>
+</ul>
+
+<p>The root cause: CSS properties like <code>overflow</code>, <code>z-index</code>, and <code>transform</code> create "stacking contexts" that trap child elements visually. Even if you set <code>z-index: 9999</code>, the element can't escape its parent's stacking context.</p>
+
+<h3 style="color: #76cdd8;"><strong>Portals — Render Children Into a Different DOM Node</strong></h3>
+
+<p>A portal lets you render a React component's output into a DOM node that exists outside the parent component's DOM tree. The component stays in the React tree (for state, context, events) but its HTML output appears elsewhere in the actual DOM.</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { createPortal } from "react-dom";
+
+const Modal = ({ isOpen, onClose, children }: {
+  isOpen: boolean;
+  onClose: () =&gt; void;
+  children: React.ReactNode;
+}) =&gt; {
+  if (!isOpen) return null;
+
+  return createPortal(
+    &lt;div className="modal-overlay" onClick={onClose}&gt;
+      &lt;div className="modal-content" onClick={(e) =&gt; e.stopPropagation()}&gt;
+        {children}
+        &lt;button onClick={onClose}&gt;Close&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;,
+    document.getElementById("modal-root")! // renders HERE in the DOM
+  );
+};</code></pre>
+
+<p><code>createPortal(children, domNode)</code> takes two arguments: the JSX to render, and the DOM element where it should appear.</p>
+
+<h3 style="color: #76cdd8;"><strong>Setup — Add a Portal Target in Your HTML</strong></h3>
+
+<p>You need a separate DOM element for the portal to render into. Add it to your <code>index.html</code>:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">&lt;!-- index.html --&gt;
+&lt;body&gt;
+  &lt;div id="root"&gt;&lt;/div&gt;          &lt;!-- your React app --&gt;
+  &lt;div id="modal-root"&gt;&lt;/div&gt;    &lt;!-- portal target for modals --&gt;
+&lt;/body&gt;</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Usage Example</strong></h3>
+
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
+
+const ProductPage = () =&gt; {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Product Details&lt;/h1&gt;
+      &lt;button onClick={() =&gt; setShowModal(true)}&gt;Delete Product&lt;/button&gt;
+
+      &lt;Modal isOpen={showModal} onClose={() =&gt; setShowModal(false)}&gt;
+        &lt;h2&gt;Are you sure?&lt;/h2&gt;
+        &lt;p&gt;This action cannot be undone.&lt;/p&gt;
+      &lt;/Modal&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Key Behavior — Events Still Bubble Through React Tree</strong></h3>
+
+<p>This is important to understand: even though the modal renders in <code>#modal-root</code> in the actual DOM, React events (<code>onClick</code>, etc.) still bubble through the <strong>React component tree</strong>, not the DOM tree.</p>
+
+<p>This means a click inside the portal can be caught by a parent React component's <code>onClick</code> handler — even though in the DOM they're in completely different branches. This is usually what you want (context and events work normally), but be aware of it when debugging unexpected event handling.</p>
+
+<h3 style="color: #76cdd8;"><strong>Common Portal Use Cases</strong></h3>
+
+<ul>
+<li>Modals / dialogs</li>
+<li>Tooltips</li>
+<li>Dropdown menus</li>
+<li>Toast notifications</li>
+<li>Full-screen overlays</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>When NOT to Use Portals</strong></h3>
+
+<ul>
+<li>If the component renders fine without clipping issues — just use normal rendering</li>
+<li>Don't use portals just because something is "on top" — <code>z-index</code> often suffices when there's no stacking context trap</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+        @media only screen and (max-width: 500px) {
+        .img-row-container {
+                align-items: center;
+                flex-direction: column;
+        }
+        .img-row {
+                width: 90%;
+        }
+        .img-row img {
+                width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
