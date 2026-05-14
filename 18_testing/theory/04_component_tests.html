@@ -1,0 +1,137 @@
+<h3 style="color: #76cdd8;"><strong>What Is a Component Test?</strong></h3>
+
+<p>A component test renders a React component into a virtual DOM and verifies it produces the correct output. You check what the user would see and interact with — not internal implementation details.</p>
+
+<h3 style="color: #76cdd8;"><strong>React Testing Library (RTL) Philosophy</strong></h3>
+
+<p>React Testing Library is built on one principle: <strong>test components the way users interact with them</strong>. Users don't know about state variables, class names, or component instances. They see text, buttons, inputs, and links. So your tests should find elements by visible text, roles, and labels — NOT by internal implementation.</p>
+
+<h3 style="color: #76cdd8;"><strong>render() — Rendering a Component</strong></h3>
+
+<p><code>render()</code> takes a React component and renders it into a virtual DOM that you can query:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { render, screen } from "@testing-library/react";
+import { Greeting } from "./Greeting";
+
+it("renders the greeting message", () =&gt; {
+  render(&lt;Greeting name="Alice" /&gt;);
+  expect(screen.getByText("Hello, Alice!")).toBeInTheDocument();
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>screen Queries — How to Find Elements</strong></h3>
+
+<p>The <code>screen</code> object provides methods to find rendered elements. Prefer queries that reflect how users find things:</p>
+
+<table>
+<tr><th>Query</th><th>Use when</th></tr>
+<tr><td><code>getByRole("button")</code></td><td>Element has an ARIA role (button, heading, link, textbox). <strong>Preferred!</strong></td></tr>
+<tr><td><code>getByText("Submit")</code></td><td>Find by visible text content</td></tr>
+<tr><td><code>getByLabelText("Email")</code></td><td>Find input by its associated label (great for accessibility!)</td></tr>
+<tr><td><code>getByPlaceholderText("Search...")</code></td><td>Find by placeholder text</td></tr>
+<tr><td><code>getByTestId("custom-id")</code></td><td>Last resort — when no semantic query works</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Query Variants — getBy, queryBy, findBy</strong></h3>
+
+<p>Each query comes in three variants that behave differently when the element is missing:</p>
+
+<table>
+<tr><th>Prefix</th><th>Behavior</th><th>Use when</th></tr>
+<tr><td><code>getBy</code></td><td>Throws an error if not found</td><td>Element MUST be there right now</td></tr>
+<tr><td><code>queryBy</code></td><td>Returns <code>null</code> if not found</td><td>Asserting element is NOT there</td></tr>
+<tr><td><code>findBy</code></td><td>Waits (async) until element appears</td><td>Element appears after an async operation (API call, timer)</td></tr>
+</table>
+
+<pre class="prettyprint"><code class="lang-tsx">// Element MUST exist right now — throws if missing
+expect(screen.getByRole("button")).toBeInTheDocument();
+
+// Element must NOT exist — queryBy returns null instead of throwing
+expect(screen.queryByText("Error")).not.toBeInTheDocument();
+
+// Element appears after loading (async) — findBy waits up to 1 second
+const userName = await screen.findByText("Alice");</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Common Assertions (from @testing-library/jest-dom)</strong></h3>
+
+<p>These matchers are added by the <code>@testing-library/jest-dom</code> package and work on DOM elements:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">expect(element).toBeInTheDocument();           // element exists in the DOM
+expect(element).toHaveTextContent("Hello");    // element contains this text
+expect(element).toBeDisabled();                // button/input is disabled
+expect(element).toBeEnabled();                 // button/input is enabled
+expect(element).toHaveAttribute("href", "/about"); // has specific attribute value
+expect(element).toHaveClass("active");         // has specific CSS class
+expect(element).toBeVisible();                 // element is visible to the user</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Testing Conditional Rendering</strong></h3>
+
+<p>One of the most common things to test — does the component show/hide elements based on props or state?</p>
+
+<pre class="prettyprint"><code class="lang-tsx">// Component
+const Alert = ({ type, message }: { type: "error" | "success"; message: string }) =&gt; (
+  &lt;div role="alert" className={type}&gt;
+    {type === "error" &amp;&amp; &lt;span&gt;⚠️&lt;/span&gt;}
+    {message}
+  &lt;/div&gt;
+);
+
+// Tests
+describe("Alert", () =&gt; {
+  it("shows error icon for error type", () =&gt; {
+    render(&lt;Alert type="error" message="Something failed" /&gt;);
+    expect(screen.getByText("⚠️")).toBeInTheDocument();
+  });
+
+  it("does not show error icon for success type", () =&gt; {
+    render(&lt;Alert type="success" message="Done!" /&gt;);
+    expect(screen.queryByText("⚠️")).not.toBeInTheDocument();
+  });
+
+  it("displays the message", () =&gt; {
+    render(&lt;Alert type="success" message="All good" /&gt;);
+    expect(screen.getByRole("alert")).toHaveTextContent("All good");
+  });
+});</code></pre>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

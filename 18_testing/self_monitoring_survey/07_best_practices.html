@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">Why are snapshot tests considered an antipattern?</h4><br/> 
+( ) They are too slow to run in CI/CD pipelines
+( ) They don't work with TypeScript components
+(x) They break on any change, developers update without reviewing, and they don't explain what broke or why
+( ) They require a real browser environment to execute
+
+<h4 style="color: #474747; font-weight: 600;">What is the "golden rule" of testing?</h4><br/> 
+( ) Always achieve 100% code coverage
+( ) Write at least 3 tests for every function
+(x) Test your code the way a user would use it — focus on behavior, not implementation
+( ) Mock everything except the component you're testing
+
+<h4 style="color: #474747; font-weight: 600;">What coverage percentage is a good target?</h4><br/> 
+( ) 100% — anything less means untested code
+( ) 50% — just cover the critical paths
+(x) 80%+ — good balance of effort vs confidence. 100% is usually not worth the effort.
+( ) Coverage doesn't matter — only test quality counts
+
+<h4 style="color: #474747; font-weight: 600;">What is a "flaky test"?</h4><br/> 
+( ) A test that always fails because of a bug in the code
+( ) A test that takes too long to execute
+(x) A test that sometimes passes and sometimes fails — usually due to timing or async issues
+( ) A test that only works on one developer's machine

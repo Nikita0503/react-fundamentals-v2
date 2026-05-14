@@ -1,0 +1,142 @@
+<h3 style="color: #76cdd8;"><strong>What TO Test</strong></h3>
+
+<ul>
+<li><strong>Conditional rendering</strong> — shows X when prop is Y, hides Z when state is W</li>
+<li><strong>User interactions</strong> — click button → something visible happens</li>
+<li><strong>Callback invocations</strong> — child component calls parent's handler with correct arguments</li>
+<li><strong>Form validation</strong> — shows error message when input is invalid, submits when valid</li>
+<li><strong>Loading/error/success states</strong> — component shows correct UI for each state</li>
+<li><strong>Data transformations</strong> — utility functions that convert data from one format to another</li>
+<li><strong>Edge cases</strong> — empty arrays, null values, boundary conditions (0, negative numbers, very long strings)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What NOT to Test</strong></h3>
+
+<ul>
+<li><strong>Implementation details</strong> — internal state variable names, how many times setState was called, which internal function was used. If the user can't tell the difference, the test shouldn't care.</li>
+<li><strong>Static markup without logic</strong> — a div with fixed text that never changes. No logic = nothing to break.</li>
+<li><strong>Third-party library internals</strong> — don't test that React Router navigates correctly. Test that YOUR code calls <code>navigate("/dashboard")</code> with the right path.</li>
+<li><strong>CSS classes</strong> — unless they depend on props/state (like <code>className={isActive ? "active" : ""}</code>)</li>
+<li><strong>That a component "renders without crashing"</strong> — too vague, catches nothing meaningful. Test specific behavior instead.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Snapshot Tests — Why They're an Antipattern</strong></h3>
+
+<p>A "snapshot test" captures the entire rendered HTML output of a component and saves it to a file. Next time the test runs, it compares the current output to the saved snapshot. If anything changed, the test fails.</p>
+
+<p>Why this sounds good but is actually harmful:</p>
+
+<ul>
+<li>They break on ANY change — even intentional ones (adding a CSS class, changing text)</li>
+<li>Developers just run "update snapshots" without reviewing what changed → tests become meaningless rubber stamps</li>
+<li>They don't tell you WHAT broke or WHY — just "something in the HTML is different"</li>
+<li>They give false confidence — 100 snapshot tests passing means nothing if nobody reviews the snapshots</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-tsx">// ❌ Snapshot — breaks on any change, tells you nothing useful
+it("matches snapshot", () =&gt; {
+  const { container } = render(&lt;Button label="Click" /&gt;);
+  expect(container).toMatchSnapshot();
+});
+
+// ✅ Specific assertion — tells you exactly what matters
+it("renders the label text", () =&gt; {
+  render(&lt;Button label="Click" /&gt;);
+  expect(screen.getByRole("button")).toHaveTextContent("Click");
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Test File Structure</strong></h3>
+
+<p>Co-locate tests next to source files — don't put them in a separate <code>__tests__</code> folder:</p>
+
+<pre class="prettyprint"><code class="lang-ts">src/
+├── components/
+│   ├── Button.tsx
+│   ├── Button.test.tsx    ← right next to it
+│   ├── Card.tsx
+│   └── Card.test.tsx
+├── utils/
+│   ├── formatPrice.ts
+│   └── formatPrice.test.ts</code></pre>
+
+<p>Benefits:</p>
+<ul>
+<li>Easy to find — test is always next to the code it tests</li>
+<li>Easy to see what's tested — missing <code>.test</code> file = missing tests</li>
+<li>Moves with the file during refactoring — no broken paths</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Coverage</strong></h3>
+
+<p>"Coverage" is a percentage showing how much of your source code is actually executed during tests. There are several types:</p>
+
+<ul>
+<li><strong>Line coverage</strong> — what percentage of code lines were executed</li>
+<li><strong>Branch coverage</strong> — what percentage of if/else paths were taken</li>
+<li><strong>Function coverage</strong> — what percentage of functions were called</li>
+</ul>
+
+<p>Guidelines:</p>
+<ul>
+<li>Target: <strong>80%+</strong> is a good goal for most projects</li>
+<li>100% is usually not worth the effort — diminishing returns on the last 20%</li>
+<li>Coverage doesn't mean quality — you can have 100% coverage with bad tests that assert nothing meaningful</li>
+<li>Use coverage as a guide: "what important paths am I missing?" — not as a goal in itself</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Common Mistakes</strong></h3>
+
+<ol>
+<li><strong>Testing implementation, not behavior</strong> — "state was set to X" vs "user sees X on screen." Always test what the user would observe.</li>
+<li><strong>Over-mocking</strong> — mocking so much that you're not testing anything real. If everything is fake, what are you actually verifying?</li>
+<li><strong>Flaky tests</strong> — a "flaky test" is one that sometimes passes and sometimes fails without any code change. Usually caused by timing issues, race conditions, or tests depending on each other. Fix with: <code>waitFor</code>, <code>findBy</code>, proper cleanup.</li>
+<li><strong>Testing library internals</strong> — testing that React Router navigates or that Zustand updates its store. Test YOUR code's behavior, not the library's.</li>
+<li><strong>Not cleaning up</strong> — forgetting <code>afterEach</code> cleanup means one test's state leaks into the next, causing mysterious failures.</li>
+</ol>
+
+<h3 style="color: #76cdd8;"><strong>The Golden Rule</strong></h3>
+
+<p><strong>Test your code the way a user would use it.</strong> If a user can't tell the difference between two implementations, the test shouldn't either. Focus on inputs (props, user actions) and outputs (what appears on screen, what callbacks are called) — not on internal mechanics.</p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

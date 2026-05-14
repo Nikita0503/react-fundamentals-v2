@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">When should you use userEvent over fireEvent?</h4><br/> 
+( ) Always — fireEvent is deprecated
+( ) Only when testing click events on buttons
+(x) When you need realistic event simulation — typing, tabbing, complex interactions that trigger full event sequences
+( ) Only when testing components that use React Hook Form
+
+<h4 style="color: #474747; font-weight: 600;">How do you test that an API-dependent component shows data?</h4><br/> 
+( ) Call the real API in the test and wait for the response
+( ) Skip testing async components — they're too complex
+(x) Mock the API, render the component, use findBy to wait for data to appear in the DOM
+( ) Use setTimeout to wait a fixed amount of time for the data
+
+<h4 style="color: #474747; font-weight: 600;">What does waitFor do?</h4><br/> 
+( ) Pauses the test for a fixed number of milliseconds
+( ) Waits for the component to unmount
+(x) Repeatedly runs an assertion until it passes or times out
+( ) Waits for all pending promises to resolve
+
+<h4 style="color: #474747; font-weight: 600;">What is MSW (Mock Service Worker)?</h4><br/> 
+( ) A browser extension for recording API responses
+( ) A Node.js server that replaces your backend during development
+(x) A tool that intercepts network requests at the network level for more realistic API mocking in tests
+( ) A React component that displays mock data in the UI

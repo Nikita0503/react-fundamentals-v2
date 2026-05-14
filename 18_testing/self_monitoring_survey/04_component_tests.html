@@ -1,0 +1,23 @@
+<h4 style="color: #474747; font-weight: 600;">What query should you prefer for finding elements?</h4><br/> 
+( ) getByTestId — it's the most reliable
+( ) getByClassName — it matches CSS classes
+(x) getByRole — it's accessible and semantic (how users and assistive technology find elements)
+( ) querySelector — it's the standard DOM API
+
+<h4 style="color: #474747; font-weight: 600;">When do you use queryBy instead of getBy?</h4><br/> 
+( ) When you want to find multiple elements at once
+( ) When the element might take time to appear
+(x) When asserting an element is NOT in the document — queryBy returns null instead of throwing
+( ) When testing async components that load data
+
+<h4 style="color: #474747; font-weight: 600;">When do you use findBy?</h4><br/> 
+( ) When you want to find elements by CSS selector
+(x) When the element appears asynchronously — findBy waits for it (up to 1 second by default)
+( ) When you need to find multiple matching elements
+( ) When the element is hidden and you need to check its existence
+
+<h4 style="color: #474747; font-weight: 600;">What does toBeInTheDocument() check?</h4><br/> 
+( ) That the element is visible on screen (not hidden by CSS)
+( ) That the element has been rendered at least once during the test
+(x) That the element exists in the rendered DOM right now
+( ) That the element has the correct HTML tag name

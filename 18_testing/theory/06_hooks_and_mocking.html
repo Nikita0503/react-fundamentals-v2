@@ -1,0 +1,180 @@
+<h3 style="color: #76cdd8;"><strong>Testing Custom Hooks with renderHook</strong></h3>
+
+<p>Custom hooks can't be called outside of a component. <code>renderHook</code> solves this — it renders your hook in a minimal wrapper component so you can test it in isolation:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { renderHook, act } from "@testing-library/react";
+import { useCounter } from "./useCounter";
+
+describe("useCounter", () =&gt; {
+  it("starts with initial value", () =&gt; {
+    const { result } = renderHook(() =&gt; useCounter(5));
+    expect(result.current.count).toBe(5);
+  });
+
+  it("increments the count", () =&gt; {
+    const { result } = renderHook(() =&gt; useCounter(0));
+
+    act(() =&gt; {
+      result.current.increment();
+    });
+
+    expect(result.current.count).toBe(1);
+  });
+});</code></pre>
+
+<ul>
+<li><code>renderHook</code> — renders a hook outside of a real component (for isolated testing)</li>
+<li><code>result.current</code> — the current return value of the hook (updates after state changes)</li>
+<li><code>act()</code> — wraps code that triggers state updates. It tells React: "process this update completely before I make assertions." Required whenever you call functions that change state.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Mocking Modules with vi.mock</strong></h3>
+
+<p>"Mocking" means replacing a real module with a fake version you control. This lets you isolate the code you're testing from its dependencies:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { vi } from "vitest";
+
+// Replace the entire module with fake implementations
+vi.mock("./api/users", () =&gt; ({
+  fetchUser: vi.fn().mockResolvedValue({ id: 1, name: "Alice" }),
+}));</code></pre>
+
+<ul>
+<li>The real <code>fetchUser</code> is never called — your fake version runs instead</li>
+<li>Useful for: API calls, external libraries, modules with side effects (like logging or analytics)</li>
+<li>The mock is applied to the entire test file</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>vi.fn() — Creating Mock Functions</strong></h3>
+
+<p>A "mock function" (also called a "stub") is a fake function that tracks how it was called and lets you control what it returns:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const mockCallback = vi.fn();
+
+// Call it like a normal function
+mockCallback("hello", 42);
+
+// Assert HOW it was called
+expect(mockCallback).toHaveBeenCalledTimes(1);
+expect(mockCallback).toHaveBeenCalledWith("hello", 42);
+
+// Control what it returns
+const mockFetch = vi.fn().mockReturnValue("data");
+const mockAsync = vi.fn().mockResolvedValue({ id: 1 }); // for async functions</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>vi.spyOn — Spy on Existing Methods</strong></h3>
+
+<p>Unlike <code>vi.mock</code> (which replaces an entire module), <code>spyOn</code> watches a specific method on an existing object. You can track calls without replacing the whole module:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">const spy = vi.spyOn(console, "error").mockImplementation(() =&gt; {});
+
+// ... run code that calls console.error ...
+
+expect(spy).toHaveBeenCalledTimes(1);
+spy.mockRestore(); // restore the original console.error</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Mocking Timers</strong></h3>
+
+<p>Some code uses <code>setTimeout</code> or <code>setInterval</code> (like debounce). You don't want tests to actually wait 300ms. Fake timers let you control time manually:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { vi } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useDebounce } from "./useDebounce";
+
+describe("useDebounce", () =&gt; {
+  beforeEach(() =&gt; vi.useFakeTimers());  // replace real timers with fakes
+  afterEach(() =&gt; vi.useRealTimers());   // always restore real timers!
+
+  it("returns debounced value after delay", () =&gt; {
+    const { result, rerender } = renderHook(
+      ({ value }) =&gt; useDebounce(value, 300),
+      { initialProps: { value: "hello" } }
+    );
+
+    // Change the value
+    rerender({ value: "world" });
+    expect(result.current).toBe("hello"); // not updated yet — timer hasn't fired
+
+    // Fast-forward time by 300ms
+    act(() =&gt; { vi.advanceTimersByTime(300); });
+    expect(result.current).toBe("world"); // now updated!
+  });
+});</code></pre>
+
+<ul>
+<li><code>vi.useFakeTimers()</code> — replaces <code>setTimeout</code>/<code>setInterval</code> with controllable fakes</li>
+<li><code>vi.advanceTimersByTime(ms)</code> — fast-forward time by the specified milliseconds</li>
+<li><code>vi.useRealTimers()</code> — restore real timers (always do this in <code>afterEach</code> to avoid affecting other tests!)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Mocking react-router</strong></h3>
+
+<p>When your component uses routing hooks, you need to mock them:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">vi.mock("react-router-dom", async () =&gt; {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,                          // keep all real exports
+    useNavigate: () =&gt; vi.fn(),         // replace only what you need
+    useParams: () =&gt; ({ id: "42" }),
+  };
+});</code></pre>
+
+<p><code>vi.importActual</code> imports the real module so you can keep most of it intact and only override specific exports.</p>
+
+<h3 style="color: #76cdd8;"><strong>Jest Equivalents (for Reference)</strong></h3>
+
+<p>If you encounter Jest code in tutorials or older projects, here's the translation:</p>
+
+<table>
+<tr><th>Vitest</th><th>Jest</th></tr>
+<tr><td><code>vi.mock("module")</code></td><td><code>jest.mock("module")</code></td></tr>
+<tr><td><code>vi.fn()</code></td><td><code>jest.fn()</code></td></tr>
+<tr><td><code>vi.spyOn(obj, "method")</code></td><td><code>jest.spyOn(obj, "method")</code></td></tr>
+<tr><td><code>vi.useFakeTimers()</code></td><td><code>jest.useFakeTimers()</code></td></tr>
+<tr><td><code>vi.advanceTimersByTime(ms)</code></td><td><code>jest.advanceTimersByTime(ms)</code></td></tr>
+<tr><td><code>vi.importActual("module")</code></td><td><code>jest.requireActual("module")</code></td></tr>
+</table>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

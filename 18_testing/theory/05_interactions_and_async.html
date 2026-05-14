@@ -1,0 +1,173 @@
+<h3 style="color: #76cdd8;"><strong>Simulating User Interactions</strong></h3>
+
+<p>Components are interactive — users click buttons, type in inputs, submit forms. Testing libraries provide two ways to simulate these interactions:</p>
+
+<h3 style="color: #76cdd8;"><strong>fireEvent — Simple and Fast</strong></h3>
+
+<p><code>fireEvent</code> dispatches a single DOM event synchronously. It's fast and straightforward:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { render, screen, fireEvent } from "@testing-library/react";
+
+it("increments counter on click", () =&gt; {
+  render(&lt;Counter /&gt;);
+  fireEvent.click(screen.getByRole("button", { name: /increment/i }));
+  expect(screen.getByText("Count: 1")).toBeInTheDocument();
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>userEvent — More Realistic</strong></h3>
+
+<p><code>userEvent</code> simulates the full event sequence that a real user triggers. For example, typing fires: focus → keydown → keypress → input → keyup for each character. This catches bugs that fireEvent misses (like form validation that triggers on blur):</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import userEvent from "@testing-library/user-event";
+
+it("types in the search input", async () =&gt; {
+  const user = userEvent.setup();
+  render(&lt;SearchBar /&gt;);
+
+  const input = screen.getByPlaceholderText("Search...");
+  await user.type(input, "react");
+
+  expect(input).toHaveValue("react");
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>When to Use Which?</strong></h3>
+
+<ul>
+<li><code>fireEvent</code> — simple clicks, fast tests, when you don't need the full event simulation</li>
+<li><code>userEvent</code> — typing, tabbing, complex interactions, when you need realistic behavior (form validation triggers, focus management, etc.)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Testing Forms</strong></h3>
+
+<p>Forms combine multiple interactions. Here's a complete form test using <code>userEvent</code>:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">it("submits form with entered data", async () =&gt; {
+  const handleSubmit = vi.fn(); // vi.fn() creates a mock function (a fake that tracks calls)
+  const user = userEvent.setup();
+  render(&lt;ContactForm onSubmit={handleSubmit} /&gt;);
+
+  await user.type(screen.getByLabelText("Name"), "Alice");
+  await user.type(screen.getByLabelText("Email"), "alice@test.com");
+  await user.click(screen.getByRole("button", { name: /submit/i }));
+
+  expect(handleSubmit).toHaveBeenCalledTimes(1);
+  expect(handleSubmit).toHaveBeenCalledWith({
+    name: "Alice",
+    email: "alice@test.com",
+  });
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Testing Async Behavior (API Calls)</strong></h3>
+
+<p>Many components fetch data from APIs. To test them, you mock the API call (replace it with a fake that returns predictable data), then wait for the UI to update:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { vi } from "vitest";
+
+// Mock fetch globally — replace the real fetch with a fake
+global.fetch = vi.fn();
+
+it("displays posts after loading", async () =&gt; {
+  // Arrange: tell the fake fetch what to return
+  (fetch as ReturnType&lt;typeof vi.fn&gt;).mockResolvedValueOnce({
+    ok: true,
+    json: () =&gt; Promise.resolve([{ id: 1, title: "Test Post" }]),
+  });
+
+  render(&lt;PostList /&gt;);
+
+  // Initially shows loading state
+  expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+  // Wait for data to appear (findBy waits automatically)
+  expect(await screen.findByText("Test Post")).toBeInTheDocument();
+
+  // Loading is gone
+  expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>waitFor — Wait for an Assertion to Pass</strong></h3>
+
+<p><code>waitFor</code> repeatedly runs an assertion until it passes (or times out). Use it when you can't use <code>findBy</code> — for example, when asserting something disappeared:</p>
+
+<pre class="prettyprint"><code class="lang-tsx">import { waitFor } from "@testing-library/react";
+
+await waitFor(() =&gt; {
+  expect(screen.getByText("Success!")).toBeInTheDocument();
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>MSW (Mock Service Worker) — Realistic API Mocking</strong></h3>
+
+<p>MSW is a more realistic way to mock APIs. Instead of replacing the <code>fetch</code> function directly, MSW intercepts network requests at the network level. Your component code runs exactly as in production — it calls real <code>fetch</code>, and MSW intercepts the request and returns mock data.</p>
+
+<pre class="prettyprint"><code class="lang-ts">// mocks/handlers.ts
+import { http, HttpResponse } from "msw";
+
+export const handlers = [
+  http.get("/api/posts", () =&gt; {
+    return HttpResponse.json([
+      { id: 1, title: "Mocked Post" },
+    ]);
+  }),
+];</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// mocks/server.ts
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+
+export const server = setupServer(...handlers);</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// test setup (in your setup file or test file)
+beforeAll(() =&gt; server.listen());       // start intercepting requests
+afterEach(() =&gt; server.resetHandlers()); // reset to default handlers between tests
+afterAll(() =&gt; server.close());          // stop intercepting</code></pre>
+
+<p>Benefits of MSW:</p>
+<ul>
+<li>No mocking fetch/axios directly — your component code is untouched</li>
+<li>Tests are more realistic — the full request/response cycle runs</li>
+<li>Handlers are reusable across many tests</li>
+<li>Install: <code>npm install -D msw</code></li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

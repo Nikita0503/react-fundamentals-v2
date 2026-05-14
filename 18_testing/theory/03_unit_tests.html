@@ -1,0 +1,154 @@
+<h3 style="color: #76cdd8;"><strong>What Is a Unit Test?</strong></h3>
+
+<p>A unit test tests a single "unit" of code in isolation — a function, a utility, a pure computation. It answers the question: "does this one piece work correctly by itself?"</p>
+
+<h3 style="color: #76cdd8;"><strong>The AAA Pattern</strong></h3>
+
+<p>Every well-structured test has three parts (AAA = Arrange, Act, Assert):</p>
+
+<ul>
+<li><strong>Arrange</strong> — set up the data and conditions needed for the test</li>
+<li><strong>Act</strong> — call the function or trigger the action you're testing</li>
+<li><strong>Assert</strong> — check that the result is what you expected</li>
+</ul>
+
+<pre class="prettyprint"><code class="lang-ts">it("formats price with dollar sign", () =&gt; {
+  // Arrange
+  const price = 10.5;
+
+  // Act
+  const result = formatPrice(price);
+
+  // Assert
+  expect(result).toBe("$10.50");
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>describe and it</strong></h3>
+
+<ul>
+<li><code>describe("groupName", () =&gt; { ... })</code> — groups related tests together under a common name</li>
+<li><code>it("does something specific", () =&gt; { ... })</code> — defines one individual test case</li>
+<li>Read them together as a sentence: "describe formatPrice → it formats price with dollar sign"</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Common Matchers</strong></h3>
+
+<p>Matchers are the methods that perform the actual comparison. Here are the ones you'll use most:</p>
+
+<pre class="prettyprint"><code class="lang-ts">// Equality
+expect(value).toBe(5);              // strict equality (===) — use for primitives (numbers, strings, booleans)
+expect(obj).toEqual({ a: 1 });      // deep equality — use for objects and arrays (compares contents)
+
+// Truthiness
+expect(value).toBeTruthy();         // passes if value is not null/undefined/0/""
+expect(value).toBeFalsy();          // passes if value IS null/undefined/0/""
+expect(value).toBeNull();           // passes only if value === null
+expect(value).toBeUndefined();      // passes only if value === undefined
+
+// Numbers
+expect(value).toBeGreaterThan(3);
+expect(value).toBeLessThanOrEqual(10);
+
+// Strings
+expect(str).toContain("hello");     // checks if "hello" is a substring
+expect(str).toMatch(/pattern/);     // checks against a regex pattern
+
+// Arrays
+expect(arr).toHaveLength(3);        // array has exactly 3 items
+expect(arr).toContain("item");      // array includes "item"
+
+// Errors
+expect(() =&gt; riskyFn()).toThrow();                  // function throws any error
+expect(() =&gt; riskyFn()).toThrow("specific message"); // function throws with this message</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Full Example — Testing a Utility Module</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">// src/utils/formatDate.ts
+export const formatDate = (date: Date): string =&gt; {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+export const isToday = (date: Date): boolean =&gt; {
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
+};</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// src/utils/formatDate.test.ts
+import { describe, it, expect } from "vitest";
+import { formatDate, isToday } from "./formatDate";
+
+describe("formatDate", () =&gt; {
+  it("formats date in US format", () =&gt; {
+    const date = new Date("2025-03-15");
+    expect(formatDate(date)).toBe("Mar 15, 2025");
+  });
+});
+
+describe("isToday", () =&gt; {
+  it("returns true for today's date", () =&gt; {
+    expect(isToday(new Date())).toBe(true);
+  });
+
+  it("returns false for yesterday", () =&gt; {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    expect(isToday(yesterday)).toBe(false);
+  });
+});</code></pre>
+
+<h3 style="color: #76cdd8;"><strong>Test Naming Conventions</strong></h3>
+
+<ul>
+<li>Describe WHAT the function does, not HOW it does it internally</li>
+<li>Good: <code>"returns empty array when input is empty"</code></li>
+<li>Good: <code>"throws error when email is invalid"</code></li>
+<li>Bad: <code>"test 1"</code>, <code>"works correctly"</code>, <code>"should work"</code></li>
+<li>Think of test names as a specification — someone reading just the test names should understand what the function does</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

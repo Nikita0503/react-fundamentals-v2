@@ -1,0 +1,150 @@
+<h3 style="color: #76cdd8;"><strong>Vitest — The Recommended Test Runner</strong></h3>
+
+<p>Vitest is the recommended test runner for modern React projects. Here's why:</p>
+
+<ul>
+<li>Built on Vite (same config, same speed as your dev server)</li>
+<li>Native ESM support (no transform issues with modern JavaScript modules)</li>
+<li>API compatible with Jest (the older standard) — easy migration between them</li>
+<li>Fast: parallel execution, smart watch mode that only re-runs affected tests</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Installation</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom</code></pre>
+
+<p>What each package does:</p>
+
+<ul>
+<li><code>vitest</code> — the test runner itself (finds and executes test files, reports results)</li>
+<li><code>@testing-library/react</code> — utilities to render React components in tests and query the rendered output</li>
+<li><code>@testing-library/jest-dom</code> — extra matchers for DOM assertions (like <code>toBeInTheDocument()</code>, <code>toHaveTextContent()</code>)</li>
+<li><code>@testing-library/user-event</code> — simulates real user interactions (typing, clicking) more realistically than basic events</li>
+<li><code>jsdom</code> — a fake browser environment that runs in Node.js. Since tests run in Node (not a real browser), jsdom provides the DOM APIs (document, window, etc.) that your components need</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Configuration — vitest.config.ts</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: "jsdom",
+    globals: true, // no need to import describe/it/expect in every file
+    setupFiles: "./src/test/setup.ts",
+  },
+});</code></pre>
+
+<ul>
+<li><code>environment: "jsdom"</code> — tells Vitest to use the fake browser environment</li>
+<li><code>globals: true</code> — makes <code>describe</code>, <code>it</code>, <code>expect</code> available globally (no imports needed)</li>
+<li><code>setupFiles</code> — a file that runs before every test file (for global configuration)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Setup File — src/test/setup.ts</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">import "@testing-library/jest-dom";</code></pre>
+
+<p>This single import adds custom matchers (<code>toBeInTheDocument</code>, <code>toHaveTextContent</code>, <code>toBeDisabled</code>, etc.) to every test file automatically.</p>
+
+<h3 style="color: #76cdd8;"><strong>Package.json Scripts</strong></h3>
+
+<pre class="prettyprint"><code class="lang-ts">{
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  }
+}</code></pre>
+
+<ul>
+<li><code>npm test</code> — starts watch mode (re-runs tests automatically when you save a file)</li>
+<li><code>npm run test:run</code> — single run, then exits (used in CI/CD pipelines)</li>
+<li><code>npm run test:coverage</code> — runs tests and shows a coverage report (which lines of code were executed)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Your First Test</strong></h3>
+
+<p>Let's write a simple utility and test it:</p>
+
+<pre class="prettyprint"><code class="lang-ts">// src/utils/add.ts
+export const add = (a: number, b: number): number =&gt; a + b;</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// src/utils/add.test.ts
+import { describe, it, expect } from "vitest";
+import { add } from "./add";
+
+describe("add", () =&gt; {
+  it("adds two positive numbers", () =&gt; {
+    expect(add(2, 3)).toBe(5);
+  });
+
+  it("handles negative numbers", () =&gt; {
+    expect(add(-1, 1)).toBe(0);
+  });
+});</code></pre>
+
+<ul>
+<li>File naming: <code>*.test.ts</code> or <code>*.test.tsx</code> — placed right next to the source file (co-located)</li>
+<li>Run: <code>npm test</code> → see results in terminal</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Vitest vs Jest — Almost Identical API</strong></h3>
+
+<p>If you learn one, you know the other. The only differences are the import source and config format:</p>
+
+<table>
+<tr><th>Vitest</th><th>Jest</th><th>Notes</th></tr>
+<tr><td><code>vi.mock()</code></td><td><code>jest.mock()</code></td><td>Same syntax</td></tr>
+<tr><td><code>vi.fn()</code></td><td><code>jest.fn()</code></td><td>Same syntax</td></tr>
+<tr><td><code>vi.spyOn()</code></td><td><code>jest.spyOn()</code></td><td>Same syntax</td></tr>
+<tr><td><code>vi.useFakeTimers()</code></td><td><code>jest.useFakeTimers()</code></td><td>Same syntax</td></tr>
+<tr><td><code>describe/it/expect</code></td><td><code>describe/it/expect</code></td><td>Identical</td></tr>
+</table>
+
+<p>If you know Vitest, you know Jest (and vice versa). The only difference is the import (<code>from "vitest"</code> vs global in Jest) and the config file format.</p>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>

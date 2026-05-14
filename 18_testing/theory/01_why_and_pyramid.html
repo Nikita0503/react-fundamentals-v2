@@ -1,0 +1,107 @@
+<h3 style="color: #76cdd8;"><strong>Why Test?</strong></h3>
+
+<p>Before we dive into tools and syntax, let's understand WHY developers write automated tests:</p>
+
+<ul>
+<li><strong>Confidence</strong> — you know your code works without manually clicking through the app every time you make a change.</li>
+<li><strong>Regression prevention</strong> — a "regression" means something that used to work now breaks after a code change. Tests catch regressions automatically — you change one file, run tests, and instantly know if you broke something elsewhere.</li>
+<li><strong>Documentation</strong> — tests describe what the code is supposed to do. New developers read tests to understand expected behavior faster than reading implementation code.</li>
+<li><strong>Refactoring safety</strong> — "refactoring" means changing the internal structure of code without changing its behavior. With tests, you can refactor freely — if tests still pass, behavior is preserved.</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>The Testing Pyramid</strong></h3>
+
+<p>The testing pyramid is a model that shows how many tests of each type you should have. Think of it as a triangle — wide at the bottom, narrow at the top:</p>
+
+<table>
+<tr><th>Level</th><th>Type</th><th>How many?</th><th>Speed</th><th>Confidence</th></tr>
+<tr><td>Top</td><td>E2E (End-to-End)</td><td>FEW</td><td>Slowest</td><td>Highest</td></tr>
+<tr><td>Middle</td><td>Integration</td><td>SOME</td><td>Medium</td><td>High</td></tr>
+<tr><td>Base</td><td>Unit</td><td>MOST</td><td>Fastest</td><td>Good</td></tr>
+</table>
+
+<h3 style="color: #76cdd8;"><strong>Unit Tests (Base — MOST tests)</strong></h3>
+
+<ul>
+<li>Test a single function, hook, or component in isolation</li>
+<li>Fast (milliseconds), cheap to write, run often</li>
+<li>Example: "does <code>formatPrice(10.5)</code> return <code>'$10.50'</code>?"</li>
+<li>If it breaks, you know exactly WHERE the problem is</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Integration Tests (Middle — SOME tests)</strong></h3>
+
+<ul>
+<li>Test multiple units working together as a group</li>
+<li>Example: "does the login form validate input, call the API, and redirect on success?"</li>
+<li>Slower than unit tests, but more realistic — they catch bugs in how pieces connect</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>End-to-End (E2E) Tests (Top — FEW tests)</strong></h3>
+
+<ul>
+<li>Test the entire app from the user's perspective — real browser, real clicks, real navigation</li>
+<li>Tools: Playwright, Cypress</li>
+<li>Slowest, most expensive to write and maintain, but highest confidence that the whole system works</li>
+<li>Usually written by QA engineers or a dedicated team</li>
+<li><strong>We won't cover E2E in this course</strong> — just know they exist at the top of the pyramid</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>What a Frontend Developer Writes</strong></h3>
+
+<p>As a frontend developer, you'll write mostly <strong>unit + integration tests</strong>. In React, the line between them is blurry — rendering a component with its children and mocking only the API is already an integration test. Don't worry about classifying perfectly — focus on testing behavior.</p>
+
+<h3 style="color: #76cdd8;"><strong>Key Terminology</strong></h3>
+
+<p>These terms will appear throughout the course. Here's what each one means in plain language:</p>
+
+<ul>
+<li><strong>Test runner</strong> — the tool that finds your test files, executes them, and reports results. Examples: Vitest, Jest. Think of it as the "engine" that runs your tests.</li>
+<li><strong>Assertion</strong> — a statement in your test that checks if something is true. Example: <code>expect(result).toBe(5)</code> — this asserts that <code>result</code> equals 5. If it doesn't, the test fails.</li>
+<li><strong>Matcher</strong> — the method that does the actual comparison in an assertion. In <code>expect(result).toBe(5)</code>, the matcher is <code>.toBe()</code>. Other matchers: <code>.toEqual()</code>, <code>.toContain()</code>, <code>.toBeNull()</code>.</li>
+<li><strong>Mock</strong> — a fake version of something (a function, a module, an API) used to isolate what you're testing. Instead of calling a real API, you use a mock that returns predictable data instantly.</li>
+<li><strong>Coverage</strong> — a percentage showing how much of your source code is actually executed when tests run. 80% coverage means 80% of your code lines were hit during testing. It's a useful metric but not a guarantee of quality.</li>
+</ul>
+
+<style><!--
+.row-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 48%;
+    }
+    .row img {
+        width: 200px;
+        height: auto;
+    }
+  	@media only screen and (max-width: 500px) {
+    	.img-row-container {
+        	align-items: center;
+          	flex-direction: column;
+    	}
+      	.img-row {
+        	width: 90%;
+        }
+      	.img-row img {
+        	width: 90%;
+          margin-bottom:10px;
+        }
+ .code-background {
+    position: relative;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    overflow-x: auto;
+}
+    }
+--></style>
+<p>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true&amp;skin=sunburst&amp;lang=css" defer="defer"></script>
+</p>
