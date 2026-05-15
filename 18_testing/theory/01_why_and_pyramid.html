@@ -13,6 +13,25 @@
 
 <p>The testing pyramid is a model that shows how many tests of each type you should have. Think of it as a triangle — wide at the bottom, narrow at the top:</p>
 
+<div style="text-align: center; margin: 20px 0;">
+<svg width="300" height="160" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- E2E section (top) -->
+  <polygon points="150,10 119,55 181,55" fill="#e74c3c"/>
+  <!-- Integration section (middle) -->
+  <polygon points="119,55 85,105 215,105 181,55" fill="#f0ad4e"/>
+  <!-- Unit section (base) -->
+  <polygon points="85,105 50,155 250,155 215,105" fill="#27ae60"/>
+  <!-- Text labels inside -->
+  <text x="150" y="40" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="sans-serif">E2E</text>
+  <text x="150" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="sans-serif">Integration</text>
+  <text x="150" y="135" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="sans-serif">Unit</text>
+  <!-- Labels right side -->
+  <text x="192" y="40" fill="#e74c3c" font-size="9" font-family="sans-serif">few, slow</text>
+  <text x="222" y="85" fill="#f0ad4e" font-size="9" font-family="sans-serif">some, medium</text>
+  <text x="255" y="135" fill="#27ae60" font-size="9" font-family="sans-serif">most, fast</text>
+</svg>
+</div>
+
 <table>
 <tr><th>Level</th><th>Type</th><th>How many?</th><th>Speed</th><th>Confidence</th></tr>
 <tr><td>Top</td><td>E2E (End-to-End)</td><td>FEW</td><td>Slowest</td><td>Highest</td></tr>
