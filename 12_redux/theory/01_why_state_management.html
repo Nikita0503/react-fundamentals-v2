@@ -53,6 +53,43 @@ const Header = ({ user }: { user: User }) =&gt; (
 
 <h3 style="color: #76cdd8;"><strong>The Redux Data Flow</strong></h3>
 <p>Redux follows a <strong>unidirectional data flow</strong>. Here's the mental model:</p>
+
+<div style="text-align: center; margin: 20px 0;">
+<svg width="420" height="170" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Component -->
+  <rect x="140" y="5" width="120" height="34" rx="6" fill="#3178c6"/>
+  <text x="200" y="26" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif">Component</text>
+  <!-- Arrow: Component → dispatch (left from component, then down into dispatch) -->
+  <line x1="140" y1="22" x2="70" y2="22" stroke="#888" stroke-width="1.5"/>
+  <line x1="70" y1="22" x2="70" y2="48" stroke="#888" stroke-width="1.5"/>
+  <polygon points="65,48 70,58 75,48" fill="#888"/>
+  <text x="105" y="42" text-anchor="middle" fill="#999" font-size="9" font-family="sans-serif">user clicks</text>
+  <!-- dispatch(action) -->
+  <rect x="10" y="58" width="120" height="34" rx="6" fill="#f0ad4e"/>
+  <text x="70" y="79" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif">dispatch(action)</text>
+  <!-- Arrow: dispatch → Reducer -->
+  <line x1="70" y1="92" x2="70" y2="115" stroke="#888" stroke-width="1.5"/>
+  <polygon points="65,115 70,125 75,115" fill="#888"/>
+  <text x="82" y="110" fill="#999" font-size="9" font-family="sans-serif">action</text>
+  <!-- Reducer -->
+  <rect x="10" y="125" width="120" height="34" rx="6" fill="#e74c3c"/>
+  <text x="70" y="146" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif">Reducer</text>
+  <!-- Arrow: Reducer → Store -->
+  <line x1="130" y1="142" x2="185" y2="142" stroke="#888" stroke-width="1.5"/>
+  <polygon points="185,137 195,142 185,147" fill="#888"/>
+  <text x="158" y="135" text-anchor="middle" fill="#999" font-size="9" font-family="sans-serif">new state</text>
+  <!-- Store -->
+  <rect x="195" y="125" width="120" height="34" rx="6" fill="#27ae60"/>
+  <text x="255" y="146" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif">Store (state)</text>
+  <!-- Arrow: Store → Component (right from store, up, then left into component) -->
+  <line x1="315" y1="142" x2="340" y2="142" stroke="#888" stroke-width="1.5"/>
+  <line x1="340" y1="142" x2="340" y2="22" stroke="#888" stroke-width="1.5"/>
+  <line x1="340" y1="22" x2="270" y2="22" stroke="#888" stroke-width="1.5"/>
+  <polygon points="270,17 260,22 270,27" fill="#888"/>
+  <text x="352" y="85" fill="#999" font-size="9" font-family="sans-serif">re-render</text>
+</svg>
+</div>
+
 <pre class="prettyprint"><code class="lang-ts">// The cycle:
 // Component → dispatch(action) → reducer → new state → Component re-renders
 
