@@ -25,6 +25,26 @@ type Size = "sm" | "md" | "lg";
 
 <h3 style="color: #76cdd8;"><strong>Type Narrowing</strong></h3>
 <p><strong>Type narrowing</strong> is the process of telling TypeScript which specific type a value is within a union. When you have <code>string | number</code>, you need to narrow it down before using type-specific methods:</p>
+
+<div style="text-align: center; margin: 20px 0;">
+<svg width="240" height="190" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Wide type box -->
+  <rect x="20" y="10" width="200" height="40" rx="6" fill="#e74c3c"/>
+  <text x="120" y="35" text-anchor="middle" fill="white" font-size="14" font-family="sans-serif">string | number</text>
+  <!-- Arrow down -->
+  <line x1="120" y1="50" x2="120" y2="68" stroke="#888" stroke-width="2"/>
+  <polygon points="115,68 120,78 125,68" fill="#888"/>
+  <!-- typeof check -->
+  <rect x="40" y="82" width="160" height="28" rx="4" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="5"/>
+  <text x="120" y="100" text-anchor="middle" fill="#555" font-size="12" font-family="sans-serif">typeof === "string"</text>
+  <!-- Arrow down -->
+  <line x1="120" y1="110" x2="120" y2="125" stroke="#888" stroke-width="2"/>
+  <polygon points="115,125 120,135 125,125" fill="#888"/>
+  <!-- Narrow type box -->
+  <rect x="45" y="140" width="150" height="40" rx="6" fill="#27ae60"/>
+  <text x="120" y="165" text-anchor="middle" fill="white" font-size="14" font-family="sans-serif">string ✓</text>
+</svg>
+</div>
 <pre class="prettyprint"><code class="lang-ts">function printValue(value: string | number) {
   // TS doesn't know if it's string or number here
   console.log(value.toUpperCase()); // ❌ Error: toUpperCase doesn't exist on number
