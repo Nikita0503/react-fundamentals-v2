@@ -16,6 +16,31 @@
 
 <h3 style="color: #76cdd8;"><strong>Component Lifecycle Phases</strong></h3>
 <p>Every component goes through three phases during its existence:</p>
+
+<div style="text-align: center; margin: 20px 0;">
+<svg width="420" height="70" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Mount -->
+  <rect x="10" y="15" width="100" height="40" rx="6" fill="#27ae60"/>
+  <text x="60" y="40" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif">Mount</text>
+  <!-- Arrow -->
+  <line x1="118" y1="35" x2="148" y2="35" stroke="#888" stroke-width="2"/>
+  <polygon points="148,30 158,35 148,40" fill="#888"/>
+  <!-- Update -->
+  <rect x="166" y="15" width="100" height="40" rx="6" fill="#f0ad4e"/>
+  <text x="216" y="40" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif">Update</text>
+  <!-- Arrow -->
+  <line x1="274" y1="35" x2="304" y2="35" stroke="#888" stroke-width="2"/>
+  <polygon points="304,30 314,35 304,40" fill="#888"/>
+  <!-- Unmount -->
+  <rect x="322" y="15" width="100" height="40" rx="6" fill="#e74c3c"/>
+  <text x="372" y="40" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif">Unmount</text>
+  <!-- Labels -->
+  <text x="60" y="68" text-anchor="middle" fill="#999" font-size="9" font-family="sans-serif">appears in DOM</text>
+  <text x="216" y="68" text-anchor="middle" fill="#999" font-size="9" font-family="sans-serif">can happen many times</text>
+  <text x="372" y="68" text-anchor="middle" fill="#999" font-size="9" font-family="sans-serif">removed from DOM</text>
+</svg>
+</div>
+
 <ul>
 <li><strong>Mount</strong> — the component appears in the DOM for the first time (initial render)</li>
 <li><strong>Update</strong> — the component re-renders due to a state or props change</li>
