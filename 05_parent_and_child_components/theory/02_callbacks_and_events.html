@@ -4,6 +4,26 @@
 <li><strong>Data flows DOWN</strong> — parent → child via props</li>
 <li><strong>Events flow UP</strong> — child → parent via callback functions</li>
 </ul>
+
+<div style="text-align: center; margin: 20px 0;">
+<svg width="220" height="130" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Parent block -->
+  <rect x="60" y="10" width="100" height="36" rx="6" fill="#3178c6"/>
+  <text x="110" y="33" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif">Parent</text>
+  <!-- Arrow down (props) -->
+  <line x1="90" y1="46" x2="90" y2="72" stroke="#27ae60" stroke-width="2"/>
+  <polygon points="85,72 90,82 95,72" fill="#27ae60"/>
+  <text x="70" y="65" text-anchor="end" fill="#27ae60" font-size="10" font-family="sans-serif">props</text>
+  <!-- Arrow up (events) -->
+  <line x1="130" y1="82" x2="130" y2="56" stroke="#e74c3c" stroke-width="2"/>
+  <polygon points="125,56 130,46 135,56" fill="#e74c3c"/>
+  <text x="150" y="65" text-anchor="start" fill="#e74c3c" font-size="10" font-family="sans-serif">events</text>
+  <!-- Child block -->
+  <rect x="60" y="84" width="100" height="36" rx="6" fill="#76cdd8"/>
+  <text x="110" y="107" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif">Child</text>
+</svg>
+</div>
+
 <p>A child component cannot directly modify the parent's state. Instead, the parent passes a function (callback) as a prop, and the child calls that function when something happens.</p>
 
 <h3 style="color: #76cdd8;"><strong>Passing Functions as Props</strong></h3>
