@@ -25,6 +25,64 @@
 <li>React applies <strong>only those changes</strong> to the real DOM — this process is called <strong>reconciliation</strong></li>
 </ol>
 
+<div style="text-align: center; margin: 20px 0;">
+<svg width="440" height="155" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Old VDOM tree -->
+  <text x="60" y="14" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif">Previous VDOM</text>
+  <rect x="35" y="20" width="50" height="24" rx="4" fill="#76cdd8"/>
+  <text x="60" y="36" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif">div</text>
+  <line x1="50" y1="44" x2="35" y2="58" stroke="#999" stroke-width="1"/>
+  <line x1="70" y1="44" x2="85" y2="58" stroke="#999" stroke-width="1"/>
+  <rect x="15" y="60" width="40" height="20" rx="3" fill="#76cdd8"/>
+  <text x="35" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">h1</text>
+  <rect x="65" y="60" width="40" height="20" rx="3" fill="#76cdd8"/>
+  <text x="85" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">p</text>
+
+  <!-- Arrow: diff -->
+  <line x1="120" y1="50" x2="155" y2="50" stroke="#888" stroke-width="2"/>
+  <polygon points="155,45 165,50 155,55" fill="#888"/>
+  <text x="142" y="38" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">diff</text>
+
+  <!-- New VDOM tree -->
+  <text x="220" y="14" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif">New VDOM</text>
+  <rect x="195" y="20" width="50" height="24" rx="4" fill="#76cdd8"/>
+  <text x="220" y="36" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif">div</text>
+  <line x1="210" y1="44" x2="195" y2="58" stroke="#999" stroke-width="1"/>
+  <line x1="230" y1="44" x2="245" y2="58" stroke="#999" stroke-width="1"/>
+  <rect x="175" y="60" width="40" height="20" rx="3" fill="#76cdd8"/>
+  <text x="195" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">h1</text>
+  <rect x="225" y="60" width="40" height="20" rx="3" fill="#e74c3c"/>
+  <text x="245" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">p ✎</text>
+
+  <!-- Arrow: patch -->
+  <line x1="280" y1="50" x2="315" y2="50" stroke="#888" stroke-width="2"/>
+  <polygon points="315,45 325,50 315,55" fill="#888"/>
+  <text x="300" y="38" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">patch</text>
+
+  <!-- Real DOM -->
+  <text x="385" y="14" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif">Real DOM</text>
+  <rect x="360" y="20" width="50" height="24" rx="4" fill="#4caf50"/>
+  <text x="385" y="36" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif">div</text>
+  <line x1="375" y1="44" x2="360" y2="58" stroke="#999" stroke-width="1"/>
+  <line x1="395" y1="44" x2="410" y2="58" stroke="#999" stroke-width="1"/>
+  <rect x="340" y="60" width="40" height="20" rx="3" fill="#4caf50"/>
+  <text x="360" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">h1</text>
+  <rect x="390" y="60" width="40" height="20" rx="3" fill="#f0ad4e"/>
+  <text x="410" y="74" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">p ✎</text>
+
+  <!-- Legend -->
+  <rect x="100" y="100" width="14" height="14" rx="2" fill="#76cdd8"/>
+  <text x="120" y="111" fill="#666" font-size="10" font-family="sans-serif">Unchanged</text>
+  <rect x="100" y="120" width="14" height="14" rx="2" fill="#e74c3c"/>
+  <text x="120" y="131" fill="#666" font-size="10" font-family="sans-serif">Changed in VDOM</text>
+  <rect x="260" y="100" width="14" height="14" rx="2" fill="#4caf50"/>
+  <text x="280" y="111" fill="#666" font-size="10" font-family="sans-serif">Real DOM (untouched)</text>
+  <rect x="260" y="120" width="14" height="14" rx="2" fill="#f0ad4e"/>
+  <text x="280" y="131" fill="#666" font-size="10" font-family="sans-serif">Updated in Real DOM</text>
+</svg>
+</div>
+</ol>
+
 <h3 style="color: #76cdd8;"><strong>Why This is Fast</strong></h3>
 <ul>
 <li><strong>Batching</strong>: Multiple state updates are grouped together into a single DOM update</li>
