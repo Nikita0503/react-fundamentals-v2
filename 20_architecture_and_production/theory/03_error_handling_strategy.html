@@ -3,6 +3,24 @@
 
 <h3 style="color: #76cdd8;"><strong>Multi-Level Error Handling Strategy</strong></h3>
 
+<div style="text-align: center; margin: 20px 0;">
+<svg width="360" height="180" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+  <!-- Level 1: Global Boundary (outermost) -->
+  <rect x="10" y="10" width="340" height="160" rx="10" fill="none" stroke="#e74c3c" stroke-width="2"/>
+  <text x="180" y="28" text-anchor="middle" fill="#e74c3c" font-size="10" font-weight="bold" font-family="sans-serif">Level 1: Global Error Boundary</text>
+  <!-- Level 2: Route Boundary -->
+  <rect x="30" y="38" width="300" height="120" rx="8" fill="none" stroke="#f0ad4e" stroke-width="2"/>
+  <text x="180" y="54" text-anchor="middle" fill="#f0ad4e" font-size="10" font-weight="bold" font-family="sans-serif">Level 2: Route Error Boundary</text>
+  <!-- Level 3: API Handler -->
+  <rect x="50" y="62" width="260" height="84" rx="6" fill="none" stroke="#3178c6" stroke-width="2"/>
+  <text x="180" y="78" text-anchor="middle" fill="#3178c6" font-size="10" font-weight="bold" font-family="sans-serif">Level 3: API Error Handler</text>
+  <!-- Level 4: Component try/catch -->
+  <rect x="80" y="86" width="200" height="48" rx="5" fill="#27ae60" fill-opacity="0.15" stroke="#27ae60" stroke-width="2"/>
+  <text x="180" y="106" text-anchor="middle" fill="#27ae60" font-size="10" font-weight="bold" font-family="sans-serif">Level 4: Component try/catch</text>
+  <text x="180" y="122" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">(event handlers, form submissions)</text>
+</svg>
+</div>
+
 <h4 style="color: #76cdd8;">Level 1 — Global Error Boundary (app-level)</h4>
 <pre class="prettyprint"><code class="lang-tsx">// Catches any unhandled rendering error in the entire app
 &lt;ErrorBoundary fallback={&lt;FullPageError /&gt;}&gt;
