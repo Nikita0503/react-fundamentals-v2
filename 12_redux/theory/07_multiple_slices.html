@@ -196,7 +196,7 @@ export { Dashboard };</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>What If One Slice Needs to React to Another Slice's Action?</strong></h3>
 <p>Sometimes you need cross-slice communication. For example: when a user logs out, you want to clear the cart too. This is done with <code>extraReducers</code> — a way for a slice to listen to actions it didn't define:</p>
-<pre class="prettyprint"><code class="lang-ts">// Teaser — covered in detail in Module 13 (async/thunks)
+<pre class="prettyprint"><code class="lang-ts">// Teaser — covered in detail in the next module (async/thunks)
 const cartSlice = createSlice({
   name: "cart",
   initialState,

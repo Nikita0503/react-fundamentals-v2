@@ -1,5 +1,5 @@
 <h3 style="color: #76cdd8;"><strong>The Problem: Props Drilling</strong></h3>
-<p>As you learned in Module 05, data flows down through props — from parent to child. But what happens when a deeply nested component needs data from a component far above it in the tree?</p>
+<p>As you learned earlier, data flows down through props — from parent to child. But what happens when a deeply nested component needs data from a component far above it in the tree?</p>
 <p>You end up passing props through many intermediate components that don't use the data themselves — they just forward it. This is called <strong>props drilling</strong>, and it makes code harder to maintain:</p>
 <pre class="prettyprint"><code class="lang-tsx">// App → Layout → Sidebar → UserMenu → Avatar
 // Avatar needs the user object, but Layout and Sidebar don't care about it.
