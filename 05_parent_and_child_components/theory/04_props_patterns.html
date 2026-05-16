@@ -36,19 +36,21 @@ const Input = ({ label, ...rest }: InputProps) =&gt; (
 
 <h3 style="color: #76cdd8;"><strong>Props Drilling — Code Example</strong></h3>
 <p>Here's a 3-level example where <code>Layout</code> doesn't use <code>theme</code> but must pass it through:</p>
-<pre class="prettyprint"><code class="lang-tsx">// App passes "theme" through Layout to Header — Layout doesn't use it
+<pre class="prettyprint"><code class="lang-tsx">type Theme = "light" | "dark";
+
+// App passes "theme" through Layout to Header — Layout doesn't use it
 const App = () =&gt; {
-  const [theme, setTheme] = useState&lt;"light" | "dark"&gt;("light");
+  const [theme, setTheme] = useState&lt;Theme&gt;("light");
   return &lt;Layout theme={theme} /&gt;;
 };
 
-const Layout = ({ theme }: { theme: "light" | "dark" }) =&gt; (
+const Layout = ({ theme }: { theme: Theme }) =&gt; (
   &lt;div&gt;
     &lt;Header theme={theme} /&gt;  {/* just passing through */}
   &lt;/div&gt;
 );
 
-const Header = ({ theme }: { theme: "light" | "dark" }) =&gt; (
+const Header = ({ theme }: { theme: Theme }) =&gt; (
   &lt;nav className={`nav-${theme}`}&gt;Navigation&lt;/nav&gt;
 );
 </code></pre>
