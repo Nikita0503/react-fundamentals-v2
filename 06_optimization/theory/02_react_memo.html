@@ -40,7 +40,7 @@ export { ExpensiveList };</code></pre>
 <ul>
 <li>Component is cheap to render (simple div with text) — memo's comparison cost &gt; render cost</li>
 <li>Props change on almost every render anyway (memo compares but still re-renders)</li>
-<li>Component receives new objects/arrays/functions as props every render (memo won't help without useMemo/useCallback)</li>
+<li>Component receives new objects/arrays/functions as props every render (memo won't help without useMemo/useCallback — covered next in this module)</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>The Trap: Unstable References</strong></h3>
@@ -50,7 +50,7 @@ const Parent = () =&gt; {
   return &lt;MemoizedChild onClick={() =&gt; console.log("click")} /&gt;;
 };
 
-// ✅ Fix: stabilize the function with useCallback
+// ✅ Fix: stabilize the function with useCallback (covered next in this module)
 const Parent = () =&gt; {
   const handleClick = useCallback(() =&gt; console.log("click"), []);
   return &lt;MemoizedChild onClick={handleClick} /&gt;;

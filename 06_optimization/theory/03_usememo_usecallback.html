@@ -38,28 +38,45 @@ const ProductList = ({ products, category, sortBy }: {
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>useCallback</strong></h3>
-<p>Syntax: <code>const fn = useCallback((arg) =&gt; { ... }, [dependencies])</code></p>
-<p>It's actually just <code>useMemo(() =&gt; fn, [deps])</code> — a shorthand for memoizing functions.</p>
+<p>Syntax: <code>const fn = useCallback(() =&gt; { ... }, [dependencies])</code></p>
+<p>It caches a function reference between renders. Without it, a new function is created on every render — which breaks <code>React.memo</code> on child components.</p>
 <p><strong>Main use case:</strong> stabilizing function references passed to memoized children:</p>
-<pre class="prettyprint"><code class="lang-tsx">type Todo = { id: number; text: string };
+<pre class="prettyprint"><code class="lang-tsx">import { useState, useCallback, memo } from "react";
 
-const TodoApp = () =&gt; {
-  const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
-  const [filter, setFilter] = useState("");
+// Parent component
+const App = () =&gt; {
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState("");
 
-  // Without useCallback: new function on every render → MemoizedTodoList re-renders
-  // With useCallback: same reference unless todos changes → MemoizedTodoList skips render
-  const handleDelete = useCallback((id: number) =&gt; {
-    setTodos(prev =&gt; prev.filter(t =&gt; t.id !== id));
-  }, []); // no deps needed — uses functional updater
+  // Without useCallback: new function every render → Button re-renders when name changes
+  // With useCallback: same function reference → Button skips re-render
+  const handleIncrement = useCallback(() =&gt; {
+    setCount(prev =&gt; prev + 1);
+  }, []);
 
   return (
     &lt;div&gt;
-      &lt;input value={filter} onChange={e =&gt; setFilter(e.target.value)} /&gt;
-      &lt;MemoizedTodoList todos={todos} onDelete={handleDelete} /&gt;
+      &lt;input value={name} onChange={e =&gt; setName(e.target.value)} placeholder="Type here..." /&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;MemoizedButton onClick={handleIncrement} label="Increment" /&gt;
     &lt;/div&gt;
   );
 };</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// Child component — wrapped in memo
+type ButtonProps = {
+  onClick: () =&gt; void;
+  label: string;
+};
+
+const Button = ({ onClick, label }: ButtonProps) =&gt; {
+  console.log("Button rendered"); // won't log when only name changes
+  return &lt;button onClick={onClick}&gt;{label}&lt;/button&gt;;
+};
+
+const MemoizedButton = memo(Button);</code></pre>
+
+<p>When you type in the input, <code>name</code> changes → App re-renders. But <code>MemoizedButton</code> skips re-render because its props (<code>onClick</code> and <code>label</code>) didn't change. Without <code>useCallback</code>, <code>onClick</code> would be a new function every render and memo would be useless.</p>
 
 <h3 style="color: #76cdd8;"><strong>The Combo: useCallback + React.memo</strong></h3>
 <p>They work together as a pair:</p>
