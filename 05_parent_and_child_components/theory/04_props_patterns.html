@@ -55,23 +55,11 @@ const Header = ({ theme }: { theme: "light" | "dark" }) =&gt; (
 
 <h3 style="color: #76cdd8;"><strong>Solutions to Props Drilling</strong></h3>
 
-<p><strong>1. Composition — restructure so the parent renders the deep child directly:</strong></p>
-<pre class="prettyprint"><code class="lang-tsx">const App = () =&gt; {
-  const [theme, setTheme] = useState&lt;"light" | "dark"&gt;("light");
-  return (
-    &lt;Layout&gt;
-      &lt;Header theme={theme} /&gt;  {/* App passes directly, no drilling */}
-    &lt;/Layout&gt;
-  );
-};
-</code></pre>
-<p>By using <code>children</code>, the <code>Layout</code> component no longer needs to know about <code>theme</code> at all.</p>
-
-<p><strong>2. Context — share data without passing through every level</strong></p>
-<p>React Context lets you "broadcast" data to any component in the tree without explicitly passing it through each level. Covered in detail in a later module.</p>
-
-<p><strong>3. State management libraries — Redux/Zustand for complex shared state</strong></p>
-<p>For large applications with many pieces of shared state, dedicated state management libraries provide a global store accessible from any component. Covered in a later module.</p>
+<p>When drilling becomes painful, there are better approaches:</p>
+<ul>
+<li><strong>Context</strong> — lets you "broadcast" data to any component in the tree without passing it through each level. Covered in a later module.</li>
+<li><strong>State management libraries</strong> — for large applications with complex shared state, tools like Redux or Zustand provide a global store accessible from any component. Covered in a later module.</li>
+</ul>
 
 <h3 style="color: #76cdd8;"><strong>When Props Drilling Is Fine</strong></h3>
 <p>Don't over-engineer. Props drilling through 2-3 levels is completely normal and often the simplest solution. Only reach for Context or state management when drilling becomes painful:</p>
