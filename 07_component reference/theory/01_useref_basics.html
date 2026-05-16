@@ -7,6 +7,26 @@
 <li><strong>Storing mutable values that don't trigger re-renders</strong> — keep track of timer IDs, previous values, render counts, or any data that should persist between renders but doesn't need to update the UI</li>
 </ol>
 
+<h3 style="color: #76cdd8;"><strong>Quick Example — Focus an Input</strong></h3>
+<pre class="prettyprint"><code class="lang-tsx">import { useRef } from "react";
+
+const SearchBar = () =&gt; {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  const handleClick = () =&gt; {
+    inputRef.current?.focus(); // directly access the DOM element
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input ref={inputRef} placeholder="Search..." /&gt;
+      &lt;button onClick={handleClick}&gt;Focus input&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+<p>Click the button → the input gets focused. No state needed, no re-render — just direct DOM access via <code>ref.current</code>.</p>
+
 <h3 style="color: #76cdd8;"><strong>Syntax</strong></h3>
 <pre class="prettyprint"><code class="lang-tsx">const ref = useRef&lt;T&gt;(initialValue);</code></pre>
 <p>The generic <code>T</code> defines the type of <code>ref.current</code>. The <code>initialValue</code> is what <code>.current</code> starts as.</p>
@@ -74,21 +94,25 @@ const Counter = () =&gt; {
   const [stateCount, setStateCount] = useState(0);
   const refCount = useRef(0);
 
-  const handleClick = () =&gt; {
-    setStateCount(prev =&gt; prev + 1); // triggers re-render, UI updates
-    refCount.current += 1;            // no re-render, UI stays the same
-    console.log("ref:", refCount.current); // always up-to-date in console
+  const incrementState = () =&gt; {
+    setStateCount(prev =&gt; prev + 1); // triggers re-render → UI updates
+  };
+
+  const incrementRef = () =&gt; {
+    refCount.current += 1; // no re-render → UI does NOT update
+    console.log("refCount:", refCount.current); // value changes, but only visible in console
   };
 
   return (
     &lt;div&gt;
-      &lt;p&gt;State count: {stateCount}&lt;/p&gt;     {/* updates on screen */}
-      &lt;p&gt;Ref count: {refCount.current}&lt;/p&gt; {/* only updates when something else causes re-render */}
-      &lt;button onClick={handleClick}&gt;Increment both&lt;/button&gt;
+      &lt;p&gt;State: {stateCount}&lt;/p&gt;
+      &lt;p&gt;Ref: {refCount.current}&lt;/p&gt;
+      &lt;button onClick={incrementState}&gt;Increment State&lt;/button&gt;
+      &lt;button onClick={incrementRef}&gt;Increment Ref&lt;/button&gt;
     &lt;/div&gt;
   );
 };</code></pre>
-<p>Click the button multiple times — <code>stateCount</code> updates on screen every time, but <code>refCount.current</code> in the UI only shows the latest value when the state change triggers a re-render (which happens to be every click here). If you removed the <code>setStateCount</code> call, the ref value would change silently with no visual update at all.</p>
+<p>Try clicking "Increment Ref" several times — the number on screen stays at 0. The value IS changing (check the console), but React doesn't know about it because ref changes don't trigger re-renders. Now click "Increment State" — both numbers update, because the state change causes a re-render and React reads the latest <code>refCount.current</code>.</p>
 <p></p>
 <style><!--
 .row-container {
