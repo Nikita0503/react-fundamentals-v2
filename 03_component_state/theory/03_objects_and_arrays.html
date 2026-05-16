@@ -78,13 +78,13 @@ setTodos(newTodos);</code></pre>
 </tr>
 <tr>
 <td><strong>Remove</strong></td>
-<td><code>arr.filter(...)</code></td>
-<td><code>const { keyToRemove, ...rest } = obj</code></td>
+<td><code>arr.filter(item =&gt; item.id !== id)</code></td>
+<td><code>const { password, ...rest } = obj</code></td>
 </tr>
 <tr>
-<td><strong>Update</strong></td>
-<td><code>arr.map(...)</code></td>
-<td><code>{ ...obj, key: newValue }</code></td>
+<td><strong>Update field</strong></td>
+<td><code>arr.map(item =&gt; item.id === id ? {...item, done: true} : item)</code></td>
+<td><code>{ ...obj, name: "new" }</code></td>
 </tr>
 <tr>
 <td><strong>Replace</strong></td>

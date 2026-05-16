@@ -42,15 +42,15 @@ const Parent = () => {
 
 <h3 style="color: #76cdd8;"><strong>When useState Isn't Enough (Preview)</strong></h3>
 <ul>
-<li><strong>Many related state values that update together</strong> → consider <code>useReducer</code> (Module 06 topic)</li>
-<li><strong>State needed by many distant components</strong> → consider Context (Module 09) or a state management library (Module 12)</li>
+<li><strong>Many related state values that update together</strong> → consider <code>useReducer</code> (covered in a later module)</li>
+<li><strong>State needed by many distant components</strong> → consider Context or a state management library (covered in later modules)</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>Common Mistakes</strong></h3>
 <ol>
 <li><strong>Mutating state directly</strong> — use spread/map/filter to create new references.</li>
 <li><strong>Reading state immediately after setting it</strong> — state updates are asynchronous; the new value appears on the next render.</li>
-<li><strong>Using state for values that don't affect UI</strong> — use <code>useRef</code> instead to avoid unnecessary re-renders.</li>
+<li><strong>Using state for values that don't affect UI</strong> — use <code>useRef</code> instead to avoid unnecessary re-renders (covered in a later module).</li>
 <li><strong>Storing derived data in state</strong> — compute it from existing state instead.</li>
 <li><strong>Not using functional updater when depending on previous value</strong> — leads to stale closure bugs.</li>
 </ol>
