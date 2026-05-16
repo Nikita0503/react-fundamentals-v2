@@ -4,46 +4,47 @@
 <h3 style="color: #76cdd8;"><strong>The Solution: Lift State Up</strong></h3>
 <p><strong>Lifting state up</strong> means moving the shared state to the nearest common parent of the components that need it. The parent owns the state and passes it down to both children — one reads it, one writes it, or both do both.</p>
 
-<h3 style="color: #76cdd8;"><strong>Full Example — Temperature Converter</strong></h3>
-<p>Two input fields (Celsius and Fahrenheit) that stay in sync. When you type in one, the other updates automatically:</p>
-<pre class="prettyprint"><code class="lang-tsx">const TemperatureConverter = () =&gt; {
-  const [celsius, setCelsius] = useState("");
+<h3 style="color: #76cdd8;"><strong>Full Example — Shared Name</strong></h3>
+<p>An input where you type your name, and a greeting that displays it. Both components need the same value — so the parent owns it:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useState } from "react";
 
-  const fahrenheit = celsius ? String((Number(celsius) * 9) / 5 + 32) : "";
+const App = () =&gt; {
+  const [name, setName] = useState("");
 
   return (
     &lt;div&gt;
-      &lt;TemperatureInput
-        label="Celsius"
-        value={celsius}
-        onChange={setCelsius}
-      /&gt;
-      &lt;TemperatureInput
-        label="Fahrenheit"
-        value={fahrenheit}
-        onChange={(f) =&gt; setCelsius(String(((Number(f) - 32) * 5) / 9))}
-      /&gt;
+      &lt;NameInput value={name} onChange={setName} /&gt;
+      &lt;Greeting name={name} /&gt;
     &lt;/div&gt;
   );
 };
 </code></pre>
 
-<pre class="prettyprint"><code class="lang-tsx">type TemperatureInputProps = {
-  label: string;
+<pre class="prettyprint"><code class="lang-tsx">type NameInputProps = {
   value: string;
   onChange: (value: string) =&gt; void;
 };
 
-const TemperatureInput = ({ label, value, onChange }: TemperatureInputProps) =&gt; (
-  &lt;label&gt;
-    {label}:
-    &lt;input value={value} onChange={(e) =&gt; onChange(e.target.value)} /&gt;
-  &lt;/label&gt;
+const NameInput = ({ value, onChange }: NameInputProps) =&gt; (
+  &lt;input
+    value={value}
+    onChange={(e) =&gt; onChange(e.target.value)}
+    placeholder="Enter your name"
+  /&gt;
+);
+
+type GreetingProps = {
+  name: string;
+};
+
+const Greeting = ({ name }: GreetingProps) =&gt; (
+  &lt;p&gt;{name ? `Hello, ${name}!` : "Enter your name above"}&lt;/p&gt;
 );
 </code></pre>
 
-<h3 style="color: #76cdd8;"><strong>Key Insight: Controlled Components</strong></h3>
-<p>The <code>TemperatureInput</code> component is "controlled" — it doesn't own its value, the parent does. The parent passes the value down and receives changes back via the callback. This makes both inputs stay in sync because they both derive from the same source of truth (<code>celsius</code> state in the parent).</p>
+<h3 style="color: #76cdd8;"><strong>Key Insight: Single Source of Truth</strong></h3>
+<p><code>NameInput</code> and <code>Greeting</code> are siblings — they can't talk to each other directly. But they both need the same <code>name</code> value. The parent (<code>App</code>) owns the state and passes it down to both. When the input changes, the parent updates, and both children get fresh data.</p>
+<p>The <code>NameInput</code> is "controlled" — it doesn't own its value, the parent does. The parent passes the value down and receives changes back via the callback.</p>
 
 <h3 style="color: #76cdd8;"><strong>When to Lift State Up</strong></h3>
 <ul>
