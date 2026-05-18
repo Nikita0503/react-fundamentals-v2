@@ -2,8 +2,15 @@
 <p>As you learned earlier, data flows down through props — from parent to child. But what happens when a deeply nested component needs data from a component far above it in the tree?</p>
 <p>You end up passing props through many intermediate components that don't use the data themselves — they just forward it. This is called <strong>props drilling</strong>, and it makes code harder to maintain:</p>
 <pre class="prettyprint"><code class="lang-tsx">// App → Layout → Sidebar → UserMenu → Avatar
-// Avatar needs the user object, but Layout and Sidebar don't care about it.
+// Avatar needs the user object, but Layout, Sidebar, and UserMenu don't care about it.
 // Yet they all must accept and pass the "user" prop.
+
+type User = { name: string; avatarUrl: string };
+
+const App = () =&gt; {
+  const [user, setUser] = useState&lt;User&gt;({ name: "Alice", avatarUrl: "/alice.png" });
+  return &lt;Layout user={user} /&gt;;  // passes user down
+};
 
 const Layout = ({ user }: { user: User }) =&gt; {
   return &lt;Sidebar user={user} /&gt;;  // just forwarding...
@@ -11,6 +18,19 @@ const Layout = ({ user }: { user: User }) =&gt; {
 
 const Sidebar = ({ user }: { user: User }) =&gt; {
   return &lt;UserMenu user={user} /&gt;;  // just forwarding...
+};
+
+const UserMenu = ({ user }: { user: User }) =&gt; { // finally uses user!
+  return (
+    &lt;div&gt;
+      &lt;span&gt;{user.name}&lt;/span&gt;
+      &lt;Avatar user={user} /&gt;
+    &lt;/div&gt;
+  );
+};
+
+const Avatar = ({ user }: { user: User }) =&gt; { // finally uses user!
+  return &lt;img src={user.avatarUrl} alt={user.name} /&gt;;
 };
 </code></pre>
 
@@ -47,39 +67,63 @@ const Sidebar = ({ user }: { user: User }) =&gt; {
 <p><strong>3. Consume</strong> — call <code>useContext(Context)</code> in any child component</p>
 
 <h3 style="color: #76cdd8;"><strong>Basic Example</strong></h3>
+<p>Let's solve the props drilling problem from above using Context — same <code>User</code>, same components, but no forwarding:</p>
+
 <p><strong>Step 1: Create the context</strong></p>
-<pre class="prettyprint"><code class="lang-ts">// context/ThemeContext.ts
+<pre class="prettyprint"><code class="lang-ts">// context/UserContext.ts
 import { createContext } from "react";
 
-type Theme = "light" | "dark";
+type User = { name: string; avatarUrl: string };
 
-export const ThemeContext = createContext&lt;Theme&gt;("light");
+export const UserContext = createContext&lt;User | null&gt;(null);
 </code></pre>
 
 <p><strong>Step 2: Provide the value</strong></p>
 <pre class="prettyprint"><code class="lang-tsx">// App.tsx
-import { ThemeContext } from "./context/ThemeContext";
+import { useState } from "react";
+import { UserContext } from "./context/UserContext";
 
 const App = () =&gt; {
+  const [user] = useState({ name: "Alice", avatarUrl: "/alice.png" });
+
   return (
-    &lt;ThemeContext.Provider value="dark"&gt;
+    &lt;UserContext.Provider value={user}&gt;
       &lt;Layout /&gt;
-    &lt;/ThemeContext.Provider&gt;
+    &lt;/UserContext.Provider&gt;
   );
 };
 </code></pre>
 
-<p><strong>Step 3: Consume the value</strong></p>
-<pre class="prettyprint"><code class="lang-tsx">// components/Header.tsx — consumes context (can be deeply nested)
-import { useContext } from "react";
-import { ThemeContext } from "../context/ThemeContext";
+<p><strong>Step 3: Consume the value (in any nested component — no props needed!)</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// Layout and Sidebar — no user prop, no forwarding!
+const Layout = () =&gt; {
+  return &lt;Sidebar /&gt;;
+};
 
-const Header = () =&gt; {
-  const theme = useContext(ThemeContext);
-  return &lt;header className={`header-${theme}`}&gt;My App&lt;/header&gt;;
+const Sidebar = () =&gt; {
+  return &lt;UserMenu /&gt;;
 };
 </code></pre>
-<p>Notice that <code>Layout</code> doesn't need to know about theme at all — no props drilling! <code>Header</code> reads the value directly from the context, no matter how deeply nested it is.</p>
+<pre class="prettyprint"><code class="lang-tsx">// UserMenu and Avatar — read user directly from context
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
+const UserMenu = () =&gt; {
+  const user = useContext(UserContext);
+  return (
+    &lt;div&gt;
+      &lt;span&gt;{user?.name}&lt;/span&gt;
+      &lt;Avatar /&gt;
+    &lt;/div&gt;
+  );
+};
+
+const Avatar = () =&gt; {
+  const user = useContext(UserContext);
+  return &lt;img src={user?.avatarUrl} alt={user?.name} /&gt;;
+};
+</code></pre>
+<p>Compare with the drilling example above: <code>Layout</code> and <code>Sidebar</code> no longer accept or forward the <code>user</code> prop. <code>UserMenu</code> and <code>Avatar</code> read it directly from context — no matter how deeply nested they are.</p>
 
 <h3 style="color: #76cdd8;"><strong>TypeScript Typing</strong></h3>
 <p>The generic parameter of <code>createContext&lt;T&gt;</code> defines the type of the value:</p>
@@ -105,7 +149,7 @@ const AuthContext = createContext&lt;AuthContextValue&gt;({
 <p>Then in the consumer, you need to check for <code>undefined</code> — or better yet, use a custom hook that does it for you (covered in the next topic).</p>
 
 <h3 style="color: #76cdd8;"><strong>About the Default Value</strong></h3>
-<p>The default value passed to <code>createContext</code> is <strong>only used</strong> when a component calls <code>useContext</code> but there is <strong>no matching Provider</strong> above it in the tree. In practice, you almost always wrap your app (or a subtree) with a Provider, so the default is rarely used at runtime. It mainly serves as a TypeScript type hint and a fallback for edge cases.</p>
+<p>The value you pass to <code>createContext(defaultValue)</code> is a fallback — it's only used if a component tries to read the context but there's no Provider above it. In practice, you always have a Provider, so the default rarely matters. Think of it as a safety net, not the actual data.</p>
 <p></p>
 <style><!--
 .row-container {
