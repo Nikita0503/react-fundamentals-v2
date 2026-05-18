@@ -65,7 +65,8 @@ const SimpleForm = () =&gt; {
 
   const handleSubmit = (e: FormEvent) =&gt; {
     e.preventDefault();
-    if (validate()) {
+    const isValid = validate();
+    if (isValid) {
       console.log("Submitted:", formData);
     }
   };
