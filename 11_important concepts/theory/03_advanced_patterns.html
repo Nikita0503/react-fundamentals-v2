@@ -83,9 +83,46 @@ const MyComponent = () =&gt; {
   &lt;TabPanel name="settings"&gt;Settings content here&lt;/TabPanel&gt;
 &lt;/Tabs&gt;
 </code></pre>
-<p>Behind the scenes, <code>Tabs</code> manages which tab is active (via Context), and <code>TabButton</code>/<code>TabPanel</code> read from that context to know what to show. You don't pass state around — it's all internal.</p>
-<p><strong>Why it's good:</strong> clean API for the consumer, flexible composition, state is hidden inside.</p>
-<p><strong>Where you see it:</strong> UI libraries (Radix, React Aria, Headless UI). You'll use compound components as a consumer — building them from scratch is an advanced topic.</p>
+
+<p><strong>How it works inside:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">import { createContext, useContext, useState, ReactNode } from "react";
+
+// 1. Shared state lives in Context (hidden from consumer)
+const TabsContext = createContext&lt;{
+  activeTab: string;
+  setActiveTab: (tab: string) =&gt; void;
+} | null&gt;(null);
+
+// 2. Parent component — creates state and provides it
+const Tabs = ({ defaultTab, children }: { defaultTab: string; children: ReactNode }) =&gt; {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  return (
+    &lt;TabsContext.Provider value={{ activeTab, setActiveTab }}&gt;
+      {children}
+    &lt;/TabsContext.Provider&gt;
+  );
+};
+
+// 3. Child components — read from context to know what to do
+const TabButton = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
+  const ctx = useContext(TabsContext)!;
+  return (
+    &lt;button
+      className={ctx.activeTab === name ? "active" : ""}
+      onClick={() =&gt; ctx.setActiveTab(name)}
+    &gt;
+      {children}
+    &lt;/button&gt;
+  );
+};
+
+const TabPanel = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
+  const ctx = useContext(TabsContext)!;
+  return ctx.activeTab === name ? &lt;div&gt;{children}&lt;/div&gt; : null;
+};
+</code></pre>
+<p>The key idea: <code>Tabs</code> manages state, <code>TabButton</code> and <code>TabPanel</code> read it via Context. The consumer never touches state directly — they just compose the pieces together.</p>
+<p><strong>Where you see it:</strong> UI libraries (Radix, React Aria, Headless UI). Understanding this pattern helps you use these libraries effectively.</p>
 
 <h4 style="color: #76cdd8;">Summary</h4>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
