@@ -42,7 +42,7 @@ const Modal = () =&gt; {
 };
 </code></pre>
 
-<h4 style="color: #76cdd8;">Example 2: useFetch — generic data fetching with loading/error states</h4>
+<h4 style="color: #76cdd8;">Example 2: useFetch — data fetching with loading/error states</h4>
 <pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
 
 type UseFetchResult&lt;T&gt; = {
@@ -51,28 +51,18 @@ type UseFetchResult&lt;T&gt; = {
   loading: boolean;
 };
 
-const useFetch = &lt;T = unknown&gt;(url: string): UseFetchResult&lt;T&gt; =&gt; {
+const useFetch = &lt;T&gt;(url: string): UseFetchResult&lt;T&gt; =&gt; {
   const [data, setData] = useState&lt;T | null&gt;(null);
   const [error, setError] = useState&lt;string | null&gt;(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() =&gt; {
-    const controller = new AbortController();
     setLoading(true);
-    setError(null);
-
-    fetch(url, { signal: controller.signal })
-      .then(res =&gt; {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    fetch(url)
+      .then(res =&gt; res.json())
       .then((json: T) =&gt; setData(json))
-      .catch(err =&gt; {
-        if (err.name !== "AbortError") setError(err.message);
-      })
+      .catch(err =&gt; setError(err.message))
       .finally(() =&gt; setLoading(false));
-
-    return () =&gt; controller.abort();
   }, [url]);
 
   return { data, error, loading };
@@ -89,29 +79,35 @@ const PostList = () =&gt; {
   return &lt;ul&gt;{posts?.map(p =&gt; &lt;li key={p.id}&gt;{p.title}&lt;/li&gt;)}&lt;/ul&gt;;
 };
 </code></pre>
-<p><strong>Note:</strong> includes AbortController for cleanup (prevents setting state on unmounted component).</p>
-<p><strong>Note:</strong> in real projects, you'd use React Query/TanStack Query instead of a custom useFetch — but understanding the pattern is valuable.</p>
+<p><strong>Note:</strong> in real projects, you'd use TanStack Query instead of a custom useFetch — but understanding the pattern is valuable for learning.</p>
 
-<h4 style="color: #76cdd8;">Example 3: useLocalStorage — persist state in localStorage</h4>
+<h4 style="color: #76cdd8;">Example 3: useOnlineStatus — track internet connection</h4>
 <pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
 
-const useLocalStorage = &lt;T&gt;(key: string, initialValue: T) =&gt; {
-  const [value, setValue] = useState&lt;T&gt;(() =&gt; {
-    const stored = localStorage.getItem(key);
-    return stored ? (JSON.parse(stored) as T) : initialValue;
-  });
+const useOnlineStatus = () =&gt; {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() =&gt; {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+    const handleOnline = () =&gt; setIsOnline(true);
+    const handleOffline = () =&gt; setIsOnline(false);
 
-  return [value, setValue] as const;
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () =&gt; {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  return isOnline;
 };
 
 // Usage:
-const Settings = () =&gt; {
-  const [theme, setTheme] = useLocalStorage&lt;"light" | "dark"&gt;("theme", "light");
-  return &lt;button onClick={() =&gt; setTheme(theme === "light" ? "dark" : "light")}&gt;{theme}&lt;/button&gt;;
+const StatusBar = () =&gt; {
+  const isOnline = useOnlineStatus();
+
+  return &lt;p&gt;{isOnline ? "✅ Online" : "❌ Offline"}&lt;/p&gt;;
 };
 </code></pre>
 
