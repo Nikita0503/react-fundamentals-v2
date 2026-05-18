@@ -3,23 +3,23 @@
 
 <h4 style="color: #76cdd8;">Higher-Order Components (HOC) — legacy pattern</h4>
 <p>A function that takes a component and returns a new enhanced component. Was the primary way to share logic before hooks (2018).</p>
-<pre class="prettyprint"><code class="lang-tsx">import { ComponentType } from "react";
-
-const withAuth = &lt;P extends object&gt;(WrappedComponent: ComponentType&lt;P&gt;) =&gt; {
-  return (props: P) =&gt; {
-    const isAuthenticated = true; // check auth logic
+<pre class="prettyprint"><code class="lang-tsx">// A HOC that adds authentication check
+const withAuth = (WrappedComponent: () =&gt; JSX.Element) =&gt; {
+  return () =&gt; {
+    const isAuthenticated = true; // imagine real auth check here
 
     if (!isAuthenticated) {
       return &lt;p&gt;Access denied. Please log in.&lt;/p&gt;;
     }
 
-    return &lt;WrappedComponent {...props} /&gt;;
+    return &lt;WrappedComponent /&gt;;
   };
 };
 
 // Usage:
 const Dashboard = () =&gt; &lt;h1&gt;Dashboard&lt;/h1&gt;;
 const ProtectedDashboard = withAuth(Dashboard);
+// Now &lt;ProtectedDashboard /&gt; shows Dashboard only if authenticated
 </code></pre>
 
 <p><strong>Problems with HOCs:</strong></p>
@@ -41,99 +41,51 @@ const Dashboard = () =&gt; {
 <p><strong>When you'll still see HOCs:</strong> older codebases, some libraries (React Redux's <code>connect()</code> — though <code>useSelector</code> replaced it).</p>
 
 <h4 style="color: #76cdd8;">Render Props — legacy pattern</h4>
-<p>A component that takes a function as a prop (or children) and calls it to determine what to render.</p>
-<pre class="prettyprint"><code class="lang-tsx">import { useState, ReactNode } from "react";
-
-type MousePosition = { x: number; y: number };
-
-type MouseTrackerProps = {
-  render: (position: MousePosition) =&gt; ReactNode;
+<p>A component that takes a function as a prop and calls it to determine what to render. The function receives data, and you decide how to display it:</p>
+<pre class="prettyprint"><code class="lang-tsx">// The component manages logic, you decide the UI via the "render" prop
+const Counter = ({ render }: { render: (count: number) =&gt; ReactNode }) =&gt; {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+      {render(count)}
+    &lt;/div&gt;
+  );
 };
 
-const MouseTracker = ({ render }: MouseTrackerProps) =&gt; {
-  const [position, setPosition] = useState&lt;MousePosition&gt;({ x: 0, y: 0 });
+// Usage — you control how count is displayed:
+&lt;Counter render={(count) =&gt; &lt;h1&gt;Count: {count}&lt;/h1&gt;} /&gt;
+&lt;Counter render={(count) =&gt; &lt;span&gt;{count} clicks&lt;/span&gt;} /&gt;
+</code></pre>
 
-  const handleMouseMove = (e: React.MouseEvent) =&gt; {
-    setPosition({ x: e.clientX, y: e.clientY });
-  };
-
-  return &lt;div onMouseMove={handleMouseMove}&gt;{render(position)}&lt;/div&gt;;
+<p><strong>Modern replacement:</strong> custom hook — same logic, simpler code:</p>
+<pre class="prettyprint"><code class="lang-tsx">const useCounter = () =&gt; {
+  const [count, setCount] = useState(0);
+  const increment = () =&gt; setCount(count + 1);
+  return { count, increment };
 };
 
 // Usage:
-&lt;MouseTracker render={({ x, y }) =&gt; &lt;p&gt;Mouse: {x}, {y}&lt;/p&gt;} /&gt;
-</code></pre>
-
-<p><strong>Modern replacement:</strong> custom hook:</p>
-<pre class="prettyprint"><code class="lang-tsx">import { useState, useEffect } from "react";
-
-const useMousePosition = () =&gt; {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  useEffect(() =&gt; {
-    const handler = (e: MouseEvent) =&gt; setPosition({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handler);
-    return () =&gt; window.removeEventListener("mousemove", handler);
-  }, []);
-  return position;
-};
-
-// Usage — much simpler:
-const Component = () =&gt; {
-  const { x, y } = useMousePosition();
-  return &lt;p&gt;Mouse: {x}, {y}&lt;/p&gt;;
+const MyComponent = () =&gt; {
+  const { count, increment } = useCounter();
+  return &lt;button onClick={increment}&gt;Count: {count}&lt;/button&gt;;
 };
 </code></pre>
 
 <h4 style="color: #76cdd8;">Compound Components — modern pattern</h4>
-<p>A set of components that work together, sharing implicit state via Context. Think: <code>&lt;Select&gt;</code>, <code>&lt;Tabs&gt;</code>, <code>&lt;Accordion&gt;</code> — parent manages state, children render parts.</p>
-<pre class="prettyprint"><code class="lang-tsx">import { createContext, useContext, useState, ReactNode } from "react";
-
-// Internal context
-type TabsContextValue = { activeTab: string; setActiveTab: (tab: string) =&gt; void };
-const TabsContext = createContext&lt;TabsContextValue | undefined&gt;(undefined);
-
-const useTabs = () =&gt; {
-  const ctx = useContext(TabsContext);
-  if (!ctx) throw new Error("Tab components must be used within &lt;Tabs&gt;");
-  return ctx;
-};
-
-// Parent — manages state
-const Tabs = ({ defaultTab, children }: { defaultTab: string; children: ReactNode }) =&gt; {
-  const [activeTab, setActiveTab] = useState(defaultTab);
-  return (
-    &lt;TabsContext.Provider value={{ activeTab, setActiveTab }}&gt;
-      &lt;div className="tabs"&gt;{children}&lt;/div&gt;
-    &lt;/TabsContext.Provider&gt;
-  );
-};
-
-// Child — tab button
-const TabButton = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
-  const { activeTab, setActiveTab } = useTabs();
-  return (
-    &lt;button className={activeTab === name ? "active" : ""} onClick={() =&gt; setActiveTab(name)}&gt;
-      {children}
-    &lt;/button&gt;
-  );
-};
-
-// Child — tab content
-const TabPanel = ({ name, children }: { name: string; children: ReactNode }) =&gt; {
-  const { activeTab } = useTabs();
-  return activeTab === name ? &lt;div&gt;{children}&lt;/div&gt; : null;
-};
-
-// Usage — clean, declarative API:
+<p>A set of components that work together, sharing state internally. The consumer doesn't manage the state — just composes the pieces. Think: <code>&lt;Tabs&gt;</code>, <code>&lt;Accordion&gt;</code>, <code>&lt;Select&gt;</code>.</p>
+<p>Here's how it looks from the <strong>consumer's perspective</strong> (the clean API you get):</p>
+<pre class="prettyprint"><code class="lang-tsx">// Usage — you just compose the pieces, state is handled internally:
 &lt;Tabs defaultTab="profile"&gt;
   &lt;TabButton name="profile"&gt;Profile&lt;/TabButton&gt;
   &lt;TabButton name="settings"&gt;Settings&lt;/TabButton&gt;
-  &lt;TabPanel name="profile"&gt;&lt;ProfilePage /&gt;&lt;/TabPanel&gt;
-  &lt;TabPanel name="settings"&gt;&lt;SettingsPage /&gt;&lt;/TabPanel&gt;
+  &lt;TabPanel name="profile"&gt;Profile content here&lt;/TabPanel&gt;
+  &lt;TabPanel name="settings"&gt;Settings content here&lt;/TabPanel&gt;
 &lt;/Tabs&gt;
 </code></pre>
-<p><strong>Why it's good:</strong> clean API, flexible composition, state is hidden from the consumer.</p>
-<p><strong>Where you see it:</strong> UI libraries (Radix, React Aria, Headless UI).</p>
+<p>Behind the scenes, <code>Tabs</code> manages which tab is active (via Context), and <code>TabButton</code>/<code>TabPanel</code> read from that context to know what to show. You don't pass state around — it's all internal.</p>
+<p><strong>Why it's good:</strong> clean API for the consumer, flexible composition, state is hidden inside.</p>
+<p><strong>Where you see it:</strong> UI libraries (Radix, React Aria, Headless UI). You'll use compound components as a consumer — building them from scratch is an advanced topic.</p>
 
 <h4 style="color: #76cdd8;">Summary</h4>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
