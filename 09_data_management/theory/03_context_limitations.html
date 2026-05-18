@@ -21,7 +21,7 @@ const UserAvatar = () =&gt; {
 <p>This is why splitting into multiple smaller contexts (one for auth, one for theme, one for locale) is important.</p>
 
 <h3 style="color: #76cdd8;"><strong>Limitation 2: No Built-in Selector</strong></h3>
-<p>Unlike Redux (where you can select a specific slice of state), Context gives you the <strong>whole value</strong>. You can't say "only re-render me when <code>user.name</code> changes." You always get the entire context object, and any change to any part of it triggers a re-render.</p>
+<p>Unlike Redux (a state management library covered in a later module, where you can select a specific slice of state), Context gives you the <strong>whole value</strong>. You can't say "only re-render me when <code>user.name</code> changes." You always get the entire context object, and any change to any part of it triggers a re-render.</p>
 
 <h3 style="color: #76cdd8;"><strong>Limitation 3: Provider Nesting Can Get Deep</strong></h3>
 <p>With many contexts, you end up with "Provider hell":</p>
