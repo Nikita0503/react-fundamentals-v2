@@ -107,6 +107,65 @@ register("username", {
 });
 </code></pre>
 
+<h3 style="color: #76cdd8;"><strong>Example: Password and Confirm Password</strong></h3>
+<p>A common pattern — validate that two fields match using the <code>validate</code> function and <code>watch</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">import { useForm } from "react-hook-form";
+
+type SignupForm = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+const SignupPage = () =&gt; {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm&lt;SignupForm&gt;();
+
+  const onSubmit = (data: SignupForm) =&gt; {
+    console.log(data);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input
+        type="email"
+        {...register("email", { required: "Email is required" })}
+        placeholder="Email"
+      /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email.message}&lt;/span&gt;}
+
+      &lt;input
+        type="password"
+        {...register("password", {
+          required: "Password is required",
+          minLength: { value: 8, message: "At least 8 characters" },
+        })}
+        placeholder="Password"
+      /&gt;
+      {errors.password &amp;&amp; &lt;span&gt;{errors.password.message}&lt;/span&gt;}
+
+      &lt;input
+        type="password"
+        {...register("confirmPassword", {
+          required: "Please confirm your password",
+          validate: (value) =&gt;
+            value === watch("password") || "Passwords do not match",
+        })}
+        placeholder="Confirm password"
+      /&gt;
+      {errors.confirmPassword &amp;&amp; &lt;span&gt;{errors.confirmPassword.message}&lt;/span&gt;}
+
+      &lt;button type="submit"&gt;Sign Up&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};
+</code></pre>
+<p>The <code>validate</code> function compares <code>confirmPassword</code> with the current value of <code>password</code> (read via <code>watch("password")</code>). If they don't match, the error message is shown.</p>
+
 <h3 style="color: #76cdd8;"><strong>Errors Object</strong></h3>
 <p>The <code>errors</code> object from <code>formState</code> contains validation errors keyed by field name. Each error has a <code>type</code> (e.g., "required", "pattern") and a <code>message</code> string:</p>
 <pre class="prettyprint"><code class="lang-tsx">// Access error message for a field

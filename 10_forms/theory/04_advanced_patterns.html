@@ -102,23 +102,18 @@ const onSubmit = async (data: ContactForm) =&gt; {
 
 <h3 style="color: #76cdd8;"><strong>Nested Objects and Arrays</strong></h3>
 <p>React Hook Form supports nested data structures using dot notation and bracket notation:</p>
-<pre class="prettyprint"><code class="lang-tsx">type UserForm = {
+<pre class="prettyprint"><code class="lang-tsx">type OrderForm = {
   address: {
     street: string;
     city: string;
     zip: string;
   };
-  items: { name: string; quantity: number }[];
 };
 
-// Register nested fields
+// Register nested fields using dot notation
 register("address.street");
 register("address.city");
 register("address.zip");
-
-// Register array items
-register("items.0.name");
-register("items.0.quantity");
 </code></pre>
 
 <h3 style="color: #76cdd8;"><strong>useFieldArray — Dynamic Lists</strong></h3>
