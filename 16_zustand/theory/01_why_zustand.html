@@ -37,7 +37,7 @@
 <table>
 <tr><th>Scenario</th><th>Tool</th></tr>
 <tr><td>Theme, locale, auth (rarely changes)</td><td>Context</td></tr>
-<tr><td>Simple shared client state (UI state, filters, modals)</td><td>Zustand</td></tr>
+<tr><td>Simple shared client state (e.g., which modal is open, selected filters, sidebar collapsed)</td><td>Zustand</td></tr>
 <tr><td>Complex state with many slices, middleware needs, large team</td><td>Redux Toolkit</td></tr>
 <tr><td>Server state (API data, caching, refetching)</td><td>TanStack Query</td></tr>
 </table>
@@ -61,13 +61,17 @@ type CounterStore = {
   count: number;
   increment: () =&gt; void;
   decrement: () =&gt; void;
+  setCount: (value: number) =&gt; void;
   reset: () =&gt; void;
 };
 
 const useCounterStore = create&lt;CounterStore&gt;((set) =&gt; ({
   count: 0,
+  // set() does shallow merge — no need for ...state like in Redux
+  // set({ count: 1 }) keeps all other fields unchanged
   increment: () =&gt; set((state) =&gt; ({ count: state.count + 1 })),
   decrement: () =&gt; set((state) =&gt; ({ count: state.count - 1 })),
+  setCount: (value) =&gt; set({ count: value }), // accepts a parameter
   reset: () =&gt; set({ count: 0 }),
 }));
 
@@ -75,7 +79,14 @@ const useCounterStore = create&lt;CounterStore&gt;((set) =&gt; ({
 const Counter = () =&gt; {
   const count = useCounterStore((state) =&gt; state.count);
   const increment = useCounterStore((state) =&gt; state.increment);
-  return &lt;button onClick={increment}&gt;Count: {count}&lt;/button&gt;;
+  const setCount = useCounterStore((state) =&gt; state.setCount);
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={increment}&gt;+1&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(10)}&gt;Set to 10&lt;/button&gt;
+    &lt;/div&gt;
+  );
 };</code></pre>
 <p>15 lines for the store. No Provider. No boilerplate. Just works.</p>
 
