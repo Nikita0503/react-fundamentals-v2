@@ -68,7 +68,7 @@ const AddPostForm = () => {
     if (!title.trim() || !body.trim()) return;
 
     try {
-      await addPost({ title, body, authorId: "user-1" }).unwrap();
+      await addPost({ title, body, authorId: "user-1" }).unwrap(); // .unwrap() throws on error, so we can use try/catch
       setTitle("");
       setBody("");
     } catch (err) {
