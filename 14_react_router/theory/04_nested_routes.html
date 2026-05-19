@@ -61,6 +61,12 @@ export { RootLayout };</code></pre>
 &lt;/Routes&gt;</code></pre>
 <p><code>/dashboard</code> → DashboardLayout with DashboardHome in its Outlet.</p>
 <p><code>/dashboard/settings</code> → DashboardLayout with Settings in its Outlet.</p>
+<p><code>/dashboard/profile</code> → Profile is wrapped in <strong>both</strong> layouts at once:</p>
+<pre class="prettyprint"><code class="lang-ts">// What renders on screen for /dashboard/profile:
+RootLayout (header, footer)
+  └── Outlet renders → DashboardLayout (sidebar, dashboard nav)
+       └── Outlet renders → Profile (page content)</code></pre>
+<p>Each <code>&lt;Outlet /&gt;</code> renders the next level of nesting. RootLayout's Outlet renders DashboardLayout, DashboardLayout's Outlet renders Profile. Both layouts stay on screen — only the innermost content changes.</p>
 <p><code>index</code> route — renders when parent path matches exactly (no sub-path).</p>
 <h3 style="color: #76cdd8;"><strong>Why Nested Routes Are Powerful</strong></h3>
 <p>Layouts are defined once, not repeated in every page.</p>
