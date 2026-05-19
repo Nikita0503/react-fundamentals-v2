@@ -87,9 +87,12 @@ setName(state, action: PayloadAction&lt;string&gt;) {
   state.name = action.payload; // TypeScript knows this is string
 }
 
-// PayloadAction&lt;{ id: number; quantity: number }&gt; for complex payloads
-addItem(state, action: PayloadAction&lt;{ id: number; quantity: number }&gt;) {
-  state.items.push(action.payload); // TypeScript knows the shape
+// PayloadAction with a type — for complex payloads
+type UserProfile = { name: string; email: string };
+
+updateProfile(state, action: PayloadAction&lt;UserProfile&gt;) {
+  state.name = action.payload.name;
+  state.email = action.payload.email;
 }
 
 // No PayloadAction = no payload expected

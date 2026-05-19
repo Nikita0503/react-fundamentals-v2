@@ -124,11 +124,24 @@ const name = useAppSelector((state) =&gt; state.user.name);
 const expensiveItems = useAppSelector((state) =&gt;
   state.cart.items.filter((item) =&gt; item.price &gt; 100)
 );
-// This will re-render on EVERY store update, even unrelated ones!
+// This will re-render on EVERY store update, even unrelated ones!</code></pre>
 
-// ✅ Fix — use a memoized selector (e.g., with createSelector from reselect)
-// or extract the filtering logic outside the selector</code></pre>
-<p><strong>Rule of thumb:</strong> Select the smallest piece of state you need. Prefer selecting primitives or stable references over computing new arrays/objects inside the selector.</p>
+<p><strong>Fix with createSelector</strong> — memoizes the result, only recomputes when input changes:</p>
+<pre class="prettyprint"><code class="lang-ts">import { createSelector } from "@reduxjs/toolkit";
+
+// Input selector — extracts raw data from state
+const selectCartItems = (state: RootState) =&gt; state.cart.items;
+
+// Memoized selector — only recomputes when cart.items changes
+export const selectExpensiveItems = createSelector(
+  [selectCartItems],
+  (items) =&gt; items.filter((item) =&gt; item.price &gt; 100)
+);
+
+// Usage in component:
+const expensiveItems = useAppSelector(selectExpensiveItems);
+// Now it only re-renders when cart.items actually changes — not on every store update</code></pre>
+<p><strong>Rule of thumb:</strong> Select the smallest piece of state you need. If you need to filter/transform data inside a selector, use <code>createSelector</code> to memoize it.</p>
 <p></p>
 <style><!--
 .row-container {
