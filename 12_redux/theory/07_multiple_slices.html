@@ -87,8 +87,10 @@ export default userSlice.reducer;</code></pre>
 type CartItem = {
   id: string;
   title: string;
+type CartItem = {
+  id: string;
+  title: string;
   price: number;
-  quantity: number;
 };
 
 type CartState = {
@@ -103,13 +105,8 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem(state, action: PayloadAction&lt;Omit&lt;CartItem, "quantity"&gt;&gt;) {
-      const existing = state.items.find((item) =&gt; item.id === action.payload.id);
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        state.items.push({ ...action.payload, quantity: 1 });
-      }
+    addItem(state, action: PayloadAction&lt;CartItem&gt;) {
+      state.items.push(action.payload);
     },
     removeItem(state, action: PayloadAction&lt;string&gt;) {
       state.items = state.items.filter((item) =&gt; item.id !== action.payload);
@@ -196,19 +193,44 @@ export { Dashboard };</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>What If One Slice Needs to React to Another Slice's Action?</strong></h3>
 <p>Sometimes you need cross-slice communication. For example: when a user logs out, you want to clear the cart too. This is done with <code>extraReducers</code> — a way for a slice to listen to actions it didn't define:</p>
-<pre class="prettyprint"><code class="lang-ts">// Teaser — covered in detail in the next module (async/thunks)
+<pre class="prettyprint"><code class="lang-ts">// store/slices/authSlice.ts — defines the logout action
+import { createSlice } from "@reduxjs/toolkit";
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState: { isLoggedIn: false },
+  reducers: {
+    login(state) {
+      state.isLoggedIn = true;
+    },
+    logout(state) {
+      state.isLoggedIn = false;
+    },
+  },
+});
+
+export const { login, logout } = authSlice.actions;
+export default authSlice.reducer;</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// store/slices/cartSlice.ts — reacts to logout from authSlice
+import { createSlice } from "@reduxjs/toolkit";
+import { logout } from "./authSlice"; // import the action
+
 const cartSlice = createSlice({
   name: "cart",
-  initialState,
-  reducers: { /* ... */ },
+  initialState: { items: [] as CartItem[] },
+  reducers: {
+    addItem(state, action) { /* ... */ },
+    removeItem(state, action) { /* ... */ },
+  },
   extraReducers: (builder) =&gt; {
-    // React to an action from another slice
+    // When logout happens (defined in authSlice), clear the cart
     builder.addCase(logout, (state) =&gt; {
       state.items = [];
     });
   },
 });</code></pre>
-<p>This keeps slices decoupled — the cart slice doesn't import from the user slice's internals, it just listens for a specific action type.</p>
+<p>Now when <code>dispatch(logout())</code> is called, two things happen: authSlice sets <code>isLoggedIn</code> to false, AND cartSlice clears its items. One action, multiple slices react — without coupling them together.</p>
 <p></p>
 <style><!--
 .row-container {
