@@ -110,6 +110,14 @@ const userReducer = createReducer(initialState, (builder) =&gt; {
     .addCase(resetUser, () =&gt; {
       return initialState; // return a new value to replace entirely
     });
+});
+
+// Handling object payload:
+// const addProduct = createAction&lt;{ name: string; price: number }&gt;("cart/addProduct");
+
+builder.addCase(addProduct, (state, action) =&gt; {
+  // action.payload is { name: string; price: number }
+  state.items.push(action.payload); // push the whole object
 });</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>Why "mutating" is safe — Immer explained</strong></h3>

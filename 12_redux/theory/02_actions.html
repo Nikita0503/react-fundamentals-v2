@@ -74,7 +74,14 @@ export const resetUser = (): ResetUserAction =&gt; ({
 // One line = constant + type + action creator
 export const setName = createAction&lt;string&gt;("user/setName");
 export const setEmail = createAction&lt;string&gt;("user/setEmail");
-export const resetUser = createAction("user/reset");</code></pre>
+export const resetUser = createAction("user/reset");
+
+// Payload can also be an object:
+export const addProduct = createAction&lt;{ name: string; price: number }&gt;("cart/addProduct");
+
+// Usage:
+addProduct({ name: "Laptop", price: 999 });
+// Result: { type: "cart/addProduct", payload: { name: "Laptop", price: 999 } }</code></pre>
 
 <p><strong>What you get automatically:</strong></p>
 <ul>
