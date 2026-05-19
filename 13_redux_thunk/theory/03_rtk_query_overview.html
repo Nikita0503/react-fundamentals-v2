@@ -41,43 +41,69 @@ type Post = {
 };
 
 export const postsApi = createApi({
+  // Unique key for this API's cache in the Redux store
   reducerPath: "postsApi",
+
+  // Base configuration for all requests (base URL, headers, etc.)
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+
+  // Tag types used for cache invalidation (we'll explain below)
   tagTypes: ["Post"],
-  endpoints: (builder) => ({
+
+  // All API endpoints defined here
+  endpoints: (builder) =&gt; ({
+
+    // GET /api/posts — returns Post[], takes no argument (void)
     getPosts: builder.query&lt;Post[], void&gt;({
-      query: () => "/posts",
-      providesTags: ["Post"],
+      query: () =&gt; "/posts",
+      providesTags: ["Post"], // this data is tagged as "Post"
     }),
+
+    // GET /api/posts/:id — returns Post, takes postId as argument
     getPostById: builder.query&lt;Post, string&gt;({
-      query: (postId) => `/posts/${postId}`,
-      providesTags: (result, error, id) => [{ type: "Post", id }],
+      query: (postId) =&gt; `/posts/${postId}`,
     }),
+
+    // POST /api/posts — takes a new post object (without id), returns the created Post
     addPost: builder.mutation&lt;Post, Omit&lt;Post, "id"&gt;&gt;({
-      query: (newPost) => ({
+      query: (newPost) =&gt; ({
         url: "/posts",
         method: "POST",
         body: newPost,
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["Post"], // after adding, refetch all "Post" queries
     }),
+
+    // DELETE /api/posts/:id — takes postId (string), returns nothing (void)
     deletePost: builder.mutation&lt;void, string&gt;({
-      query: (postId) => ({
+      query: (postId) =&gt; ({
         url: `/posts/${postId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Post"],
+      invalidatesTags: ["Post"], // after deleting, refetch all "Post" queries
     }),
   }),
 });
 
-// Auto-generated hooks!
+// RTK Query auto-generates a hook for each endpoint!
+// Naming: "use" + endpoint name + "Query" (for queries) or "Mutation" (for mutations)
 export const {
   useGetPostsQuery,
   useGetPostByIdQuery,
   useAddPostMutation,
   useDeletePostMutation,
 } = postsApi;</code></pre>
+
+<p><strong>Key parts explained:</strong></p>
+<ul>
+<li><code>reducerPath</code> — a unique name for this API's slice in the Redux store (like a namespace)</li>
+<li><code>baseQuery</code> — the base URL all endpoints will use. <code>fetchBaseQuery</code> is a thin wrapper around <code>fetch</code></li>
+<li><code>tagTypes</code> — labels used for cache invalidation (when data changes, which cached queries should refetch?)</li>
+<li><code>builder.query&lt;ReturnType, ArgType&gt;</code> — defines a GET endpoint. First generic = what it returns, second = what argument it takes</li>
+<li><code>builder.mutation&lt;ReturnType, ArgType&gt;</code> — defines a POST/PUT/DELETE endpoint</li>
+<li><code>providesTags</code> — "this query provides data tagged as Post" (used for cache tracking)</li>
+<li><code>invalidatesTags</code> — "after this mutation, refetch all queries tagged as Post" (automatic cache refresh)</li>
+</ul>
 
 <h3 style="color: #76cdd8;"><strong>Adding to the Store</strong></h3>
 <p>RTK Query creates its own reducer and middleware. You add them to your store:</p>
