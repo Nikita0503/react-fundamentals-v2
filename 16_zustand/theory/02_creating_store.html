@@ -3,17 +3,48 @@
 <pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
 
 type Store = {
-  // state
-  // actions
+  // state (data)
+  // actions (functions that change the data)
 };
 
 const useStore = create&lt;Store&gt;((set, get) =&gt; ({
-  // initial state + action implementations
+  // initial state values + action implementations
 }));</code></pre>
-<ul>
-<li><code>set</code> — updates state (merges by default, like setState in class components)</li>
-<li><code>get</code> — reads current state inside actions (useful when action depends on current state)</li>
-</ul>
+
+<h3 style="color: #76cdd8;"><strong>What is an Action in Zustand?</strong></h3>
+<p>An <strong>action</strong> is simply a function inside the store that changes state. It's not a separate object like in Redux — just a regular function that calls <code>set()</code>:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Pattern: actionName: (parameters) =&gt; set(newStateOrUpdater)
+
+const useStore = create&lt;Store&gt;((set) =&gt; ({
+  count: 0,                                        // ← state
+  increment: () =&gt; set({ count: 1 }),              // ← action (no params)
+  setCount: (value: number) =&gt; set({ count: value }), // ← action (with param)
+}));</code></pre>
+
+<h3 style="color: #76cdd8;"><strong><code>set</code> — How to Update State</strong></h3>
+<p><code>set</code> is the function you call inside actions to update the store. It has two forms:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Form 1: pass an object — merges with current state
+set({ count: 5 })
+// If state was { count: 0, name: "Alice" }
+// Result:      { count: 5, name: "Alice" } — shallow merge, other fields stay
+
+// Form 2: pass a function — receives current state, return new partial state
+set((state) =&gt; ({ count: state.count + 1 }))
+// Use this when new value depends on the previous value</code></pre>
+<p><strong>Key difference from Redux:</strong> no need to spread (<code>...state</code>). Zustand merges automatically. You only return the fields you want to change.</p>
+
+<h3 style="color: #76cdd8;"><strong><code>get</code> — How to Read Current State</strong></h3>
+<p><code>get</code> returns the current state at the moment you call it. Use it when an action needs to read state before deciding what to do:</p>
+<pre class="prettyprint"><code class="lang-tsx">const useStore = create&lt;Store&gt;((set, get) =&gt; ({
+  items: [],
+
+  addItem: (item) =&gt; {
+    const currentItems = get().items; // read current state
+    if (currentItems.length &gt;= 10) return; // don't add if already 10 items
+    set({ items: [...currentItems, item] });
+  },
+}));</code></pre>
+<p>You don't need <code>get</code> often — most actions just call <code>set</code>. Use <code>get</code> when you need to check or read state before updating.</p>
 
 <h3 style="color: #76cdd8;"><strong>State + Actions Together</strong></h3>
 <p>Zustand keeps state and actions in one place (like a slice):</p>
