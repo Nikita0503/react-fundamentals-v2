@@ -19,7 +19,7 @@ const store = createStore(rootReducer);</code></pre>
 <p>Redux Toolkit's <code>configureStore</code> is the modern replacement. It gives you everything you need with sensible defaults:</p>
 <pre class="prettyprint"><code class="lang-ts">// store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./userReducer";
+import { userReducer } from "./reducers/userReducer";
 
 export const store = configureStore({
   reducer: {
@@ -39,8 +39,8 @@ export const store = configureStore({
 <p>The key TypeScript pattern: derive your types <strong>from the store itself</strong>, not the other way around:</p>
 <pre class="prettyprint"><code class="lang-ts">// store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./userReducer";
-import { cartReducer } from "./cartReducer";
+import { userReducer } from "./reducers/userReducer";
+import { cartReducer } from "./reducers/cartReducer";
 
 export const store = configureStore({
   reducer: {
@@ -83,15 +83,20 @@ export default App;</code></pre>
 <pre class="prettyprint"><code class="lang-ts">// A clean store setup:
 src/
   store/
-    store.ts        // configureStore + type exports
-    hooks.ts        // useAppDispatch, useAppSelector
-    userSlice.ts    // (we'll cover slices next)
-    cartSlice.ts</code></pre>
+    store.ts              // configureStore + type exports
+    hooks.ts              // useAppDispatch, useAppSelector
+    actions/
+      userActions.ts      // createAction definitions
+      cartActions.ts
+    reducers/
+      userReducer.ts      // createReducer
+      cartReducer.ts</code></pre>
+<p>Later, when you learn <code>createSlice</code> (next topic), actions and reducers will live together in one file — simplifying this structure.</p>
 
 <h3 style="color: #76cdd8;"><strong>Full Working Example</strong></h3>
 <p>Let's put it all together — a minimal but complete setup:</p>
 
-<p><strong>store/userReducer.ts</strong></p>
+<p><strong>store/reducers/userReducer.ts</strong></p>
 <pre class="prettyprint"><code class="lang-ts">import { createReducer, createAction } from "@reduxjs/toolkit";
 
 // Actions
@@ -122,7 +127,7 @@ export const userReducer = createReducer(initialState, (builder) =&gt; {
 
 <p><strong>store/store.ts</strong></p>
 <pre class="prettyprint"><code class="lang-ts">import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./userReducer";
+import { userReducer } from "./reducers/userReducer";
 
 export const store = configureStore({
   reducer: {
@@ -155,12 +160,12 @@ export default App;</code></pre>
 
 <p><strong>components/UserForm.tsx</strong></p>
 <pre class="prettyprint"><code class="lang-tsx">import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setName, setEmail } from "../store/userReducer";
+import { setName, setEmail } from "../store/reducers/userReducer";
 
 const UserForm = () =&gt; {
   const dispatch = useAppDispatch();
-  const name = useAppSelector((state) =&gt; state.user.name);
-  const email = useAppSelector((state) =&gt; state.user.email);
+  const name = useAppSelector((state) =&gt; state.user.name);   // reading from store (covered in detail next)
+  const email = useAppSelector((state) =&gt; state.user.email); // reading from store (covered in detail next)
 
   return (
     &lt;div&gt;
