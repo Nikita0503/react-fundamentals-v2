@@ -99,6 +99,30 @@ const fetchUser = createAsyncThunk&lt;
   }
 );</code></pre>
 
+<h3 style="color: #76cdd8;"><strong>Using dispatch and getState Inside a Thunk</strong></h3>
+<p>The <code>thunkAPI</code> object gives you access to <code>dispatch</code> (to dispatch other actions) and <code>getState</code> (to read current state):</p>
+<pre class="prettyprint"><code class="lang-ts">const fetchUserPosts = createAsyncThunk(
+  "posts/fetchUserPosts",
+  async (_, thunkAPI) =&gt; {
+    // Read current state to get the logged-in user's ID
+    const state = thunkAPI.getState() as RootState;
+    const userId = state.auth.user?.id;
+
+    if (!userId) {
+      return thunkAPI.rejectWithValue("User not logged in");
+    }
+
+    const response = await fetch(`/api/users/${userId}/posts`);
+    const posts = await response.json();
+
+    // Dispatch another action from inside the thunk
+    thunkAPI.dispatch(setLastFetched(Date.now()));
+
+    return posts as Post[];
+  }
+);</code></pre>
+<p><code>getState()</code> is useful when the thunk needs data that's already in the store (e.g., auth token, user ID). <code>dispatch()</code> lets you trigger side effects or update other slices from within the thunk.</p>
+
 <h3 style="color: #76cdd8;"><strong>Dispatching a Thunk</strong></h3>
 <p>You dispatch a thunk just like any other action. It returns a <strong>Promise</strong> that you can await:</p>
 <pre class="prettyprint"><code class="lang-ts">// In a component or another thunk:
