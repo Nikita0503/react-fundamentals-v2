@@ -150,7 +150,7 @@ const Profile = ({ userId }: { userId: string }) =&gt; {
 };</code></pre>
 <ul>
 <li>Actions can be async — just use async/await and call <code>set</code> when ready</li>
-<li>Note: for server state with caching/refetching, TanStack Query is better. Zustand async is for simple cases or client-side async logic.</li>
+<li>Note: for server state with caching/refetching, TanStack Query is better (covered in the next module). Zustand async is for simple cases or client-side async logic.</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>DevTools Middleware</strong></h3>
@@ -202,6 +202,13 @@ const useStore = create&lt;MyStore&gt;()(
   )
 );</code></pre>
 <p>Middleware composes from inside out: <strong>immer → persist → devtools</strong></p>
+<p><strong>Does the order matter?</strong> Yes. Each middleware wraps the one inside it:</p>
+<ul>
+<li><code>immer</code> (innermost) — processes your state updates first, converting mutations to immutable changes</li>
+<li><code>persist</code> (middle) — sees the final state after immer, saves it to localStorage</li>
+<li><code>devtools</code> (outermost) — sees all actions and state changes, sends them to Redux DevTools</li>
+</ul>
+<p>If you put <code>persist</code> inside <code>immer</code>, it would try to persist the draft object (broken). If you put <code>devtools</code> inside <code>persist</code>, DevTools wouldn't see persist-related actions. The recommended order is always: <strong>immer (innermost) → persist → devtools (outermost)</strong>.</p>
 
 <style><!--
 .row-container {
