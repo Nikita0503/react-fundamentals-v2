@@ -169,6 +169,159 @@ export { UserProfile };</code></pre>
 <li>You don't need caching or global access — consider React Query / TanStack Query</li>
 <li>You have many endpoints with similar patterns — RTK Query (next section) is better</li>
 </ul>
+
+<h3 style="color: #76cdd8;"><strong>Full Example: Task CRUD with Thunks</strong></h3>
+<p>Let's put it all together — a complete example with tasks that can be fetched, added, toggled, and deleted:</p>
+
+<p><strong>Types and Thunks:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// store/tasks/types.ts
+type Task = {
+  id: number;
+  title: string;
+  status: "in progress" | "done";
+};
+
+// store/tasks/thunks.ts
+import { createAsyncThunk } from "@reduxjs/toolkit";
+
+export const fetchTasks = createAsyncThunk("tasks/fetchAll", async () =&gt; {
+  const response = await fetch("/api/tasks");
+  return (await response.json()) as Task[];
+});
+
+export const addTask = createAsyncThunk("tasks/add", async (title: string) =&gt; {
+  const response = await fetch("/api/tasks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, status: "in progress" }),
+  });
+  return (await response.json()) as Task;
+});
+
+export const toggleTask = createAsyncThunk("tasks/toggle", async (task: Task) =&gt; {
+  const newStatus = task.status === "in progress" ? "done" : "in progress";
+  const response = await fetch(`/api/tasks/${task.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: newStatus }),
+  });
+  return (await response.json()) as Task;
+});
+
+export const deleteTask = createAsyncThunk("tasks/delete", async (id: number) =&gt; {
+  await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+  return id; // return the id so the reducer knows which task to remove
+});</code></pre>
+
+<p><strong>Slice with extraReducers:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// store/tasks/tasksSlice.ts
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchTasks, addTask, toggleTask, deleteTask } from "./thunks";
+
+type TasksState = {
+  items: Task[];
+  loading: boolean;
+  error: string | null;
+};
+
+const initialState: TasksState = {
+  items: [],
+  loading: false,
+  error: null,
+};
+
+const tasksSlice = createSlice({
+  name: "tasks",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) =&gt; {
+    // Fetch all
+    builder.addCase(fetchTasks.pending, (state) =&gt; {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchTasks.fulfilled, (state, action) =&gt; {
+      state.items = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(fetchTasks.rejected, (state, action) =&gt; {
+      state.loading = false;
+      state.error = action.error.message ?? "Failed to fetch tasks";
+    });
+
+    // Add
+    builder.addCase(addTask.fulfilled, (state, action) =&gt; {
+      state.items.push(action.payload);
+    });
+
+    // Toggle status
+    builder.addCase(toggleTask.fulfilled, (state, action) =&gt; {
+      const index = state.items.findIndex((t) =&gt; t.id === action.payload.id);
+      if (index !== -1) state.items[index] = action.payload;
+    });
+
+    // Delete
+    builder.addCase(deleteTask.fulfilled, (state, action) =&gt; {
+      state.items = state.items.filter((t) =&gt; t.id !== action.payload);
+    });
+  },
+});
+
+export default tasksSlice.reducer;</code></pre>
+
+<p><strong>Component:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// components/TaskList.tsx
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { fetchTasks, addTask, toggleTask, deleteTask } from "../store/tasks/thunks";
+
+const TaskList = () =&gt; {
+  const dispatch = useAppDispatch();
+  const { items: tasks, loading, error } = useAppSelector((state) =&gt; state.tasks);
+  const [newTitle, setNewTitle] = useState("");
+
+  useEffect(() =&gt; {
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
+  const handleAdd = () =&gt; {
+    if (newTitle.trim()) {
+      dispatch(addTask(newTitle));
+      setNewTitle("");
+    }
+  };
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;input
+          value={newTitle}
+          onChange={(e) =&gt; setNewTitle(e.target.value)}
+          placeholder="New task..."
+        /&gt;
+        &lt;button onClick={handleAdd}&gt;Add&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;ul&gt;
+        {tasks.map((task) =&gt; (
+          &lt;li key={task.id}&gt;
+            &lt;span style={{ textDecoration: task.status === "done" ? "line-through" : "none" }}&gt;
+              {task.title}
+            &lt;/span&gt;
+            &lt;button onClick={() =&gt; dispatch(toggleTask(task))}&gt;
+              {task.status === "in progress" ? "Done" : "Undo"}
+            &lt;/button&gt;
+            &lt;button onClick={() =&gt; dispatch(deleteTask(task.id))}&gt;Delete&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+};</code></pre>
+<p>This is a complete async CRUD flow: fetch tasks on mount, add new tasks, toggle status between "in progress" and "done", and delete tasks. Each operation is a thunk that calls the API, and the slice handles the results via <code>extraReducers</code>.</p>
 <p></p>
 <style><!--
 .row-container {
