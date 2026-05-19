@@ -20,15 +20,27 @@ const Component = () =&gt; {
 <h3 style="color: #76cdd8;"><strong>Selecting Multiple Values</strong></h3>
 <pre class="prettyprint"><code class="lang-tsx">// Option 1: multiple selectors (each triggers re-render independently)
 const todos = useTodoStore((state) =&gt; state.todos);
-const addTodo = useTodoStore((state) =&gt; state.addTodo);
+const isLoading = useTodoStore((state) =&gt; state.isLoading);</code></pre>
 
-// Option 2: shallow comparison for objects (use when selecting multiple fields)
+<pre class="prettyprint"><code class="lang-tsx">// Option 2: return an object — BUT there's a problem!
+const { todos, isLoading } = useTodoStore((state) =&gt; ({
+  todos: state.todos,
+  isLoading: state.isLoading,
+}));
+// ❌ This re-renders on EVERY store change!
+// Why? The selector returns a new object { ... } every time.
+// Zustand compares with Object.is — new object = different reference = re-render.</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// Option 3: useShallow — fixes the problem
 import { useShallow } from "zustand/react/shallow";
 
-const { todos, addTodo } = useTodoStore(
-  useShallow((state) =&gt; ({ todos: state.todos, addTodo: state.addTodo }))
-);</code></pre>
-<p><code>useShallow</code> does shallow comparison on the returned object — prevents re-render if individual fields didn't change.</p>
+const { todos, isLoading } = useTodoStore(
+  useShallow((state) =&gt; ({ todos: state.todos, isLoading: state.isLoading }))
+);
+// ✅ Now Zustand compares each field individually (shallow comparison).
+// Re-renders only when todos OR isLoading actually changed — not on every store update.</code></pre>
+
+<p><strong>When to use <code>useShallow</code>:</strong> when your selector returns an object or array. Without it, the new object reference triggers a re-render every time, even if the values inside didn't change. <code>useShallow</code> compares each field separately — re-render only happens when at least one field actually changed.</p>
 
 <h3 style="color: #76cdd8;"><strong>Persist Middleware — Save State to localStorage</strong></h3>
 <pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
@@ -55,30 +67,41 @@ const useThemeStore = create&lt;ThemeStore&gt;()(
 <li><code>name</code> is the localStorage key</li>
 </ul>
 
-<h3 style="color: #76cdd8;"><strong>Immer Middleware — Mutable Syntax</strong></h3>
+<h3 style="color: #76cdd8;"><strong>Immer Middleware — Simpler Nested Updates</strong></h3>
+<p>Zustand's <code>set()</code> does shallow merge on the <strong>first level only</strong>. For nested objects, you still need to spread manually:</p>
+<pre class="prettyprint"><code class="lang-tsx">// Without immer — nested updates require spread at every level
+set((state) =&gt; ({
+  user: {
+    ...state.user,
+    address: {
+      ...state.user.address,
+      city: "LA",  // just changing one field, but so much code!
+    },
+  },
+}));</code></pre>
+
+<p>With the <strong>immer middleware</strong>, you can write direct assignments — Immer creates the immutable copy for you under the hood:</p>
 <pre class="prettyprint"><code class="lang-tsx">import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-type Todo = { id: number; text: string; done: boolean };
-
-type TodoStore = {
-  todos: Todo[];
-  toggleTodo: (id: number) =&gt; void;
+type UserStore = {
+  user: { name: string; address: { city: string; zip: string } };
+  setCity: (city: string) =&gt; void;
 };
 
-const useTodoStore = create&lt;TodoStore&gt;()(
+const useUserStore = create&lt;UserStore&gt;()(
   immer((set) =&gt; ({
-    todos: [],
-    toggleTodo: (id) =&gt;
+    user: { name: "Alice", address: { city: "NYC", zip: "10001" } },
+    setCity: (city) =&gt;
       set((state) =&gt; {
-        const todo = state.todos.find((t) =&gt; t.id === id);
-        if (todo) todo.done = !todo.done; // direct mutation — Immer handles immutability
+        state.user.address.city = city; // looks like mutation, but Immer makes it safe
       }),
   }))
 );</code></pre>
 <ul>
 <li>Install: <code>npm install immer</code></li>
-<li>Same concept as in Redux Toolkit — write mutations, Immer produces immutable updates</li>
+<li>Same library used in Redux Toolkit — write mutations, Immer produces immutable updates</li>
+<li><strong>When to use:</strong> when your state has nested objects (2+ levels deep). For flat state like <code>{ count: 0 }</code>, immer is unnecessary.</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>Async Actions — Fetching Data</strong></h3>
