@@ -10,19 +10,19 @@
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  return config;
+  return config; // IMPORTANT: must return config, otherwise the request won't proceed
 });</code></pre>
-<p>Now every request made through <code>httpClient</code> automatically carries the token — no manual header setting needed.</p>
+<p>Now every request made through <code>httpClient</code> automatically carries the token — no manual header setting needed. Note: you <strong>must return <code>config</code></strong> from the interceptor — this is what gets sent as the actual request. If you forget to return it, the request will fail.</p>
 
 <h3 style="color: #76cdd8;"><strong>Response Interceptor — Token Refresh</strong></h3>
 <p>When an access token expires, the server returns <strong>401</strong>. A response interceptor can catch this, refresh the token, and retry the original request — all transparently:</p>
 <pre class="prettyprint"><code class="lang-ts">httpClient.interceptors.response.use(
-  (response) => response, // success — pass through
+  (response) =&gt; response, // success — must return response to pass it to the caller
 
-  async (error) => {
+  async (error) =&gt; {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 &amp;&amp; !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -34,19 +34,20 @@
         localStorage.setItem("accessToken", data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
-        return httpClient(originalRequest);
+        return httpClient(originalRequest); // retry — return the new response
       } catch {
         // Refresh failed — logout user
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.location.href = "/login";
-        return Promise.reject(error);
+        return Promise.reject(error); // reject — error goes to the caller's .catch()
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error); // for all other errors — reject so caller can handle them
   }
 );</code></pre>
+<p>In the response interceptor: return <code>response</code> to pass it through on success, return <code>Promise.reject(error)</code> to let the error reach the caller's <code>.catch()</code>. If you retry a request, return the new response from <code>httpClient(originalRequest)</code>.</p>
 
 <h3 style="color: #76cdd8;"><strong>How the Refresh Flow Works</strong></h3>
 <ol>
