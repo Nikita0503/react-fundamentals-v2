@@ -178,6 +178,26 @@ const fetchUser = createAsyncThunk&lt;
   }
 );</code></pre>
 
+<p><strong>Without parameters (void):</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// When the thunk doesn't need any argument — use void
+const fetchCurrentUser = createAsyncThunk&lt;
+  User,              // return type
+  void,              // no argument needed
+  { rejectValue: string }  // error is just a string
+&gt;(
+  "user/fetchCurrent",
+  async (_, thunkAPI) =&gt; {  // _ means "I'm ignoring this parameter"
+    const response = await fetch("/api/me");
+    if (!response.ok) {
+      return thunkAPI.rejectWithValue("Failed to load profile");
+    }
+    return response.json() as Promise&lt;User&gt;;
+  }
+);
+
+// Usage — no argument:
+// dispatch(fetchCurrentUser());</code></pre>
+
 <h3 style="color: #76cdd8;"><strong>Error Handling: rejectWithValue</strong></h3>
 <p>By default, if your async function throws, the rejected action's payload is the error message. But you often want <strong>structured error data</strong>. Use <code>thunkAPI.rejectWithValue()</code>:</p>
 <pre class="prettyprint"><code class="lang-ts">const fetchUser = createAsyncThunk&lt;
