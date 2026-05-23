@@ -2,7 +2,20 @@
 
 <p>Custom hooks can't be called outside of a component. <code>renderHook</code> solves this — it renders your hook in a minimal wrapper component so you can test it in isolation:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">import { renderHook, act } from "@testing-library/react";
+<pre class="prettyprint"><code class="lang-ts">// useCounter.ts — the hook
+import { useState } from "react";
+
+const useCounter = (initialValue: number) =&gt; {
+  const [count, setCount] = useState(initialValue);
+  const increment = () =&gt; setCount((prev) =&gt; prev + 1);
+  const decrement = () =&gt; setCount((prev) =&gt; prev - 1);
+  return { count, increment, decrement };
+};
+
+export { useCounter };</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// useCounter.test.ts — the test
+import { renderHook, act } from "@testing-library/react";
 import { useCounter } from "./useCounter";
 
 describe("useCounter", () =&gt; {
@@ -30,81 +43,153 @@ describe("useCounter", () =&gt; {
 
 <h3 style="color: #76cdd8;"><strong>Mocking Modules with vi.mock</strong></h3>
 
-<p>"Mocking" means replacing a real module with a fake version you control. This lets you isolate the code you're testing from its dependencies:</p>
+<p>"Mocking" means replacing a real module with a fake version you control. This lets you isolate the code you're testing from its dependencies.</p>
+<p>Example: you have a component that imports <code>fetchUser</code> from an API module. In tests, you don't want to make real network requests — you replace the module with a fake:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">import { vi } from "vitest";
+<pre class="prettyprint"><code class="lang-tsx">// api/users.ts — the real module (makes network requests)
+export const fetchUser = async (id: number): Promise&lt;User&gt; =&gt; {
+  const response = await fetch(`/api/users/${id}`);
+  return response.json();
+};</code></pre>
 
-// Replace the entire module with fake implementations
+<pre class="prettyprint"><code class="lang-tsx">// UserProfile.tsx — component that uses fetchUser
+import { useState, useEffect } from "react";
+import { fetchUser } from "./api/users";
+
+const UserProfile = ({ userId }: { userId: number }) =&gt; {
+  const [user, setUser] = useState&lt;{ name: string } | null&gt;(null);
+
+  useEffect(() =&gt; {
+    fetchUser(userId).then(setUser);
+  }, [userId]);
+
+  if (!user) return &lt;p&gt;Loading...&lt;/p&gt;;
+  return &lt;p&gt;{user.name}&lt;/p&gt;;
+};</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// UserProfile.test.tsx — mock the API module
+import { vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+
+// Replace "./api/users" with a fake — fetchUser now returns { id: 1, name: "Alice" } instantly
 vi.mock("./api/users", () =&gt; ({
   fetchUser: vi.fn().mockResolvedValue({ id: 1, name: "Alice" }),
-}));</code></pre>
+}));
+
+it("displays user name", async () =&gt; {
+  render(&lt;UserProfile userId={1} /&gt;);
+  expect(await screen.findByText("Alice")).toBeInTheDocument();
+});</code></pre>
 
 <ul>
-<li>The real <code>fetchUser</code> is never called — your fake version runs instead</li>
-<li>Useful for: API calls, external libraries, modules with side effects (like logging or analytics)</li>
+<li>Without the mock, the test would fail — there's no real server running during tests</li>
+<li>The fake returns instantly with predictable data — tests are fast and don't depend on external services</li>
 <li>The mock is applied to the entire test file</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>vi.fn() — Creating Mock Functions</strong></h3>
 
-<p>A "mock function" (also called a "stub") is a fake function that tracks how it was called and lets you control what it returns:</p>
+<p>A "mock function" is a fake function that <strong>tracks how it was called</strong> (how many times, with what arguments). You use it when a component accepts a callback prop — you pass the mock and then check if the component called it correctly:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">const mockCallback = vi.fn();
+<pre class="prettyprint"><code class="lang-tsx">// DeleteButton.tsx — component that calls onDelete when clicked
+type DeleteButtonProps = {
+  itemId: number;
+  onDelete: (id: number) =&gt; void;
+};
 
-// Call it like a normal function
-mockCallback("hello", 42);
+const DeleteButton = ({ itemId, onDelete }: DeleteButtonProps) =&gt; (
+  &lt;button onClick={() =&gt; onDelete(itemId)}&gt;Delete&lt;/button&gt;
+);</code></pre>
 
-// Assert HOW it was called
-expect(mockCallback).toHaveBeenCalledTimes(1);
-expect(mockCallback).toHaveBeenCalledWith("hello", 42);
+<pre class="prettyprint"><code class="lang-tsx">// DeleteButton.test.tsx
+it("calls onDelete with the item id when clicked", () =&gt; {
+  const mockOnDelete = vi.fn(); // create a fake function that tracks calls
+  render(&lt;DeleteButton itemId={42} onDelete={mockOnDelete} /&gt;);
 
-// Control what it returns
-const mockFetch = vi.fn().mockReturnValue("data");
-const mockAsync = vi.fn().mockResolvedValue({ id: 1 }); // for async functions</code></pre>
+  fireEvent.click(screen.getByRole("button"));
 
-<h3 style="color: #76cdd8;"><strong>vi.spyOn — Spy on Existing Methods</strong></h3>
+  // Check that our fake was called correctly:
+  expect(mockOnDelete).toHaveBeenCalledTimes(1);  // called exactly once
+  expect(mockOnDelete).toHaveBeenCalledWith(42);  // called with the right argument
+});</code></pre>
 
-<p>Unlike <code>vi.mock</code> (which replaces an entire module), <code>spyOn</code> watches a specific method on an existing object. You can track calls without replacing the whole module:</p>
+<h3 style="color: #76cdd8;"><strong>vi.spyOn — Check if a Method Was Called</strong></h3>
 
-<pre class="prettyprint"><code class="lang-tsx">const spy = vi.spyOn(console, "error").mockImplementation(() =&gt; {});
+<p><code>vi.spyOn</code> lets you watch an existing method and check if it was called — without replacing it entirely. Think of it as putting a camera on a function:</p>
 
-// ... run code that calls console.error ...
+<pre class="prettyprint"><code class="lang-tsx">// ScrollToTopButton.tsx
+const ScrollToTopButton = () =&gt; (
+  &lt;button onClick={() =&gt; window.scrollTo(0, 0)}&gt;Back to top&lt;/button&gt;
+);</code></pre>
 
-expect(spy).toHaveBeenCalledTimes(1);
-spy.mockRestore(); // restore the original console.error</code></pre>
+<pre class="prettyprint"><code class="lang-tsx">// ScrollToTopButton.test.tsx
+it("scrolls to top when clicked", () =&gt; {
+  // Watch window.scrollTo — track if it gets called
+  // .mockImplementation(() => {}) replaces the real behavior with "do nothing"
+  // (because jsdom doesn't have real scrolling — without this, it would throw an error)
+  const spy = vi.spyOn(window, "scrollTo");
+  spy.mockImplementation(() =&gt; {});
+
+  render(&lt;ScrollToTopButton /&gt;);
+  fireEvent.click(screen.getByRole("button"));
+
+  // Was scrollTo called with (0, 0)?
+  expect(spy).toHaveBeenCalledWith(0, 0);
+
+  spy.mockRestore(); // remove the spy after test
+});</code></pre>
+
+<p><strong>vi.fn() vs vi.spyOn:</strong></p>
+<ul>
+<li><code>vi.fn()</code> — creates a brand new fake function (for callback props you pass to components)</li>
+<li><code>vi.spyOn(object, "method")</code> — watches a method that already exists on an object (window.scrollTo, console.log, etc.)</li>
+</ul>
 
 <h3 style="color: #76cdd8;"><strong>Mocking Timers</strong></h3>
 
-<p>Some code uses <code>setTimeout</code> or <code>setInterval</code> (like debounce). You don't want tests to actually wait 300ms. Fake timers let you control time manually:</p>
+<p>Some components use <code>setTimeout</code> — for example, showing a notification that disappears after 3 seconds. You don't want your test to actually wait 3 seconds. Fake timers let you fast-forward time instantly:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">import { vi } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { useDebounce } from "./useDebounce";
+<pre class="prettyprint"><code class="lang-tsx">// Notification.tsx — shows a message, hides after 3 seconds
+import { useState, useEffect } from "react";
 
-describe("useDebounce", () =&gt; {
+const Notification = ({ message }: { message: string }) =&gt; {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; setVisible(false), 3000);
+    return () =&gt; clearTimeout(timer);
+  }, []);
+
+  if (!visible) return null; // returning null means "render nothing"
+  return &lt;p&gt;{message}&lt;/p&gt;;
+};</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// Notification.test.tsx
+import { vi } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+
+describe("Notification", () =&gt; {
   beforeEach(() =&gt; vi.useFakeTimers());  // replace real timers with fakes
-  afterEach(() =&gt; vi.useRealTimers());   // always restore real timers!
+  afterEach(() =&gt; vi.useRealTimers());   // always restore after test!
 
-  it("returns debounced value after delay", () =&gt; {
-    const { result, rerender } = renderHook(
-      ({ value }) =&gt; useDebounce(value, 300),
-      { initialProps: { value: "hello" } }
-    );
+  it("disappears after 3 seconds", () =&gt; {
+    render(&lt;Notification message="Saved!" /&gt;);
 
-    // Change the value
-    rerender({ value: "world" });
-    expect(result.current).toBe("hello"); // not updated yet — timer hasn't fired
+    // Initially visible
+    expect(screen.getByText("Saved!")).toBeInTheDocument();
 
-    // Fast-forward time by 300ms
-    act(() =&gt; { vi.advanceTimersByTime(300); });
-    expect(result.current).toBe("world"); // now updated!
+    // Fast-forward 3 seconds (instant — no real waiting)
+    act(() =&gt; { vi.advanceTimersByTime(3000); });
+
+    // Now it's gone
+    expect(screen.queryByText("Saved!")).not.toBeInTheDocument();
   });
 });</code></pre>
 
 <ul>
 <li><code>vi.useFakeTimers()</code> — replaces <code>setTimeout</code>/<code>setInterval</code> with controllable fakes</li>
-<li><code>vi.advanceTimersByTime(ms)</code> — fast-forward time by the specified milliseconds</li>
-<li><code>vi.useRealTimers()</code> — restore real timers (always do this in <code>afterEach</code> to avoid affecting other tests!)</li>
+<li><code>vi.advanceTimersByTime(ms)</code> — fast-forward time by the specified milliseconds (instant, no real waiting)</li>
+<li><code>vi.useRealTimers()</code> — restore real timers (always do this in <code>afterEach</code> to avoid affecting other tests)</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>Mocking react-router</strong></h3>

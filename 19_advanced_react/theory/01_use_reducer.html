@@ -1,8 +1,8 @@
 <h3 style="color: #76cdd8;"><strong>What is useReducer?</strong></h3>
 
-<p><code>useReducer</code> is a React hook — an alternative to <code>useState</code> for managing complex state logic. Instead of calling <code>setState</code> directly, you "dispatch" an action (a plain object that describes what happened), and a "reducer" function decides how the state should change based on that action.</p>
+<p><code>useReducer</code> is a <strong>built-in React hook</strong> — it has nothing to do with the Redux library. It's just an alternative to <code>useState</code> for managing state that has multiple related values.</p>
 
-<p>Think of it like a command pattern: your component says "this happened" (dispatches an action), and the reducer decides "here's the new state."</p>
+<p>Instead of calling <code>setState</code> directly, you "dispatch" an action (a plain object that describes what happened), and a "reducer" function decides how the state should change.</p>
 
 <h3 style="color: #76cdd8;"><strong>The Pattern</strong></h3>
 
@@ -17,67 +17,52 @@
 <li><code>initialState</code> — the starting value for your state</li>
 </ul>
 
-<h3 style="color: #76cdd8;"><strong>Full Example — Multi-Step Form</strong></h3>
+<h3 style="color: #76cdd8;"><strong>Full Example — Counter with Multiple Actions</strong></h3>
 
-<p>Here's a practical example: a signup form with multiple steps, where several state fields are related and update together.</p>
+<p>A simple counter where state changes depend on which action was dispatched:</p>
 
 <pre class="prettyprint"><code class="lang-tsx">import { useReducer } from "react";
 
-type FormState = {
-  step: number;
-  name: string;
-  email: string;
-  plan: "free" | "pro" | "";
-  isSubmitting: boolean;
+// State type
+type CounterState = {
+  count: number;
 };
 
-type FormAction =
-  | { type: "NEXT_STEP" }
-  | { type: "PREV_STEP" }
-  | { type: "SET_FIELD"; field: keyof FormState; value: string }
-  | { type: "SUBMIT" }
-  | { type: "SUBMIT_SUCCESS" };
+// All possible actions
+type CounterAction =
+  | { type: "INCREMENT" }
+  | { type: "DECREMENT" }
+  | { type: "RESET" }
+  | { type: "SET"; value: number };
 
-const initialState: FormState = {
-  step: 1,
-  name: "",
-  email: "",
-  plan: "",
-  isSubmitting: false,
-};
+const initialState: CounterState = { count: 0 };
 
-const formReducer = (state: FormState, action: FormAction): FormState =&gt; {
+// Reducer — decides how state changes based on the action
+const counterReducer = (state: CounterState, action: CounterAction): CounterState =&gt; {
   switch (action.type) {
-    case "NEXT_STEP":
-      return { ...state, step: state.step + 1 };
-    case "PREV_STEP":
-      return { ...state, step: state.step - 1 };
-    case "SET_FIELD":
-      return { ...state, [action.field]: action.value };
-    case "SUBMIT":
-      return { ...state, isSubmitting: true };
-    case "SUBMIT_SUCCESS":
-      return { ...state, isSubmitting: false };
+    case "INCREMENT":
+      return { count: state.count + 1 };
+    case "DECREMENT":
+      return { count: state.count - 1 };
+    case "RESET":
+      return { count: 0 };
+    case "SET":
+      return { count: action.value };
     default:
       return state;
   }
 };
 
-const SignupForm = () =&gt; {
-  const [state, dispatch] = useReducer(formReducer, initialState);
+const Counter = () =&gt; {
+  const [state, dispatch] = useReducer(counterReducer, initialState);
 
   return (
     &lt;div&gt;
-      &lt;p&gt;Step {state.step} of 3&lt;/p&gt;
-      {state.step === 1 &amp;&amp; (
-        &lt;input
-          value={state.name}
-          onChange={(e) =&gt; dispatch({ type: "SET_FIELD", field: "name", value: e.target.value })}
-          placeholder="Name"
-        /&gt;
-      )}
-      &lt;button onClick={() =&gt; dispatch({ type: "NEXT_STEP" })}&gt;Next&lt;/button&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: "PREV_STEP" })} disabled={state.step === 1}&gt;Back&lt;/button&gt;
+      &lt;p&gt;Count: {state.count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: "INCREMENT" })}&gt;+1&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: "DECREMENT" })}&gt;-1&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: "RESET" })}&gt;Reset&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: "SET", value: 10 })}&gt;Set to 10&lt;/button&gt;
     &lt;/div&gt;
   );
 };</code></pre>
