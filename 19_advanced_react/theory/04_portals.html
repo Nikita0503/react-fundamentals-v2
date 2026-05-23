@@ -70,7 +70,7 @@ const ProductPage = () =&gt; {
 
 <p>This is important to understand: even though the modal renders in <code>#modal-root</code> in the actual DOM, React events (<code>onClick</code>, etc.) still bubble through the <strong>React component tree</strong>, not the DOM tree.</p>
 
-<p>This means a click inside the portal can be caught by a parent React component's <code>onClick</code> handler — even though in the DOM they're in completely different branches. This is usually what you want (context and events work normally), but be aware of it when debugging unexpected event handling.</p>
+<p>Good to know: even though the portal renders in a different place in the DOM, React events (like <code>onClick</code>) still work normally — as if the portal was inside its parent component. You don't need to do anything special for event handling.</p>
 
 <h3 style="color: #76cdd8;"><strong>Common Portal Use Cases</strong></h3>
 

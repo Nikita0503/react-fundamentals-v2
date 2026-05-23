@@ -8,6 +8,9 @@
 
 <pre class="prettyprint"><code class="lang-tsx">import { useState, useTransition } from "react";
 
+// Imagine a large array with 10,000+ items
+const hugeList: string[] = ["item 1", "item 2", /* ... thousands more ... */];
+
 const SearchPage = () =&gt; {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState&lt;string[]&gt;([]);
@@ -47,6 +50,9 @@ const SearchPage = () =&gt; {
 <p><code>useDeferredValue</code> returns a "lagging" version of a value. React updates it only when it has idle time, keeping urgent updates (like typing) smooth.</p>
 
 <pre class="prettyprint"><code class="lang-tsx">import { useState, useDeferredValue, useMemo } from "react";
+
+// Same large array — filtering it is expensive
+const hugeList: string[] = ["item 1", "item 2", /* ... thousands more ... */];
 
 const SearchResults = ({ query }: { query: string }) =&gt; {
   const deferredQuery = useDeferredValue(query);
