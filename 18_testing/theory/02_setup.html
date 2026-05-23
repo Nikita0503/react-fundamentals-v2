@@ -76,15 +76,22 @@ export const add = (a: number, b: number): number =&gt; a + b;</code></pre>
 import { describe, it, expect } from "vitest";
 import { add } from "./add";
 
-describe("add", () =&gt; {
-  it("adds two positive numbers", () =&gt; {
-    expect(add(2, 3)).toBe(5);
+describe("add", () =&gt; {           // describe — groups related tests under a name
+  it("adds two positive numbers", () =&gt; {  // it — one specific test case
+    expect(add(2, 3)).toBe(5);    // expect — checks that the result matches what you expect
   });
 
   it("handles negative numbers", () =&gt; {
     expect(add(-1, 1)).toBe(0);
   });
 });</code></pre>
+
+<p><strong>What each function does:</strong></p>
+<ul>
+<li><code>describe("name", () =&gt; { ... })</code> — creates a group of tests. The name describes what you're testing (e.g., "add"). You can nest describes inside each other.</li>
+<li><code>it("description", () =&gt; { ... })</code> — defines a single test. The description says what specific behavior you're checking. Read it as a sentence: "it adds two positive numbers".</li>
+<li><code>expect(value)</code> — takes the actual result and lets you compare it with the expected result using a <strong>matcher</strong> (like <code>.toBe(5)</code>). If they don't match — the test fails.</li>
+</ul>
 
 <ul>
 <li>File naming: <code>*.test.ts</code> or <code>*.test.tsx</code> — placed right next to the source file (co-located)</li>

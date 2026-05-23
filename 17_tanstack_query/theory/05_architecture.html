@@ -48,8 +48,15 @@ const ProductPage = () =&gt; {
 
   return (
     &lt;div&gt;
-      &lt;select value={category} onChange={e =&gt; setCategory(e.target.value)}&gt;...&lt;/select&gt;
-      &lt;select value={sortBy} onChange={e =&gt; setSortBy(e.target.value as "date" | "price")}&gt;...&lt;/select&gt;
+      &lt;select value={category} onChange={e =&gt; setCategory(e.target.value)}&gt;
+        &lt;option value="all"&gt;All&lt;/option&gt;
+        &lt;option value="electronics"&gt;Electronics&lt;/option&gt;
+        &lt;option value="clothing"&gt;Clothing&lt;/option&gt;
+      &lt;/select&gt;
+      &lt;select value={sortBy} onChange={e =&gt; setSortBy(e.target.value as "date" | "price")}&gt;
+        &lt;option value="date"&gt;Newest&lt;/option&gt;
+        &lt;option value="price"&gt;Price&lt;/option&gt;
+      &lt;/select&gt;
       {isLoading ? &lt;p&gt;Loading...&lt;/p&gt; : &lt;ProductList products={products ?? []} /&gt;}
     &lt;/div&gt;
   );
@@ -58,6 +65,13 @@ const ProductPage = () =&gt; {
 <p>Filter changes → queryKey changes → TanStack Query auto-fetches new data → UI updates. No manual useEffect, no manual loading state, no manual cache management.</p>
 
 <h3 style="color: #76cdd8;"><strong>Custom Query Hooks — Abstract API Details</strong></h3>
+<p>Instead of writing <code>useQuery</code> directly in components, wrap each API call in its own hook. Why?</p>
+<ul>
+<li><strong>Reusable</strong> — use <code>usePosts()</code> in any component, no copy-pasting queryKey/queryFn</li>
+<li><strong>Single place to change</strong> — if the API URL changes, you update one file, not 10 components</li>
+<li><strong>Cleaner components</strong> — component just calls <code>usePosts()</code>, doesn't know about URLs or cache keys</li>
+<li><strong>Testable</strong> — easy to mock a custom hook in tests</li>
+</ul>
 
 <pre class="prettyprint"><code class="lang-tsx">// hooks/queries/usePosts.ts
 export const usePosts = () =&gt; useQuery&lt;Post[]&gt;({
