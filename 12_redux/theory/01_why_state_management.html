@@ -51,6 +51,21 @@ const Header = ({ user }: { user: User }) =&gt; (
 <li><strong>Debugging</strong> — Redux DevTools let you time-travel through state changes</li>
 </ul>
 
+<h3 style="color: #76cdd8;"><strong>The Core Idea: State Lives Outside Components</strong></h3>
+<p>With <code>useState</code>, data lives <strong>inside</strong> a component — when the component unmounts, the data is gone. With Redux, data lives in a <strong>centralized store</strong> that exists outside the React component tree.</p>
+<p>Components don't own the data. They just:</p>
+<ul>
+<li><strong>Read</strong> from the store (via selectors) — "show me the current user"</li>
+<li><strong>Request changes</strong> to the store (via dispatch) — "update the user's name"</li>
+</ul>
+<p>This separation means:</p>
+<ul>
+<li>Any component can access any data — no matter where it is in the tree</li>
+<li>Data persists even if the component that created it unmounts</li>
+<li>Multiple components can read the same data without passing props</li>
+<li>All state changes go through one predictable path (dispatch → reducer → new state)</li>
+</ul>
+
 <h3 style="color: #76cdd8;"><strong>The Redux Data Flow</strong></h3>
 <p>Redux follows a <strong>unidirectional data flow</strong>. Here's the mental model:</p>
 
