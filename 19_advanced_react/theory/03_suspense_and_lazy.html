@@ -8,7 +8,7 @@
 
 <h3 style="color: #76cdd8;"><strong>React.lazy() — Dynamically Import a Component</strong></h3>
 
-<p><code>lazy()</code> lets you define a component that loads its code only when it's first rendered. Until then, the code stays on the server.</p>
+<p><code>lazy()</code> lets you define a component that loads its code only when it's first rendered. Until then, the code is not downloaded to the user's browser (it stays in the bundled files on the hosting server, waiting to be requested).</p>
 
 <pre class="prettyprint"><code class="lang-tsx">import { lazy } from "react";
 
