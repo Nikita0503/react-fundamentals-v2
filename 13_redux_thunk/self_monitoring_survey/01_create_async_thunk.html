@@ -1,6 +1,22 @@
-<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: createAsyncThunk</strong></h3>
+<h3 style="color: #76cdd8;"><strong>Self-Monitoring Survey: Async Thunks</strong></h3>
 
-<h4 style="color: #474747; font-weight: 600;">1. What does <code>createAsyncThunk</code> automatically generate?</h4>
+<h4 style="color: #474747; font-weight: 600;">1. What is a simple thunk in Redux?</h4>
+<form>
+( ) A special Redux middleware you need to install separately<br/>
+(x) A function that returns an async function which receives dispatch as an argument<br/>
+( ) A React hook for making API calls<br/>
+( ) A type of reducer that handles async logic<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">2. In a simple thunk, how do you handle loading and error states?</h4>
+<form>
+( ) They are handled automatically by Redux Toolkit<br/>
+(x) You dispatch actions manually: dispatch(setLoading(true)), dispatch(setError("...")), etc.<br/>
+( ) You return them from the thunk and Redux updates the store<br/>
+( ) You use extraReducers to listen for pending/fulfilled/rejected<br/>
+</form>
+
+<h4 style="color: #474747; font-weight: 600;">3. What does <code>createAsyncThunk</code> automatically generate?</h4>
 <form>
 <input type="radio" name="q1" /> A single action type that you dispatch manually<br/>
 <input type="radio" name="q1" /> (x) Three lifecycle action types: pending, fulfilled, and rejected<br/>
