@@ -34,6 +34,8 @@ export const useProducts = () =&gt; {
   const sortBy = useFilterStore((s) =&gt; s.sortBy);
 
   return useQuery&lt;Product[]&gt;({
+    // queryKey includes the filters — when category or sortBy changes,
+    // TanStack Query treats it as a NEW query and fetches fresh data automatically
     queryKey: ["products", { category, sortBy }],
     queryFn: () =&gt; fetch(`/api/products?category=${category}&amp;sort=${sortBy}`).then(r =&gt; r.json()),
   });

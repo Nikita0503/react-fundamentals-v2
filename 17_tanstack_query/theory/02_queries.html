@@ -33,6 +33,7 @@ const PostList = () =&gt; {
 useQuery({ queryKey: ["posts"], ... })           // all posts
 useQuery({ queryKey: ["posts", 42], ... })       // post with id 42
 useQuery({ queryKey: ["posts", { page: 2 }], ... }) // posts page 2</code></pre>
+<p>When any part of the key changes, TanStack Query treats it as a <strong>new query</strong> and fetches fresh data automatically. So <code>["posts", { page: 2 }]</code> and <code>["posts", { page: 3 }]</code> are separate cache entries — switching from page 2 to page 3 triggers a new fetch without you writing any extra logic.</p>
 
 <h3 style="color: #76cdd8;"><strong>queryFn — The Function That Fetches Data</strong></h3>
 

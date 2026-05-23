@@ -1,4 +1,6 @@
 <h3 style="color: #76cdd8;"><strong>Pagination</strong></h3>
+<p><strong>What is pagination?</strong> When you have a large list of items (e.g., 10,000 blog posts), you don't load them all at once — that would be slow and use too much memory. Instead, you load them in small chunks called "pages" (e.g., 20 items per page). The user clicks "Next" / "Previous" or page numbers to see more data.</p>
+<p><strong>Why?</strong> Faster initial load, less memory usage, better UX. The server only sends a small portion of data at a time.</p>
 
 <pre class="prettyprint"><code class="lang-tsx">const PostList = ({ page }: { page: number }) =&gt; {
   const { data, isLoading, isPlaceholderData } = useQuery({
@@ -20,7 +22,7 @@
 
 <ul>
 <li><code>placeholderData: (prev) =&gt; prev</code> — shows previous page data while new page loads (no loading flash)</li>
-<li><code>isPlaceholderData</code> — true when showing placeholder (useful for dimming UI)</li>
+<li><code>isPlaceholderData</code> — true when showing old data while new page loads (you can use it to show a subtle loading indicator, like reducing opacity)</li>
 </ul>
 
 <h3 style="color: #76cdd8;"><strong>Infinite Scroll with useInfiniteQuery</strong></h3>
@@ -81,17 +83,25 @@ const handleMouseEnter = () =&gt; {
   });
 };</code></pre>
 
-<h3 style="color: #76cdd8;"><strong>Select — Transform Data</strong></h3>
+<h3 style="color: #76cdd8;"><strong>Select — Transform Data Before Using It</strong></h3>
+<p>Sometimes your API returns a full object, but your component only needs part of it. The <code>select</code> option lets you transform the cached data before it reaches your component:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">const { data: postTitles } = useQuery({
+<pre class="prettyprint"><code class="lang-tsx">// API returns full Post objects: [{ id, title, body, author }, ...]
+// But this component only needs the titles
+
+const { data: postTitles } = useQuery({
   queryKey: ["posts"],
   queryFn: fetchPosts,
-  select: (posts) =&gt; posts.map(p =&gt; p.title), // only re-renders when titles change
+  select: (posts) =&gt; posts.map(p =&gt; p.title),
+  // select receives the full cached data (Post[])
+  // and returns only what this component needs (string[])
 });</code></pre>
 
+<p><strong>Why use select?</strong></p>
 <ul>
-<li><code>select</code> transforms cached data before returning to component</li>
-<li>Component only re-renders when the selected (transformed) value changes</li>
+<li>The component only receives the transformed data — not the full response</li>
+<li>The component only re-renders when the <strong>transformed result</strong> changes. If a post's <code>body</code> changes but titles stay the same — no re-render. (How? TanStack Query uses "structural sharing" — it compares the previous and new select result deeply, and if the data is identical, it keeps the old reference. So even though <code>.map()</code> creates a new array, TQ detects that the content didn't change and skips the re-render.)</li>
+<li>The full data is still cached — other components can select different parts from the same cache</li>
 </ul>
 
 <style><!--
