@@ -10,7 +10,17 @@
 
 <p><code>render()</code> takes a React component and renders it into a virtual DOM that you can query:</p>
 
-<pre class="prettyprint"><code class="lang-tsx">import { render, screen } from "@testing-library/react";
+<pre class="prettyprint"><code class="lang-tsx">// Greeting.tsx — the component we're testing
+type GreetingProps = { name: string };
+
+const Greeting = ({ name }: GreetingProps) =&gt; {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+};
+
+export { Greeting };</code></pre>
+
+<pre class="prettyprint"><code class="lang-tsx">// Greeting.test.tsx — the test
+import { render, screen } from "@testing-library/react";
 import { Greeting } from "./Greeting";
 
 it("renders the greeting message", () =&gt; {
@@ -33,23 +43,36 @@ it("renders the greeting message", () =&gt; {
 
 <h3 style="color: #76cdd8;"><strong>Query Variants — getBy, queryBy, findBy</strong></h3>
 
-<p>Each query comes in three variants that behave differently when the element is missing:</p>
+<p>Each query comes in three variants. The difference is <strong>what happens when the element is not found</strong>:</p>
 
 <table>
-<tr><th>Prefix</th><th>Behavior</th><th>Use when</th></tr>
-<tr><td><code>getBy</code></td><td>Throws an error if not found</td><td>Element MUST be there right now</td></tr>
-<tr><td><code>queryBy</code></td><td>Returns <code>null</code> if not found</td><td>Asserting element is NOT there</td></tr>
-<tr><td><code>findBy</code></td><td>Waits (async) until element appears</td><td>Element appears after an async operation (API call, timer)</td></tr>
+<tr><th>Prefix</th><th>If element NOT found</th><th>Use when</th></tr>
+<tr><td><code>getBy</code></td><td>Throws an error (test fails immediately)</td><td>Element MUST be there right now</td></tr>
+<tr><td><code>queryBy</code></td><td>Returns <code>null</code> (no error)</td><td>You want to check that element does NOT exist</td></tr>
+<tr><td><code>findBy</code></td><td>Waits and retries until found (async)</td><td>Element appears later (after API call, timer, etc.)</td></tr>
 </table>
 
-<pre class="prettyprint"><code class="lang-tsx">// Element MUST exist right now — throws if missing
-expect(screen.getByRole("button")).toBeInTheDocument();
+<p><strong>How to choose:</strong></p>
+<ul>
+<li>"I expect this button to be on screen" → <code>getByRole("button")</code></li>
+<li>"I expect this error message to NOT be on screen" → <code>queryByText("Error")</code> (because getBy would throw before you can assert)</li>
+<li>"I clicked submit, now I'm waiting for a success message to appear" → <code>findByText("Success")</code></li>
+</ul>
 
-// Element must NOT exist — queryBy returns null instead of throwing
-expect(screen.queryByText("Error")).not.toBeInTheDocument();
+<pre class="prettyprint"><code class="lang-tsx">// getBy — element MUST exist right now. If missing, test fails with a clear error.
+const button = screen.getByRole("button");
+expect(button).toBeInTheDocument();
 
-// Element appears after loading (async) — findBy waits up to 1 second
-const userName = await screen.findByText("Alice");</code></pre>
+// queryBy — returns null if element is not found (instead of crashing the test).
+// Perfect for checking that something is NOT on the screen.
+// Why not getBy? Because getBy throws an error when element is missing —
+// your test would crash before even reaching the .not check.
+expect(screen.queryByText("Error message")).not.toBeInTheDocument();
+
+// findBy — waits up to 1 second for element to appear. Returns a Promise.
+// Use after async operations (data loading, setTimeout, etc.)
+const userName = await screen.findByText("Alice");
+expect(userName).toBeInTheDocument();</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>Common Assertions (from @testing-library/jest-dom)</strong></h3>
 

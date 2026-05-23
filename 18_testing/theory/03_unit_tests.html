@@ -55,11 +55,15 @@ expect(str).toMatch(/pattern/);     // checks against a regex pattern
 
 // Arrays
 expect(arr).toHaveLength(3);        // array has exactly 3 items
-expect(arr).toContain("item");      // array includes "item"
+expect(arr).toContain("item");      // array includes "item" (works for primitives)
 
-// Errors
-expect(() =&gt; riskyFn()).toThrow();                  // function throws any error
-expect(() =&gt; riskyFn()).toThrow("specific message"); // function throws with this message</code></pre>
+// For arrays of objects — use toContainEqual (deep comparison):
+expect(users).toContainEqual({ id: 1, name: "Alice" }); // finds object with matching content
+
+// Errors — testing that a function throws (e.g., invalid input should cause an error)
+// Wrap in () =&gt; ... so expect can call the function itself and catch the throw
+expect(() =&gt; riskyFn()).toThrow();                  // passes if function throws ANY error
+expect(() =&gt; riskyFn()).toThrow("specific message"); // passes if error message contains this text</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>Full Example — Testing a Utility Module</strong></h3>
 
