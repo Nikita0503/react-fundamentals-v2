@@ -5,7 +5,22 @@
 <p>The <code>reducers</code> field in <code>createSlice</code> is for actions that the slice <strong>defines itself</strong>. The <code>extraReducers</code> field is for actions defined <strong>elsewhere</strong> — like thunks, or actions from other slices. They're "extra" because they weren't created by this slice's <code>reducers</code> object.</p>
 
 <h3 style="color: #76cdd8;"><strong>The Builder Pattern</strong></h3>
-<p><code>extraReducers</code> uses a builder callback with <code>.addCase()</code> for each action type you want to handle:</p>
+<p><code>extraReducers</code> uses a builder callback with <code>.addCase()</code> for each action type you want to handle.</p>
+<p>First, here's the thunk we'll be handling:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/thunks/fetchUser.ts
+import { createAsyncThunk } from "@reduxjs/toolkit";
+
+type User = { id: number; name: string; email: string };
+
+export const fetchUser = createAsyncThunk(
+  "user/fetchUser",
+  async (userId: string) =&gt; {
+    const response = await fetch(`/api/users/${userId}`);
+    return (await response.json()) as User;
+  }
+);</code></pre>
+
+<p>Now, the slice that handles its pending/fulfilled/rejected actions:</p>
 <pre class="prettyprint"><code class="lang-ts">import { createSlice } from "@reduxjs/toolkit";
 import { fetchUser } from "./thunks/fetchUser";
 

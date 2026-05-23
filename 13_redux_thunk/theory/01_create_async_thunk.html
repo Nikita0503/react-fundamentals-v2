@@ -12,6 +12,108 @@
 </ul>
 <p>Redux Toolkit <strong>includes thunk middleware by default</strong> — no extra installation needed. When you use <code>configureStore</code>, thunk support is already there.</p>
 
+<h3 style="color: #76cdd8;"><strong>Simple Thunk (Manual Approach)</strong></h3>
+<p>The simplest way to do async in Redux — just write an async function that dispatches actions manually:</p>
+<pre class="prettyprint"><code class="lang-ts">// store/slices/usersSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type User = { id: number; name: string };
+
+type UsersState = {
+  items: User[];
+  loading: boolean;
+  error: string | null;
+};
+
+const initialState: UsersState = {
+  items: [],
+  loading: false,
+  error: null,
+};
+
+const usersSlice = createSlice({
+  name: "users",
+  initialState,
+  reducers: {
+    setLoading(state, action: PayloadAction&lt;boolean&gt;) {
+      state.loading = action.payload;
+    },
+    setUsers(state, action: PayloadAction&lt;User[]&gt;) {
+      state.items = action.payload;
+    },
+    setError(state, action: PayloadAction&lt;string | null&gt;) {
+      state.error = action.payload;
+    },
+  },
+});
+
+export const { setLoading, setUsers, setError } = usersSlice.actions;
+export default usersSlice.reducer;</code></pre>
+
+<pre class="prettyprint"><code class="lang-ts">// store/thunks/fetchUsers.ts
+import { AppDispatch } from "../store";
+import { setLoading, setUsers, setError } from "../slices/usersSlice";
+
+// A simple thunk — just a function that returns an async function
+export const fetchUsers = () =&gt; async (dispatch: AppDispatch) =&gt; {
+  dispatch(setLoading(true));
+  dispatch(setError(null));
+  try {
+    const response = await fetch("/api/users");
+    const users = await response.json();
+    dispatch(setUsers(users));       // success — set data
+  } catch (error) {
+    dispatch(setError("Failed to fetch users")); // error — set message
+  } finally {
+    dispatch(setLoading(false));      // always — stop loading
+  }
+};
+
+// Usage in component:
+// dispatch(fetchUsers());</code></pre>
+
+<p><strong>With parameters:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">// Thunk that accepts a parameter
+export const fetchUserById = (id: number) =&gt; async (dispatch: AppDispatch) =&gt; {
+  dispatch(setLoading(true));
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    const user = await response.json();
+    dispatch(setUsers([user]));
+  } catch (error) {
+    dispatch(setError("User not found"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+// Usage:
+// dispatch(fetchUserById(42));</code></pre>
+
+<p><strong>Pros of simple thunks:</strong></p>
+<ul>
+<li>Easy to understand — it's just an async function that calls dispatch</li>
+<li>Full control over loading/error states — you decide when to set them</li>
+<li>Simple TypeScript — no complex generics</li>
+<li>Easy to debug — you see every dispatch call</li>
+</ul>
+
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Repetitive — you write setLoading/setError/setData for every async operation</li>
+<li>No automatic action types for pending/fulfilled/rejected</li>
+<li>Harder to track in DevTools (you see individual actions, not a grouped async flow)</li>
+</ul>
+
+<h3 style="color: #76cdd8;"><strong>Which Approach Do Developers Use?</strong></h3>
+<p><code>createAsyncThunk</code> automates the simple thunk pattern — it generates pending/fulfilled/rejected actions automatically, so you don't write setLoading/setError manually. But the TypeScript typing is more complex.</p>
+<p>In practice, the community is split:</p>
+<ul>
+<li><strong>Simple thunks</strong> — many teams prefer them because they're transparent, easy to type, and give full control. You see exactly what happens step by step.</li>
+<li><strong>createAsyncThunk</strong> — useful when you have many similar async operations and want a consistent pattern (pending/fulfilled/rejected). Reduces boilerplate if you have 20+ API calls.</li>
+</ul>
+<p><strong>Our recommendation:</strong> start with simple thunks — they're easier to understand and debug. Use <code>createAsyncThunk</code> when you notice repetitive loading/error patterns across many slices.</p>
+
 <h3 style="color: #76cdd8;"><strong>createAsyncThunk Syntax</strong></h3>
 <p><code>createAsyncThunk</code> is RTK's utility for creating thunks that handle async operations. It takes two arguments:</p>
 <ol>
@@ -48,24 +150,30 @@ const fetchUser = createAsyncThunk(
 <pre class="prettyprint"><code class="lang-ts">// createAsyncThunk&lt;ReturnType, ArgType, ThunkApiConfig&gt;
 
 type FetchUserError = {
-  message: string;
-  statusCode: number;
+  message: string;    // human-readable error text (to show in UI)
+  statusCode: number; // HTTP status (to decide how to handle: 404 vs 500)
 };
 
 const fetchUser = createAsyncThunk&lt;
-  User,              // Return type of the payload creator
-  string,            // Argument type (what you pass when dispatching)
-  { rejectValue: FetchUserError }  // ThunkAPI config
+  User,              // what the thunk returns on success (becomes action.payload in fulfilled)
+  string,            // what you pass when dispatching: dispatch(fetchUser("123"))
+  { rejectValue: FetchUserError }  // shape of the error object on failure
 &gt;(
   "user/fetchUser",
-  async (userId, thunkAPI) => {
+  async (userId, thunkAPI) =&gt; {
     const response = await fetch(`/api/users/${userId}`);
+
     if (!response.ok) {
+      // Request failed — return structured error data
+      // This object becomes action.payload in the rejected case
       return thunkAPI.rejectWithValue({
-        message: "User not found",
-        statusCode: response.status,
+        message: "User not found",       // you choose what to put here
+        statusCode: response.status,     // e.g., 404
       });
     }
+
+    // Request succeeded — return the data
+    // "as Promise&lt;User&gt;" tells TypeScript what type response.json() resolves to
     return response.json() as Promise&lt;User&gt;;
   }
 );</code></pre>
