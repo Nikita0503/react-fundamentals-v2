@@ -1,5 +1,14 @@
-<h3 style="color: #76cdd8;"><strong>What Are Environment Variables</strong></h3>
-<p>Environment variables are configuration values that change between environments (development, staging, production) without changing code. Examples: API URL, feature flags, analytics keys.</p>
+<h3 style="color: #76cdd8;"><strong>What Are Environments?</strong></h3>
+<p>In real projects, your app runs in different <strong>environments</strong> — separate copies of the application for different purposes:</p>
+<ul>
+<li><strong>Development</strong> (your laptop) — where you write and test code locally. Uses a local or mock API.</li>
+<li><strong>Staging / QA</strong> — a server where the team tests new features before releasing to users. Uses a test database.</li>
+<li><strong>Production</strong> — the live app that real users see. Uses the real API and real data.</li>
+</ul>
+<p>Each environment needs different settings: a different API URL, different analytics keys, different feature flags. You don't want to change code every time you deploy — you want the <strong>same code</strong> to behave differently depending on where it runs. That's what environment variables are for.</p>
+
+<h3 style="color: #76cdd8;"><strong>What Are Environment Variables?</strong></h3>
+<p>Environment variables are configuration values that change between environments without changing code. Examples: API URL, feature flags, analytics keys.</p>
 <p>They let you deploy the same codebase to different environments with different behavior — without editing a single line of source code.</p>
 
 <h3 style="color: #76cdd8;"><strong>Why Not Hardcode?</strong></h3>
