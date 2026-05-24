@@ -36,6 +36,24 @@ VITE_APP_NAME=MyApp</code></pre>
 </ul>
 <p>You don't choose manually — Vite picks the file automatically based on the command you run. The values get "baked into" the JavaScript during build, replacing every <code>import.meta.env.VITE_*</code> with the actual string.</p>
 
+<h3 style="color: #76cdd8;"><strong>Custom Environments (e.g., Staging)</strong></h3>
+<p>What if you have more than just dev and production? For example, a staging environment for QA testing. You can create custom modes:</p>
+
+<p><strong>1. Create the file: <code>.env.staging</code></strong></p>
+<pre class="prettyprint"><code class="lang-ts">VITE_API_URL=https://staging-api.myapp.com
+VITE_APP_NAME=MyApp (Staging)</code></pre>
+
+<p><strong>2. Add a script to <code>package.json</code>:</strong></p>
+<pre class="prettyprint"><code class="lang-ts">{
+  "scripts": {
+    "dev": "vite",                    // uses .env.development
+    "build": "vite build",            // uses .env.production
+    "build:staging": "vite build --mode staging"  // uses .env.staging
+  }
+}</code></pre>
+
+<p>The <code>--mode staging</code> flag tells Vite: "use <code>.env.staging</code> instead of <code>.env.production</code>". You can create any mode you want — just match the file name to the mode name.</p>
+
 <p><strong>Using in your code:</strong></p>
 <pre class="prettyprint"><code class="lang-tsx">// Access the variable
 const apiUrl = import.meta.env.VITE_API_URL;
