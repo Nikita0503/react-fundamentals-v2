@@ -21,13 +21,13 @@
 <p>Use the right element for the job:</p>
 <ul>
 <li><code>&lt;button&gt;</code> for actions</li>
-<li><code>&lt;a&gt;</code> for navigation</li>
+<li><code>&lt;a&gt;</code> for navigation (in React Router projects, use <code>&lt;Link&gt;</code> — it renders an accessible <code>&lt;a&gt;</code> under the hood)</li>
 <li><code>&lt;h1&gt;</code>-<code>&lt;h6&gt;</code> for headings</li>
 <li><code>&lt;nav&gt;</code> for navigation sections</li>
 <li><code>&lt;main&gt;</code> for main content</li>
 <li><code>&lt;form&gt;</code> for forms</li>
 </ul>
-<p><strong>Rule:</strong> if it does something on click → <code>&lt;button&gt;</code>. If it goes somewhere → <code>&lt;a&gt;</code>. Never <code>&lt;div onClick&gt;</code>.</p>
+<p><strong>Rule:</strong> if the user expects a link (can open in new tab, has a URL) → <code>&lt;a&gt;</code> or <code>&lt;Link&gt;</code>. If it triggers an action (submit, delete, toggle, open modal) → <code>&lt;button&gt;</code>. Never <code>&lt;div onClick&gt;</code> — it's not focusable and screen readers don't announce it as interactive.</p>
 
 <h3 style="color: #76cdd8;"><strong>Heading Hierarchy</strong></h3>
 <pre class="prettyprint"><code class="lang-tsx">// ✅ Correct — logical hierarchy
