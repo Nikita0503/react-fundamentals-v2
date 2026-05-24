@@ -29,6 +29,13 @@ VITE_APP_NAME=MyApp (Dev)</code></pre>
 <pre class="prettyprint"><code class="lang-ts">VITE_API_URL=https://api.myapp.com
 VITE_APP_NAME=MyApp</code></pre>
 
+<p><strong>How does Vite know which file to use?</strong></p>
+<ul>
+<li><code>npm run dev</code> starts Vite in <strong>development mode</strong> → Vite reads <code>.env.development</code></li>
+<li><code>npm run build</code> builds the app in <strong>production mode</strong> → Vite reads <code>.env.production</code></li>
+</ul>
+<p>You don't choose manually — Vite picks the file automatically based on the command you run. The values get "baked into" the JavaScript during build, replacing every <code>import.meta.env.VITE_*</code> with the actual string.</p>
+
 <p><strong>Using in your code:</strong></p>
 <pre class="prettyprint"><code class="lang-tsx">// Access the variable
 const apiUrl = import.meta.env.VITE_API_URL;
