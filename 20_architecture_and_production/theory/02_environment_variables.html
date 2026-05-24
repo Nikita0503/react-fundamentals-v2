@@ -19,16 +19,55 @@ const API_URL = "http://localhost:3001/api";
 const API_URL = import.meta.env.VITE_API_URL;</code></pre>
 
 <h3 style="color: #76cdd8;"><strong>How It Works in Vite</strong></h3>
-<p>Create <code>.env</code> files in your project root:</p>
-<pre class="prettyprint"><code class="lang-ts"># .env (default, all environments)
-VITE_APP_NAME=MyApp
+<p>You create separate <code>.env</code> files in your project root — one per environment. Vite automatically picks the right one based on how you run the app.</p>
 
-# .env.development (only in dev)
-VITE_API_URL=http://localhost:3001/api
+<p><strong>File: <code>.env.development</code></strong> — used when you run <code>npm run dev</code></p>
+<pre class="prettyprint"><code class="lang-ts">VITE_API_URL=http://localhost:3001/api
+VITE_APP_NAME=MyApp (Dev)</code></pre>
 
-# .env.production (only in production build)
-VITE_API_URL=https://api.myapp.com</code></pre>
-<p>Access in code: <code>import.meta.env.VITE_API_URL</code></p>
+<p><strong>File: <code>.env.production</code></strong> — used when you run <code>npm run build</code></p>
+<pre class="prettyprint"><code class="lang-ts">VITE_API_URL=https://api.myapp.com
+VITE_APP_NAME=MyApp</code></pre>
+
+<p><strong>Using in your code:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">// Access the variable
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// Good practice: check that it exists (in case someone forgot to set it)
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error("VITE_API_URL is not defined. Check your .env file.");
+}
+
+// Use it
+const response = await fetch(`${import.meta.env.VITE_API_URL}/users`);</code></pre>
+
+<p>When you run <code>npm run dev</code> → <code>import.meta.env.VITE_API_URL</code> is <code>"http://localhost:3001/api"</code>.<br/>
+When you run <code>npm run build</code> → it becomes <code>"https://api.myapp.com"</code>.<br/>
+Same code, different values — no manual changes needed.</p>
+
+<h3 style="color: #76cdd8;"><strong>Where .env Files Live</strong></h3>
+<p>Place <code>.env</code> files in the <strong>root of your project</strong> (next to <code>package.json</code>):</p>
+<pre class="prettyprint"><code class="lang-ts">my-app/
+├── .env.development      // used during npm run dev
+├── .env.production       // used during npm run build
+├── .env.local            // your personal overrides (gitignored!)
+├── package.json
+├── vite.config.ts
+└── src/</code></pre>
+<p>Vite automatically finds and loads the right file based on the current mode. You don't need to import or configure anything — just create the file and it works.</p>
+
+<p><strong>What about Git?</strong></p>
+<ul>
+<li><code>.env.development</code> and <code>.env.production</code> with <strong>non-secret</strong> defaults (like app name) — can be committed to Git so the whole team has them</li>
+<li><code>.env.local</code> with <strong>real values</strong> (API keys, tokens) — must be in <code>.gitignore</code>, never committed</li>
+</ul>
+<p>When you join a new project and need the real values, you typically:</p>
+<ul>
+<li>Ask a team lead or another developer</li>
+<li>Check the team's password manager (1Password, Bitwarden, etc.)</li>
+<li>Look in the project's CI/CD settings (GitHub Secrets, Vercel Environment Variables)</li>
+<li>Check the project README — it often lists which variables are needed</li>
+</ul>
 <p><strong>VITE_ prefix is required</strong> — without it, the variable is NOT exposed to client code. This is a security measure: it prevents accidentally leaking server-side secrets to the browser.</p>
 
 <h3 style="color: #76cdd8;"><strong>Runtime vs Build-Time</strong></h3>
