@@ -56,7 +56,7 @@
 <p><code>useState</code>: simple state (counter, toggle, single value). <code>useReducer</code>: complex state with many related fields and complex update logic (multi-step forms, state machines). Same dispatch/action pattern as Redux but local to the component.</p>
 
 <h4 style="color: #76cdd8;">15. What is Suspense?</h4>
-<p>A component that shows a fallback while its children are loading (lazy components, or data in frameworks like Next.js). Enables code splitting and streaming SSR. Wraps async boundaries so the rest of the app doesn't need to handle loading states manually.</p>
+<p>A component that shows a fallback (like a spinner or "Loading...") while a lazy-loaded component is being downloaded. You wrap lazy components with <code>&lt;Suspense fallback={...}&gt;</code> — React shows the fallback until the component's code is ready, then swaps it in automatically.</p>
 
 <h3 style="color: #76cdd8;"><strong>Tips for React Interviews</strong></h3>
 <ul>
