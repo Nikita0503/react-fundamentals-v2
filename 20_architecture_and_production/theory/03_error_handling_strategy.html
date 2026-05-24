@@ -140,6 +140,27 @@ export const logger = {
   },
 };</code></pre>
 
+<p><strong>Usage example:</strong></p>
+<pre class="prettyprint"><code class="lang-tsx">import { logger } from "../lib/logger";
+
+const UserProfile = ({ userId }: { userId: string }) =&gt; {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+
+  useEffect(() =&gt; {
+    fetch(`/api/users/${userId}`)
+      .then((res) =&gt; res.json())
+      .then((data) =&gt; {
+        setUser(data);
+        logger.info("User loaded", { userId, name: data.name });
+      })
+      .catch((err) =&gt; {
+        logger.error("Failed to load user", { userId, error: err.message });
+      });
+  }, [userId]);
+
+  return user ? &lt;p&gt;{user.name}&lt;/p&gt; : &lt;p&gt;Loading...&lt;/p&gt;;
+};</code></pre>
+
 <h3 style="color: #76cdd8;"><strong>What to Log</strong></h3>
 <ul>
 <li>✅ API errors (status, URL, method, response time)</li>
