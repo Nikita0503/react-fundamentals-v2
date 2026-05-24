@@ -46,10 +46,10 @@ VITE_APP_NAME=MyApp (Staging)</code></pre>
 <p><strong>2. Add scripts to <code>package.json</code>:</strong></p>
 <pre class="prettyprint"><code class="lang-ts">{
   "scripts": {
-    "dev": "vite",                          // local dev → uses .env.development
-    "dev:staging": "vite --mode staging",   // local dev with staging env → uses .env.staging
-    "build": "vite build",                  // production build → uses .env.production
-    "build:staging": "vite build --mode staging"  // staging build → uses .env.staging
+    "dev": "vite",                          // run app locally with .env.development
+    "dev:staging": "vite --mode staging",   // run app locally with .env.staging (e.g., to test against staging API)
+    "build": "vite build",                  // build for production with .env.production
+    "build:staging": "vite build --mode staging"  // build for staging with .env.staging
   }
 }</code></pre>
 
